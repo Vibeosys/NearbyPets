@@ -5,4 +5,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Nav drawer -->
+    <string name="nav_opt_my_details">My Details</string>
+    <string name="nav_opt_my_posted_ads">My Posted Ads</string>
+    <string name="nav_opt_my_saved_ads">My Saved Ads</string>
+
+    <string name="nav_opt_view_categories">View Categories</string>
+    <string name="nav_opt_post_new_ad">Post a new ad</string>
+    <string name="nav_opt_logout">Logout</string>
+    <!-- end drawer-->
 </resources>

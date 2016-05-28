@@ -3,33 +3,33 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_my_detail"
+            android:icon="@drawable/ic_perm_identity_black_24dp"
+            android:title="@string/nav_opt_my_details" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_my_posted_ads"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="@string/nav_opt_my_posted_ads" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_my_saved_ads"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="@string/nav_opt_my_saved_ads" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_view_categories"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/nav_opt_view_categories" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_post_new_ad"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="@string/nav_opt_post_new_ad" />
+            <item
+                android:id="@+id/nav_log_out"
+                android:icon="@drawable/ic_action_io"
+                android:title="@string/nav_opt_logout" />
         </menu>
     </item>
 
