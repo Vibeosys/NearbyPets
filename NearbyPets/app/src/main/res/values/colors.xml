@@ -6,4 +6,5 @@
     <color name="primaryText">#fc474a4f</color>
     <color name="accentText">#ff5252</color>
     <color name="secondaryText">#7e848c</color>
+    <color name="loginTransparnt">#89000000</color>
 </resources>
