@@ -15,4 +15,23 @@
     <string name="nav_opt_post_new_ad">Post a new ad</string>
     <string name="nav_opt_logout">Logout</string>
     <!-- end drawer-->
+
+    <!--Product Description -->
+    <string name="str_product_title">Product Title</string>
+    <string name="str_product_price">\u20ac 300</string>
+    <string name="str_demotext">Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim
+        ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="str_seller_information">Seller Information</string>
+    <string name="str_name">Name:</string>
+    <string name="str_telephone">Telephone:</string>
+    <string name="str_email">Email:</string>
+    <string name="str_ad_details">Ad Details</string>
+    <string name="str_added">Added:</string>
+    <string name="str_views">Views:</string>
+    <string name="str_distance">Distance:</string>
+    <string name="btn_add_to_favorites">Add To Favorites</string>
+    <!--End Product Description-->
 </resources>
