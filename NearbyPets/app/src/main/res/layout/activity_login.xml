@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal">
-        <TextView
+        <com.nearbypets.views.AbelRegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -36,13 +36,15 @@
             android:text="@string/str_pets"
             android:textColor="@android:color/white"
             android:id="@+id/textView3"
+            android:layout_marginBottom="5dp"
             android:layout_gravity="center"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/str_find_pets"
-            android:padding="5dp"
+            android:layout_margin="4dp"
+            android:padding="8dp"
             android:textColor="@android:color/white"
             android:id="@+id/textView4"
             android:background="@drawable/custom_white_border"
@@ -59,7 +61,7 @@
             <LinearLayout
                 android:id="@+id/emailIdLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/custom_white_border"
@@ -70,8 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColorHint="@android:color/white"
-                    app:hintTextAppearance="@style/TextAppearance.AppCompat">
+                    android:textColorHint="@android:color/white">
 
                     <EditText
                         android:id="@+id/emailIdEditText"
@@ -93,7 +94,7 @@
             <LinearLayout
                 android:id="@+id/passdLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
