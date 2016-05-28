@@ -51,4 +51,6 @@
     <string name="str_email_hint">EMAIL</string>
     <string name="str_password_hint">PASSWORD</string>
     <string name="str_register_hint">REGISTER</string>
+    <!--category Activity-->
+    <string name="search_category">Search Category</string>
 </resources>

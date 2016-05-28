@@ -8,17 +8,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:orientation="vertical">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="260dp"
+            android:scaleType="fitXY"
             android:src="@drawable/default_pet_image" />
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,9 +31,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -40,7 +42,7 @@
                         android:textColor="@color/primaryText"
                         android:textSize="20sp" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
@@ -50,7 +52,7 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <TextView
+                <com.nearbypets.views.RobotoRegularTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -58,7 +60,8 @@
                     android:layout_marginTop="12dp"
                     android:padding="2dp"
                     android:text="@string/str_demotext"
-                    android:textColor="@color/secondaryText" />
+                    android:textColor="@color/secondaryText"
+                    android:textSize="14sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -67,7 +70,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/secondaryText" />
 
-                <TextView
+                <com.nearbypets.views.RobotoMediumTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -85,7 +88,7 @@
                     android:layout_marginTop="12dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -93,7 +96,7 @@
                         android:textColor="@color/secondaryText"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -108,7 +111,7 @@
                     android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -116,7 +119,7 @@
                         android:textColor="@color/secondaryText"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -131,7 +134,7 @@
                     android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -139,7 +142,7 @@
                         android:textColor="@color/secondaryText"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -154,13 +157,13 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/secondaryText" />
 
-                <TextView
+                <com.nearbypets.views.RobotoMediumTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:padding="2dp"
-                    android:text="@string/str_seller_information"
+                    android:text="@string/str_ad_details"
                     android:textColor="@color/primaryText"
                     android:textSize="20sp" />
 
@@ -172,7 +175,7 @@
                     android:layout_marginTop="12dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -180,7 +183,7 @@
                         android:textColor="@color/secondaryText"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -195,7 +198,7 @@
                     android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -203,7 +206,7 @@
                         android:textColor="@color/secondaryText"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -218,7 +221,7 @@
                     android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.nearbypets.views.RobotoMediumTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -226,7 +229,7 @@
                         android:textColor="@color/secondaryText"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -246,12 +249,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
-                    android:background="@color/accentText"
+                    android:layout_marginBottom="16dp"
                     android:text="@string/btn_add_to_favorites"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
 

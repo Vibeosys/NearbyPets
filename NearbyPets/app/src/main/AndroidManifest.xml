@@ -20,7 +20,12 @@
         </activity>
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegisterActivity" />
-        <activity android:name=".activities.ProductDescActivity"></activity>
+        <activity
+            android:name=".activities.ProductDescActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activities.CategoryListActivity"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

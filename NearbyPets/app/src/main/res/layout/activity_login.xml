@@ -202,6 +202,7 @@
                     android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:text="@string/str_create_acc"
+                    android:onClick="callRegister"
                     android:textColor="#86f206"
                     android:textStyle="bold" />
             </LinearLayout>
