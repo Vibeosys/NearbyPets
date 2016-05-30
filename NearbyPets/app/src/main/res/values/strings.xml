@@ -65,4 +65,6 @@
     <!--Forgot Password-->
     <string name="str_forgot_pwd_hint">ENTER YOUR EMAIL</string>
     <string name="str_resend_btn">RESEND MY PASSWORD</string>
+    <!--post my addes-->
+    <string name="str_favourite">Favourite</string>
 </resources>

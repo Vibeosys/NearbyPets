@@ -252,6 +252,32 @@
                     android:layout_marginBottom="16dp"
                     android:text="@string/btn_add_to_favorites"
                     android:textColor="@android:color/white" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp">
+                    <Button
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="16dp"
+                        android:layout_weight="1"
+                        android:text="SOLD"
+                        android:textColor="@android:color/white" />
+                    <Button
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="16dp"
+                        android:text="DISABLE"
+                        android:textColor="@android:color/white" />
+
+                </LinearLayout>
             </LinearLayout>
 
 
