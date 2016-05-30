@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="20dp">
+        android:paddingTop="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,19 +26,21 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/str_nearby"
+            android:textSize="57sp"
             android:textColor="@android:color/white"
             android:id="@+id/textView2"
             android:layout_gravity="center"/>
-        <TextView
+        <com.nearbypets.views.AbelRegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/str_pets"
+            android:textSize="57sp"
             android:textColor="@android:color/white"
             android:id="@+id/textView3"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="-16dp"
             android:layout_gravity="center"/>
-        <TextView
+        <com.nearbypets.views.MyriadProRegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -101,7 +103,7 @@
                 android:background="@drawable/custom_white_border"
                 android:orientation="horizontal">
 
-                <android.support.design.widget.TextInputLayout
+                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_passIdEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -145,7 +147,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/register_user"
+                    android:id="@+id/login_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"

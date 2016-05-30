@@ -12,6 +12,6 @@ public class MyriadProRegularTextView extends TextView {
 
     public MyriadProRegularTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/MyriadPro-Regular.ttf"));
+        this.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/MyriadPro-Regular.otf"));
     }
 }
