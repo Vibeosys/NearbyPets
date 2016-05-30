@@ -19,6 +19,8 @@ import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
 import com.nearbypets.activities.ProductDescActivity;
 import com.nearbypets.activities.ProductListActivity;
+import com.nearbypets.activities.SettingActivity;
+import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.data.CategoryDTO;
 
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -116,22 +117,28 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_my_detail) {
             // Handle the camera action
+            startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (id == R.id.nav_my_posted_ads) {
-            /*startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));*/
+            startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
 
         } else if (id == R.id.nav_my_saved_ads) {
             startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
 
 
-        } else if (id == R.id.nav_view_categories) {
+        }/* else if (id == R.id.nav_view_categories) {
             startActivity(new Intent(getApplicationContext(), CategoryListActivity.class));
 
-        } else if (id == R.id.nav_post_new_ad) {
+        }*/ else if (id == R.id.nav_post_new_ad) {
             startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
 
         } else if (id == R.id.nav_log_out) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
+        } else if (id == R.id.nav_settings) {
+            startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+
+        } else if (id == R.id.nav_hidden_ad) {
+            startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

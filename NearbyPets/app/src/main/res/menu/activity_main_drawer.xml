@@ -9,28 +9,27 @@
         <item
             android:id="@+id/nav_my_posted_ads"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/nav_opt_my_posted_ads" />
+            android:title="@string/nav_opt_my_saved_ads" />
         <item
             android:id="@+id/nav_my_saved_ads"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/nav_opt_my_saved_ads" />
+            android:title="@string/nav_opt_my_posted_ads" />
+        <item
+            android:id="@+id/nav_post_new_ad"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/nav_opt_post_new_ad" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Setting" />
+
+        <item
+            android:id="@+id/nav_hidden_ad"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Hidden Ads" />
+        <item
+            android:id="@+id/nav_log_out"
+            android:icon="@drawable/ic_action_io"
+            android:title="@string/nav_opt_logout" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_view_categories"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/nav_opt_view_categories" />
-            <item
-                android:id="@+id/nav_post_new_ad"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/nav_opt_post_new_ad" />
-            <item
-                android:id="@+id/nav_log_out"
-                android:icon="@drawable/ic_action_io"
-                android:title="@string/nav_opt_logout" />
-        </menu>
-    </item>
-
 </menu>
