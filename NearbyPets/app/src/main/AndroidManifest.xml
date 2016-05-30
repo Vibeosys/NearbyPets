@@ -22,7 +22,7 @@
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".activities.ProductDescActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.ProductListActivity" />
         <activity
             android:name=".activities.CategoryListActivity"
             android:parentActivityName=".MainActivity" />
@@ -41,7 +41,8 @@
         <activity
             android:name=".activities.PostMyAdActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".activities.ForgotPasswordActivity"
+        <activity
+            android:name=".activities.ForgotPasswordActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:windowSoftInputMode="stateVisible|adjustPan"></activity>
     </application>

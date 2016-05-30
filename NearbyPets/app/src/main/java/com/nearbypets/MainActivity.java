@@ -10,15 +10,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
 import com.nearbypets.activities.ProductDescActivity;
 import com.nearbypets.activities.ProductListActivity;
+import com.nearbypets.adapters.CategoryAdapter;
+import com.nearbypets.data.CategoryDTO;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private ListView mCategoryList;
+    private CategoryAdapter mCategoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +35,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mCategoryList = (ListView) findViewById(R.id.listCateogry);
 
+        ArrayList<CategoryDTO> categories = new ArrayList<>();
+        categories.add(new CategoryDTO("Category", 23, "Category.jpg"));
+        categories.add(new CategoryDTO("Category", 18, "Category.jpg"));
+        categories.add(new CategoryDTO("Category", 9, "Category.jpg"));
+        categories.add(new CategoryDTO("Category", 276, "Category.jpg"));
+        categories.add(new CategoryDTO("Category", 276, "Category.jpg"));
+        categories.add(new CategoryDTO("Category", 276, "Category.jpg"));
+        mCategoryAdapter = new CategoryAdapter(getApplicationContext(), categories);
+        mCategoryList.setAdapter(mCategoryAdapter);
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +63,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        mCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+            }
+        });
     }
 
     @Override
@@ -71,7 +97,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.search) {
+            return true;
+        }
+        if (id == R.id.new_ad) {
+            startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
             return true;
         }
 
@@ -87,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_my_detail) {
             // Handle the camera action
         } else if (id == R.id.nav_my_posted_ads) {
-            startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));
+            /*startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));*/
 
         } else if (id == R.id.nav_my_saved_ads) {
             startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
