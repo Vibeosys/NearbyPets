@@ -21,15 +21,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal">
-            <TextView
+            <com.nearbypets.views.AbelRegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/str_nearby"
                 android:textColor="@android:color/white"
+                android:textSize="52sp"
                 android:id="@+id/textView2"
                 android:layout_gravity="center"/>
-            <TextView
+            <com.nearbypets.views.AbelRegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -37,8 +38,10 @@
                 android:textColor="@android:color/white"
                 android:id="@+id/textView3"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="-16dp"
+                android:textSize="52sp"
                 android:layout_gravity="center"/>
-            <TextView
+            <com.nearbypets.views.MyriadProRegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -47,6 +50,7 @@
                 android:padding="8dp"
                 android:textColor="@android:color/white"
                 android:id="@+id/textView4"
+                android:textSize="14sp"
                 android:background="@drawable/custom_white_border"
                 android:layout_gravity="center"/>
         </LinearLayout>
@@ -83,6 +87,7 @@
                         android:hint="@string/str_first_name_hint"
                         android:textColorHint="@android:color/white"
                         android:inputType="textEmailAddress"
+                        android:textSize="16sp"
                         android:paddingStart="5dp"
                         android:singleLine="true" />
 
@@ -109,7 +114,7 @@
                     android:textColorHint="@android:color/white">
 
                     <EditText
-                        android:id="@+id/lastNameIdEditText"
+                        android:id="@+id/lastNameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -117,6 +122,7 @@
                         android:hint="@string/str_last_name_hint"
                         android:inputType="textEmailAddress"
                         android:paddingStart="5dp"
+                        android:textSize="16sp"
                         android:singleLine="true"
                         android:textColor="@android:color/white" />
 
@@ -143,13 +149,14 @@
                     android:textColorHint="@android:color/white">
 
                     <EditText
-                        android:id="@+id/phoneEditText"
+                        android:id="@+id/phoneNoEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:drawablePadding="10dp"
                         android:hint="@string/str_phone_hint"
                         android:inputType="textEmailAddress"
+                        android:textSize="16sp"
                         android:paddingStart="5dp"
                         android:singleLine="true"
                         android:textColor="@android:color/white" />
@@ -184,6 +191,7 @@
                         android:hint="@string/str_email_hint"
                         android:inputType="textEmailAddress"
                         android:paddingStart="5dp"
+                        android:textSize="16sp"
                         android:singleLine="true"
                         android:textColor="@android:color/white" />
 
@@ -218,6 +226,7 @@
                         android:hint="@string/str_password_hint"
                         android:inputType="textEmailAddress"
                         android:paddingStart="5dp"
+                        android:textSize="16sp"
                         android:singleLine="true"
                         android:textColor="@android:color/white" />
 
@@ -243,6 +252,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_weight="1"
+                    android:textSize="16sp"
                     android:background="@drawable/custom_white_border"
                     android:text="@string/str_register_hint"
                     android:textColor="@android:color/white"
