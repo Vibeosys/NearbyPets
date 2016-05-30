@@ -2,9 +2,6 @@ package com.nearbypets;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +13,7 @@ import android.view.MenuItem;
 
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
+import com.nearbypets.activities.PostMyAdActivity;
 import com.nearbypets.activities.ProductDescActivity;
 import com.nearbypets.activities.ProductListActivity;
 
@@ -92,12 +90,14 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));
 
         } else if (id == R.id.nav_my_saved_ads) {
-            startActivity(new Intent(getApplicationContext(), CategoryListActivity.class));
-
-        } else if (id == R.id.nav_view_categories) {
             startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
 
+
+        } else if (id == R.id.nav_view_categories) {
+            startActivity(new Intent(getApplicationContext(), CategoryListActivity.class));
+
         } else if (id == R.id.nav_post_new_ad) {
+            startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
 
         } else if (id == R.id.nav_log_out) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
