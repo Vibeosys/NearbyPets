@@ -45,14 +45,14 @@ public class ProductListActivity extends AppCompatActivity {
         mProductAdapter.addItem(new ProductDataDTO("Product Title3", "image.jpg", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title4", "image.jpg", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 13/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title4", "image.jpg", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title5", "image.jpg", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title6", "image.jpg", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title7", "image.jpg", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
 

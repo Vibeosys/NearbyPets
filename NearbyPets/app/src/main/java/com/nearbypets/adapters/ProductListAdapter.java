@@ -106,6 +106,10 @@ public class ProductListAdapter extends BaseAdapter {
                 holder.txtDistance.setText(product.getDistance());
                 holder.txtProductPrice.setText(mContext.getResources().
                         getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
+                if (product.isFavouriteFlag())
+                    holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
+                else
+                    holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
                 break;
             case TYPE_SEPARATOR:
                 holder.txtDate.setText(product.getDate());
