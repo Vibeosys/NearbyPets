@@ -266,6 +266,8 @@
                         android:layout_marginBottom="16dp"
                         android:layout_weight="1"
                         android:text="SOLD"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/button_custom"
                         android:textColor="@android:color/white" />
                     <Button
 
@@ -273,7 +275,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:layout_marginStart="4dp"
                         android:layout_marginBottom="16dp"
+                        android:background="@color/colorTextGreen"
                         android:text="DISABLE"
                         android:textColor="@android:color/white" />
 
