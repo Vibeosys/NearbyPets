@@ -139,7 +139,7 @@
                 android:weightSum="2">
 
                 <com.nearbypets.views.MyriadProRegularTextView
-                    android:id="@+id/sign_in_user_btn"
+                    android:id="@+id/forgot_password_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"

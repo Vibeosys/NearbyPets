@@ -62,5 +62,7 @@
     <string name="str_euro_price_symbol">\u20ac</string>
     <string name="str_heart_symbol">\u2764</string>
 
-    <!--Post My Ad-->
+    <!--Forgot Password-->
+    <string name="str_forgot_pwd_hint">ENTER YOUR EMAIL</string>
+    <string name="str_resend_btn">RESEND MY PASSWORD</string>
 </resources>
