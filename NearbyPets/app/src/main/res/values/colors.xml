@@ -7,4 +7,5 @@
     <color name="accentText">#ff5252</color>
     <color name="secondaryText">#7e848c</color>
     <color name="loginTransparnt">#89000000</color>
+    <color name="colorTextGreen">#03a021</color>
 </resources>

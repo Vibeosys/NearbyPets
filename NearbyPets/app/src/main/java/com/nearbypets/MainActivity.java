@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.ProductDescActivity;
+import com.nearbypets.activities.ProductListActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), CategoryListActivity.class));
 
         } else if (id == R.id.nav_view_categories) {
+            startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
 
         } else if (id == R.id.nav_post_new_ad) {
 
