@@ -1,12 +1,14 @@
 package com.nearbypets.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nearbypets.R;
@@ -57,6 +59,7 @@ public class CategoryAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.categoryName = (RobotoMediumTextView) row.findViewById(R.id.txtCategory);
             viewHolder.categoryCount = (RobotoRegularTextView) row.findViewById(R.id.txtProductCount);
+            viewHolder.imageBackImg = (RelativeLayout) row.findViewById(R.id.imageBackImg);
             row.setTag(viewHolder);
 
         } else viewHolder = (ViewHolder) row.getTag();
@@ -64,11 +67,13 @@ public class CategoryAdapter extends BaseAdapter {
         //Log.d(TAG, friend.toString());
         viewHolder.categoryName.setText(category.getCategoryName());
         viewHolder.categoryCount.setText(category.getProductCount() + " products");
+        viewHolder.imageBackImg.setBackground(category.getDrawable());
         return row;
     }
 
     private class ViewHolder {
         RobotoMediumTextView categoryName;
         RobotoRegularTextView categoryCount;
+        RelativeLayout imageBackImg;
     }
 }

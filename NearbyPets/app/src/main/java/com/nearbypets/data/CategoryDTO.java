@@ -1,5 +1,7 @@
 package com.nearbypets.data;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by akshay on 28-05-2016.
  */
@@ -8,11 +10,13 @@ public class CategoryDTO {
     private String mCategoryName;
     private int mProductCount;
     private String mCategoryImage;
+    private Drawable mDrawable;
 
-    public CategoryDTO(String categoryName, int productCount, String categoryImage) {
+    public CategoryDTO(String categoryName, int productCount, String categoryImage, Drawable drawable) {
         this.mCategoryName = categoryName;
         this.mProductCount = productCount;
         this.mCategoryImage = categoryImage;
+        this.mDrawable = drawable;
     }
 
     public String getCategoryName() {
@@ -37,5 +41,13 @@ public class CategoryDTO {
 
     public void setCategoryImage(String mCategoryImage) {
         this.mCategoryImage = mCategoryImage;
+    }
+
+    public Drawable getDrawable() {
+        return mDrawable;
+    }
+
+    public void setDrawable(Drawable mDrawable) {
+        this.mDrawable = mDrawable;
     }
 }

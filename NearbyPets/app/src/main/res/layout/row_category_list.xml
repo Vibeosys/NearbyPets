@@ -12,17 +12,17 @@
         card_view:cardCornerRadius="4dp">
 
         <RelativeLayout
+            android:id="@+id/imageBackImg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:background="@drawable/default_pet_image">
+            android:background="@drawable/reptiles">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+
+                android:background="@color/loginTransparnt"
                 android:gravity="bottom|start"
                 android:orientation="vertical">
 
@@ -30,6 +30,8 @@
                     android:id="@+id/txtCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:text="Category"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
@@ -38,6 +40,9 @@
                     android:id="@+id/txtProductCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:text="18 Products"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
