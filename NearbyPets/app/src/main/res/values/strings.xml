@@ -78,4 +78,6 @@
     <string name="str_resend_btn">RESEND MY PASSWORD</string>
     <!--post my addes-->
     <string name="str_favourite">Favourite</string>
+    <!--facebook app id-->
+    <string name="facebook_app_id">1715459422041023</string>
 </resources>
