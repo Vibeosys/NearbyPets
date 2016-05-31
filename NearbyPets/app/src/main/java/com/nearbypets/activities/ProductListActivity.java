@@ -27,10 +27,11 @@ public class ProductListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
+        setTitle(getResources().getString(R.string.activity_product_list));
         mListViewProduct = (ListView) findViewById(R.id.productList);
         spnSortBy = (Spinner) findViewById(R.id.spnSortBy);
 
-        String[] category = {"Sort By", "Date", "Category", "Distance"};
+        String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
         mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),
                 R.layout.dropdown_list_item, category);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
@@ -40,24 +41,30 @@ public class ProductListActivity extends AppCompatActivity {
         mProductAdapter = new ProductListAdapter(this);
 
 
-        mProductAdapter.addItem(new ProductDataDTO("Product Title1", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title2", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
 
-        mProductAdapter.addItem(new ProductDataDTO("Product Title3", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title3", "boxdogs", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxbirds", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 13/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "image.jpg", "Lorem ipsum dolor sit amet," +
+
+        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+
+        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxcats", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
 
-        mProductAdapter.addItem(new ProductDataDTO("Product Title5", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title5", "boxdogs", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title6", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title6", "boxbirds", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title7", "image.jpg", "Lorem ipsum dolor sit amet," +
+        mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
+        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
 
         mListViewProduct.setAdapter(mProductAdapter);
 

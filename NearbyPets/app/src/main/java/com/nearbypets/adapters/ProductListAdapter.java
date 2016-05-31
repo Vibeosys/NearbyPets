@@ -1,6 +1,7 @@
 package com.nearbypets.adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,7 @@ public class ProductListAdapter extends BaseAdapter {
             switch (rowType) {
                 case TYPE_ITEM:
                     convertView = mInflater.inflate(R.layout.row_product_list, null);
+                    holder.imgProductImage = (ImageView) convertView.findViewById(R.id.productImage);
                     holder.txtProductTitle = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductTitle);
                     holder.txtProductPrice = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductPrice);
                     holder.txtDesc = (RobotoRegularTextView) convertView.findViewById(R.id.txtDesc);
@@ -91,7 +93,7 @@ public class ProductListAdapter extends BaseAdapter {
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.row_product_list_header, null);
-                    holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
+                    //holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
                     break;
             }
             convertView.setTag(holder);
@@ -104,6 +106,8 @@ public class ProductListAdapter extends BaseAdapter {
                 holder.txtProductTitle.setText(product.getProductName());
                 holder.txtDesc.setText(product.getProductDesc());
                 holder.txtDistance.setText(product.getDistance());
+                int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
+                holder.imgProductImage.setImageResource(imgResId);
                 holder.txtProductPrice.setText(mContext.getResources().
                         getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
                 if (product.isFavouriteFlag())
@@ -112,7 +116,7 @@ public class ProductListAdapter extends BaseAdapter {
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
                 break;
             case TYPE_SEPARATOR:
-                holder.txtDate.setText(product.getDate());
+                //holder.txtDate.setText(product.getDate());
                 break;
 
         }
@@ -124,8 +128,8 @@ public class ProductListAdapter extends BaseAdapter {
         RobotoMediumTextView txtProductPrice;
         RobotoRegularTextView txtDesc;
         RobotoItalicTextView txtDistance;
-        ImageView imgFavourite;
-        RobotoMediumTextView txtDate;
+        ImageView imgFavourite, imgProductImage;
+        //RobotoMediumTextView txtDate;
 
     }
 }

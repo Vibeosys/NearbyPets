@@ -6,8 +6,19 @@
 
     <string name="action_settings">Settings</string>
 
+    <!-- Activity Name-->
+    <string name="activity_category">Categories</string>
+    <string name="activity_forgot_pass">Forgot Password</string>
+    <string name="activity_login">Login</string>
+    <string name="activity_post_ad">Post Ad</string>
+    <string name="activity_product_desc">Product Description</string>
+    <string name="activity_product_list">Product List</string>
+    <string name="activity_register">Register</string>
+    <string name="activity_setting">Settings</string>
+    <string name="activity_profile">User Profile</string>
+    <string name="activity_main">Dashboard</string>
     <!-- Nav drawer -->
-    <string name="nav_opt_my_details">My Details</string>
+    <string name="nav_opt_my_details">My Profile</string>
     <string name="nav_opt_my_posted_ads">My Posted Ads</string>
     <string name="nav_opt_my_saved_ads">My Saved Ads</string>
 

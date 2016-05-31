@@ -67,7 +67,8 @@ public class CategoryAdapter extends BaseAdapter {
         //Log.d(TAG, friend.toString());
         viewHolder.categoryName.setText(category.getCategoryName());
         viewHolder.categoryCount.setText(category.getProductCount() + " products");
-        viewHolder.imageBackImg.setBackground(category.getDrawable());
+        int imgResId = mContext.getResources().getIdentifier(category.getCategoryImage(), "drawable", "com.nearbypets");
+        viewHolder.imageBackImg.setBackgroundResource(imgResId);
         return row;
     }
 

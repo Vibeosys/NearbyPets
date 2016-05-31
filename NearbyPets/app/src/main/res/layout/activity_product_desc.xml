@@ -11,11 +11,16 @@
 
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/default_pet_image" />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
+            android:layout_height="260dp"></android.support.v4.view.ViewPager>
+
+        <!-- <ImageView
+             android:layout_width="match_parent"
+             android:layout_height="260dp"
+             android:scaleType="fitXY"
+             android:src="@drawable/default_pet_image" />-->
 
         <ScrollView
             android:layout_width="match_parent"

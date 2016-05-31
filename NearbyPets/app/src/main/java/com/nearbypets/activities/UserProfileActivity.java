@@ -11,5 +11,6 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        setTitle(getResources().getString(R.string.activity_profile));
     }
 }

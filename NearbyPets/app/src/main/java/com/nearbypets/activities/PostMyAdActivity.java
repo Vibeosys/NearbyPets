@@ -20,6 +20,7 @@ public class PostMyAdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_my_add);
+        setTitle(getResources().getString(R.string.activity_post_ad));
         spnCategory = (Spinner) findViewById(R.id.spnCategory);
         spnType = (Spinner) findViewById(R.id.spnType);
 

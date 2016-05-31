@@ -40,12 +40,12 @@ public class MainActivity extends AppCompatActivity
         mCategoryList = (ListView) findViewById(R.id.listCateogry);
 
         ArrayList<CategoryDTO> categories = new ArrayList<>();
-        categories.add(new CategoryDTO("Category", 23, "Category.jpg", getResources().getDrawable(R.drawable.birds)));
-        categories.add(new CategoryDTO("Category", 18, "Category.jpg", getResources().getDrawable(R.drawable.food)));
-        categories.add(new CategoryDTO("Category", 9, "Category.jpg", getResources().getDrawable(R.drawable.reptiles)));
-        categories.add(new CategoryDTO("Category", 276, "Category.jpg", getResources().getDrawable(R.drawable.cats)));
-        categories.add(new CategoryDTO("Category", 276, "Category.jpg", getResources().getDrawable(R.drawable.birds)));
-        categories.add(new CategoryDTO("Category", 276, "Category.jpg", getResources().getDrawable(R.drawable.food)));
+        categories.add(new CategoryDTO("Birds", 23, "birds", getResources().getDrawable(R.drawable.birds)));
+        categories.add(new CategoryDTO("Food", 18, "food", getResources().getDrawable(R.drawable.food)));
+        categories.add(new CategoryDTO("Reptiles", 9, "reptiles", getResources().getDrawable(R.drawable.reptiles)));
+        categories.add(new CategoryDTO("Cats", 276, "cats", getResources().getDrawable(R.drawable.cats)));
+        categories.add(new CategoryDTO("Birds", 276, "birds", getResources().getDrawable(R.drawable.birds)));
+        categories.add(new CategoryDTO("Food", 276, "food", getResources().getDrawable(R.drawable.food)));
         mCategoryAdapter = new CategoryAdapter(getApplicationContext(), categories);
         mCategoryList.setAdapter(mCategoryAdapter);
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
