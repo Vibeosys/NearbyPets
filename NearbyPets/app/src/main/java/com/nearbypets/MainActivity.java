@@ -1,6 +1,7 @@
 package com.nearbypets;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,13 +23,17 @@ import com.nearbypets.activities.ProductListActivity;
 import com.nearbypets.activities.SettingActivity;
 import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
+import com.nearbypets.adapters.DashboardProductListAdapter;
+import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.data.CategoryDTO;
+import com.nearbypets.data.ProductDataDTO;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private ListView mCategoryList;
+    private ListView mListViewProduct;
+    private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
 
     @Override
@@ -37,17 +42,41 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mCategoryList = (ListView) findViewById(R.id.listCateogry);
+        mListViewProduct = (ListView) findViewById(R.id.listCateogry);
 
-        ArrayList<CategoryDTO> categories = new ArrayList<>();
-        categories.add(new CategoryDTO("Birds", 23, "birds", getResources().getDrawable(R.drawable.birds)));
-        categories.add(new CategoryDTO("Food", 18, "food", getResources().getDrawable(R.drawable.food)));
-        categories.add(new CategoryDTO("Reptiles", 9, "reptiles", getResources().getDrawable(R.drawable.reptiles)));
-        categories.add(new CategoryDTO("Cats", 276, "cats", getResources().getDrawable(R.drawable.cats)));
-        categories.add(new CategoryDTO("Birds", 276, "birds", getResources().getDrawable(R.drawable.birds)));
-        categories.add(new CategoryDTO("Food", 276, "food", getResources().getDrawable(R.drawable.food)));
-        mCategoryAdapter = new CategoryAdapter(getApplicationContext(), categories);
-        mCategoryList.setAdapter(mCategoryAdapter);
+        mProductAdapter = new DashboardProductListAdapter(this);
+
+        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+
+        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title3", "boxdogs", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxbirds", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 13/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxcats", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
+
+        mProductAdapter.addSectionAdItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+
+        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title5", "boxdogs", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title6", "boxbirds", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
+        mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
+        mProductAdapter.addSectionAdItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+
+        mListViewProduct.setAdapter(mProductAdapter);
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,10 +95,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+                startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));
             }
         });
     }
@@ -120,15 +149,19 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (id == R.id.nav_my_posted_ads) {
             startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+           /* Uri gmmIntentUri = Uri.parse("geo:0,0?q=1600 Amphitheatre Parkway, Mountain+View, California");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            startActivity(mapIntent);*/
 
         } else if (id == R.id.nav_my_saved_ads) {
             startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
 
 
-        }/* else if (id == R.id.nav_view_categories) {
+        } else if (id == R.id.nav_view_categories) {
             startActivity(new Intent(getApplicationContext(), CategoryListActivity.class));
 
-        }*/ else if (id == R.id.nav_post_new_ad) {
+        } else if (id == R.id.nav_post_new_ad) {
             startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
 
         } else if (id == R.id.nav_log_out) {

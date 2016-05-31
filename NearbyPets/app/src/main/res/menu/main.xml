@@ -9,7 +9,7 @@
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/new_ad"
-        android:icon="@drawable/ic_add_white"
+        android:icon="@drawable/ic_plus_red_back"
         android:title="@string/search_category"
         app:showAsAction="always|withText" />
 </menu>

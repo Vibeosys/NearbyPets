@@ -11,11 +11,39 @@
 
         android:orientation="vertical">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="260dp"></android.support.v4.view.ViewPager>
+            android:layout_height="wrap_content">
 
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="wrap_content"
+                android:layout_height="260dp" />
+
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <RadioButton
+                    android:id="@+id/radioButton3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RadioGroup>
+        </FrameLayout>
         <!-- <ImageView
              android:layout_width="match_parent"
              android:layout_height="260dp"
@@ -30,6 +58,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:src="@drawable/fbtestad" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -127,9 +160,10 @@
                     <com.nearbypets.views.RobotoRegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:onClick="callToDialer"
                         android:padding="2dp"
                         android:text="123 456 78"
-                        android:textColor="@color/secondaryText" />
+                        android:textColor="@color/hyperLinkColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -242,6 +276,15 @@
                         android:textColor="@color/secondaryText" />
                 </LinearLayout>
 
+                <com.nearbypets.views.RobotoItalicTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:onClick="callToMap"
+                    android:padding="2dp"
+                    android:text="Show On Map"
+                    android:textColor="@color/hyperLinkColor" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -255,7 +298,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/button_custom"
                     android:text="@string/btn_add_to_favorites"
                     android:textColor="@android:color/white" />
 
@@ -291,6 +333,11 @@
                         android:textColor="@android:color/white" />
 
                 </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:src="@drawable/fbtestad" />
             </LinearLayout>
 
 

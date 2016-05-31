@@ -1,13 +1,11 @@
 package com.nearbypets.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
@@ -21,18 +19,19 @@ import java.util.TreeSet;
 /**
  * Created by akshay on 30-05-2016.
  */
-public class ProductListAdapter extends BaseAdapter {
+public class DashboardProductListAdapter extends BaseAdapter {
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
+    private static final int TYPE_Ad = 2;
 
     private Context mContext;
     private ArrayList<ProductDataDTO> mProductList = new ArrayList<ProductDataDTO>();
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
-
+    private TreeSet<Integer> sectionAd = new TreeSet<Integer>();
     private LayoutInflater mInflater;
 
-    public ProductListAdapter(Context context) {
+    public DashboardProductListAdapter(Context context) {
         this.mContext = context;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,14 +48,28 @@ public class ProductListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addSectionAdItem(final ProductDataDTO item) {
+        mProductList.add(item);
+        sectionAd.add(mProductList.size() - 1);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return sectionHeader.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM;
+        int id;
+        if (sectionHeader.contains(position)) {
+            id = TYPE_SEPARATOR;
+        } else if (sectionAd.contains(position)) {
+            id = TYPE_Ad;
+        } else {
+            id = TYPE_ITEM;
+        }
+        return id;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -83,18 +96,22 @@ public class ProductListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             switch (rowType) {
                 case TYPE_ITEM:
-                    convertView = mInflater.inflate(R.layout.row_product_list, null);
+                    convertView = mInflater.inflate(R.layout.row_dashboard_product_list, null);
                     holder.imgProductImage = (ImageView) convertView.findViewById(R.id.productImage);
                     holder.txtProductTitle = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductTitle);
                     holder.txtProductPrice = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductPrice);
                     holder.txtDesc = (RobotoRegularTextView) convertView.findViewById(R.id.txtDesc);
                     holder.txtDistance = (RobotoItalicTextView) convertView.findViewById(R.id.txtDistance);
                     holder.imgFavourite = (ImageView) convertView.findViewById(R.id.imgFavourite);
-                    holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
+
                     break;
                 case TYPE_SEPARATOR:
+                    convertView = mInflater.inflate(R.layout.row_dashboard_product_list_header, null);
+                    holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
+                    break;
+                case TYPE_Ad:
                     convertView = mInflater.inflate(R.layout.row_product_list_header, null);
-                    //
+                    //holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
                     break;
             }
             convertView.setTag(holder);
@@ -111,14 +128,17 @@ public class ProductListAdapter extends BaseAdapter {
                 holder.imgProductImage.setImageResource(imgResId);
                 holder.txtProductPrice.setText(mContext.getResources().
                         getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
-                holder.txtDate.setText(product.getDate());
+
                 if (product.isFavouriteFlag())
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
                 else
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
                 break;
             case TYPE_SEPARATOR:
-
+                holder.txtDate.setText(product.getDate());
+                break;
+            case TYPE_Ad:
+                //holder.txtDate.setText(product.getDate());
                 break;
 
         }

@@ -42,29 +42,29 @@ public class ProductListActivity extends AppCompatActivity {
 
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title3", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "13/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 13/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "13/05/2016"));
 
         mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "13/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title5", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "12/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title6", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "12/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "12/05/2016"));
         mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
 
         mListViewProduct.setAdapter(mProductAdapter);
 

@@ -10,8 +10,13 @@ import com.nearbypets.fragments.SwipeFragment;
  * Created by akshay on 31-05-2016.
  */
 public class ImageFragmentPagerAdapter extends FragmentPagerAdapter {
-    public ImageFragmentPagerAdapter(FragmentManager fm) {
+    public static String[] IMAGE_NAME;//= {"sliderbird", "sliderreptile", "sliderdogs"};
+
+
+
+    public ImageFragmentPagerAdapter(FragmentManager fm, String[] name) {
         super(fm);
+        this.IMAGE_NAME = name;
     }
 
     @Override
@@ -22,6 +27,8 @@ public class ImageFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         SwipeFragment fragment = new SwipeFragment();
-        return SwipeFragment.newInstance(position);
+        return SwipeFragment.newInstance(position, IMAGE_NAME);
     }
+
+
 }

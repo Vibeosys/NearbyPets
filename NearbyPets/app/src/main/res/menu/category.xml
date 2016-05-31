@@ -7,4 +7,10 @@
         android:title="@string/search_category"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/new_ad"
+        android:icon="@drawable/ic_plus_red_back"
+        android:title="@string/activity_post_ad"
+        app:showAsAction="always|withText" />
 </menu>

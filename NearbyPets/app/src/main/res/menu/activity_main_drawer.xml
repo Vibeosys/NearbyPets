@@ -15,6 +15,10 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/nav_opt_my_posted_ads" />
         <item
+            android:id="@+id/nav_view_categories"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/nav_opt_view_categories" />
+        <item
             android:id="@+id/nav_post_new_ad"
             android:icon="@drawable/ic_menu_send"
             android:title="@string/nav_opt_post_new_ad" />
