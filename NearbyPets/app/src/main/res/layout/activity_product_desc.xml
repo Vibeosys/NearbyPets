@@ -250,6 +250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
+                    android:background="@drawable/button_custom"
                     android:text="@string/btn_add_to_favorites"
                     android:textColor="@android:color/white" />
 

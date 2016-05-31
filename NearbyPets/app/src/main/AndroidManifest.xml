@@ -45,7 +45,9 @@
             android:name=".activities.ForgotPasswordActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity android:name=".activities.UserProfileActivity"></activity>
+        <activity
+            android:name=".activities.UserProfileActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".activities.SettingActivity"
             android:parentActivityName=".MainActivity"></activity>
