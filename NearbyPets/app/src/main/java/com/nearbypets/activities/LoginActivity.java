@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,22 +32,22 @@ import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.views.MyriadProRegularTextView;
 
-public class LoginActivity extends  AppCompatActivity {
-    EditText mEmailId,mPassword;
+public class LoginActivity extends AppCompatActivity {
+    EditText mEmailId, mPassword;
     MyriadProRegularTextView forgot_password;
     MyriadProRegularTextView create_account;
-    Button loginBtn ;
+    Button loginBtn;
     private AccessTokenTracker accessTokenTracker;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
-   private static Context context;
+    private static Context context;
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
 
             AccessToken accessToken = loginResult.getAccessToken();
-            Profile profile =Profile.getCurrentProfile();
+            Profile profile = Profile.getCurrentProfile();
             displayMessage(profile);
 
         }
@@ -61,25 +62,29 @@ public class LoginActivity extends  AppCompatActivity {
 
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Button signIn = (Button) findViewById(R.id.login_user);
         EditText mEmailId = (EditText) findViewById(R.id.user_email_id_editText);
-        EditText mPassword =(EditText) findViewById(R.id.user_password_editText);
-        create_account = (MyriadProRegularTextView)findViewById(R.id.create_account_text);
-        loginBtn =(Button) findViewById(R.id.login_user);
+        EditText mPassword = (EditText) findViewById(R.id.user_password_editText);
+        create_account = (MyriadProRegularTextView) findViewById(R.id.create_account_text);
+        loginBtn = (Button) findViewById(R.id.login_user);
+        mEmailId.setFocusable(false);
+        loginBtn.setFocusable(true);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainScreen = new Intent(getApplicationContext(),MainActivity.class);
+                Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mainScreen);
             }
         });
         context = this.getApplicationContext();
-        forgot_password = (MyriadProRegularTextView)findViewById(R.id.forgot_password_textview);
+        forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -105,14 +110,14 @@ public class LoginActivity extends  AppCompatActivity {
         forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent forgot =new Intent(getApplicationContext(),ForgotPasswordActivity.class);
+                Intent forgot = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
                 startActivity(forgot);
             }
         });
         create_account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent regist = new Intent(getApplicationContext(),RegisterActivity.class);
+                Intent regist = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(regist);
             }
         });
@@ -121,29 +126,29 @@ public class LoginActivity extends  AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode,resultCode,data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void displayMessage(Profile profile) {
-        if(profile !=null)
-        {
-            Toast.makeText(getApplicationContext(),"FB login",Toast.LENGTH_LONG).show();
-            Log.d("FBLOGIN",profile.toString());
+        if (profile != null) {
+            Toast.makeText(getApplicationContext(), "FB login", Toast.LENGTH_LONG).show();
+            Log.d("FBLOGIN", profile.toString());
         }
 
     }
+
     private void LogOutDisplay() {
 
         {
-            Toast.makeText(getApplicationContext(),"FB LOGOUT",Toast.LENGTH_LONG).show();
-            Log.d("FBLOGIN","Logout");
+            Toast.makeText(getApplicationContext(), "FB LOGOUT", Toast.LENGTH_LONG).show();
+            Log.d("FBLOGIN", "Logout");
         }
 
     }
-    public static void LogoutFacebook()
-    {
+
+    public static void LogoutFacebook() {
         LoginManager.getInstance().logOut();
-       Log.d("FBLOGIN","Log out");
+        Log.d("FBLOGIN", "Log out");
         /*Intent logout = new Intent(context, MainActivity.class);
         context.startActivity(logout);*/
     }

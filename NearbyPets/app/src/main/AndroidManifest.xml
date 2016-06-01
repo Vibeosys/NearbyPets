@@ -23,14 +23,15 @@
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".activities.ProductDescActivity"
-            android:parentActivityName=".activities.ProductListActivity" />
+            android:parentActivityName=".activities.ProductListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CategoryListActivity"
             android:parentActivityName=".MainActivity" />
