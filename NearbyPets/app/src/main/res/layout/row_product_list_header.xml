@@ -13,6 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:src="@drawable/fbtestad" />
+
+        <RelativeLayout
+            android:id="@+id/adViewContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <!--<com.nearbypets.views.RobotoMediumTextView
             android:id="@+id/txtDate"
             android:layout_width="wrap_content"

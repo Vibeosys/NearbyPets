@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.views.RobotoItalicTextView;
@@ -111,6 +114,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
                     break;
                 case TYPE_Ad:
                     convertView = mInflater.inflate(R.layout.row_product_list_header, null);
+                    holder.adViewContainer = (RelativeLayout) convertView.findViewById(R.id.adViewContainer);
                     //holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
                     break;
             }
@@ -138,7 +142,9 @@ public class DashboardProductListAdapter extends BaseAdapter {
                 holder.txtDate.setText(product.getDate());
                 break;
             case TYPE_Ad:
-                //holder.txtDate.setText(product.getDate());
+                AdView adView = new AdView(mContext, "1715459422041023_1715460668707565", AdSize.BANNER_320_50);
+                holder.adViewContainer.addView(adView);
+                adView.loadAd();
                 break;
 
         }
@@ -152,6 +158,6 @@ public class DashboardProductListAdapter extends BaseAdapter {
         RobotoItalicTextView txtDistance;
         ImageView imgFavourite, imgProductImage;
         RobotoMediumTextView txtDate;
-
+        RelativeLayout adViewContainer;
     }
 }

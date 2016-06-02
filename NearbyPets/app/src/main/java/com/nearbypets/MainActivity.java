@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
@@ -38,14 +42,17 @@ import com.nearbypets.data.CategoryDTO;
 import com.nearbypets.data.ProductDataDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
     private ArrayAdapter<String> mSortAdapter;
     private Spinner spnSortBy;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +60,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://nearby-pets.appspot.com/test";
+        String url = "https://nearby-pets.appspot.com/login";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -71,7 +79,13 @@ public class MainActivity extends AppCompatActivity
                 //mTextView.setText("That didn't work!");
                 Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
             }
-        });
+        }) {
+            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("name", "Test to parameter");
+                return params;
+            }
+        };
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
@@ -137,6 +151,27 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+        swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
+
+                                        fetchList();
+                                        //logic to refersh list
+                                    }
+                                }
+        );
+    }
+
+    private void fetchList() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -213,5 +248,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+//logic to refersh list
+        fetchList();
     }
 }
