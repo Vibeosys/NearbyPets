@@ -16,7 +16,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
@@ -48,6 +55,25 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://nearby-pets.appspot.com/test";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
 
         String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
         mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),
