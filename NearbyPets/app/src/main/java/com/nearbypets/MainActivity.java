@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
+    private ArrayAdapter<String> mSortAdapter;
+    private Spinner spnSortBy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,13 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
+        spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
 
+        String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
+        mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),
+                R.layout.dropdown_list_item, category);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
 
         mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +

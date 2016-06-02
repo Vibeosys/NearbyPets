@@ -3,6 +3,7 @@ package com.nearbypets.activities;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.nearbypets.R;
@@ -15,6 +16,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getSupportActionBar().hide();
         setTitle(getResources().getString(R.string.activity_register));
         EditText mRegisterFirstName = (EditText) findViewById(R.id.firstNameEditText);
         EditText mRegisterLastName = (EditText) findViewById(R.id.lastNameEditText);

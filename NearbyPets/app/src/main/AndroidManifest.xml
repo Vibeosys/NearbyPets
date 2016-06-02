@@ -22,12 +22,11 @@
         </activity>
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+           android:parentActivityName=".activities.LoginActivity"
+             />
         <activity
             android:name=".activities.ProductDescActivity"
             android:parentActivityName=".activities.ProductListActivity"
@@ -37,7 +36,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.SplashScreen"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +51,6 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.ForgotPasswordActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".activities.UserProfileActivity"
