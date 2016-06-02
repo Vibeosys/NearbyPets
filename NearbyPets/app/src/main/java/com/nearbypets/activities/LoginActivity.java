@@ -33,11 +33,14 @@ import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.views.MyriadProRegularTextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class LoginActivity extends AppCompatActivity {
-    EditText mEmailId, mPassword;
-    MyriadProRegularTextView forgot_password;
-    MyriadProRegularTextView create_account;
-    Button loginBtn;
+    private EditText mEmailId, mPassword;
+    private MyriadProRegularTextView forgot_password;
+    private MyriadProRegularTextView create_account;
+    private Button loginBtn, signIn;
     private AccessTokenTracker accessTokenTracker;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
@@ -78,19 +81,35 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
 
-
-        Button signIn = (Button) findViewById(R.id.login_user);
-        EditText mEmailId = (EditText) findViewById(R.id.user_email_id_editText);
-        EditText mPassword = (EditText) findViewById(R.id.user_password_editText);
+        signIn = (Button) findViewById(R.id.login_user);
+        mEmailId = (EditText) findViewById(R.id.user_email_id_editText);
+        mPassword = (EditText) findViewById(R.id.user_password_editText);
         create_account = (MyriadProRegularTextView) findViewById(R.id.create_account_text);
         loginBtn = (Button) findViewById(R.id.login_user);
-        mEmailId.setFocusable(false);
-        loginBtn.setFocusable(true);
+
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(mainScreen);
+                final String emailStr =  mEmailId.getText().toString().trim();
+                if(!isValidEmail(emailStr))
+                {
+                    mEmailId.requestFocus();
+                    mEmailId.setError("Please provide email Id");
+
+                }
+                else if(mPassword.getText().toString().trim().length()==0)
+                {
+                    mPassword.requestFocus();
+                    mPassword.setError("Please provide password");
+                }
+                else
+                {
+                    Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainScreen);
+                }
+
+
             }
         });
         context = this.getApplicationContext();
@@ -162,5 +181,12 @@ public class LoginActivity extends AppCompatActivity {
         /*Intent logout = new Intent(context, MainActivity.class);
         context.startActivity(logout);*/
     }
+    private boolean isValidEmail(String email) {
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 }

@@ -7,9 +7,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
 import com.nearbypets.R;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,34 +47,42 @@ public class RegisterActivity extends AppCompatActivity {
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String emailString = mRegisterEmailId.getText().toString();
+               /* final String emailString = mRegisterEmailId.getText().toString();
                 if(mRegisterFirstName.getText().toString().trim().length()==0 )
                 {
+                    mRegisterFirstName.requestFocus();
                     mRegisterFirstName.setError("Please Provide First Name");
 
-                }else if(mRegisterFirstName.getText().toString().trim().length()<2 | mRegisterFirstName.getText().toString().trim().length() > 30)
+                } if(mRegisterFirstName.getText().toString().trim().length()!=0 & mRegisterFirstName.getText().toString().trim().length()<2 || mRegisterFirstName.getText().toString().trim().length() > 30)
                 {
+                    mRegisterFirstName.requestFocus();
                     mRegisterFirstName.setError("First Name should have mini 2 and max 30 letters");
 
                 }
                 if(mRegisterLastName.getText().toString().trim().length() ==0)
                 {
+                    mRegisterLastName.requestFocus();
                     mRegisterLastName.setError("Please Provide Last Name");
 
-                }else if(mRegisterLastName.getText().toString().trim().length()<2 | mRegisterLastName.getText().toString().trim().length() > 30)
+                } if( mRegisterLastName.getText().toString().trim().length() !=0 && mRegisterLastName.getText().toString().trim().length()<2 || mRegisterLastName.getText().toString().trim().length() > 30)
                 {
+                    mRegisterLastName.requestFocus();
                     mRegisterLastName.setError("Last Name should have mini 2 and max 30 letters");
 
                 }
                 if(!isValidEmail(emailString))
                 {
+                    mRegisterLastName.requestFocus();
                     mRegisterEmailId.setError("Please Provide Proper email Id");
 
-                }if(mRegisterPassword.getText().toString().trim().length() ==0)
+                }
+                 if(mRegisterPassword.getText().toString().trim().length() ==0)
                 {
+                    mRegisterPassword.requestFocus();
                     mRegisterPassword.setError("Please Provide Password");
-                }else if(mRegisterPassword.getText().toString().trim().length() < 4 |mRegisterPassword.getText().toString().trim().length() > 20)
+                } if( mRegisterPassword.getText().toString().trim().length() !=0 &&  mRegisterPassword.getText().toString().trim().length() < 4 || mRegisterPassword.getText().toString().trim().length() > 20)
                 {
+                    mRegisterPassword.requestFocus();
                     mRegisterPassword.setError("Last Name should have mini 4 and max 20 letters");
                 }
 
@@ -77,6 +91,8 @@ public class RegisterActivity extends AppCompatActivity {
                     mRegisterPhoneNumber.setError("Phone Number must have 10 digit");
 
                 }
+*/
+
 
 
             }
@@ -92,4 +108,5 @@ public class RegisterActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    
 }
