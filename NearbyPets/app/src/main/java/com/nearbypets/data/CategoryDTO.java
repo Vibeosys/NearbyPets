@@ -11,6 +11,9 @@ public class CategoryDTO {
     private int mProductCount;
     private String mCategoryImage;
     private Drawable mDrawable;
+    private boolean mActive;
+    private int mCategoryId;
+
 
     public CategoryDTO(String categoryName, int productCount, String categoryImage, Drawable drawable) {
         this.mCategoryName = categoryName;
@@ -49,5 +52,21 @@ public class CategoryDTO {
 
     public void setDrawable(Drawable mDrawable) {
         this.mDrawable = mDrawable;
+    }
+
+    public boolean isActive() {
+        return mActive;
+    }
+
+    public void setActive(boolean mActive) {
+        this.mActive = mActive;
+    }
+
+    public int getCategoryId() {
+        return mCategoryId;
+    }
+
+    public void setCategoryId(int mCategoryId) {
+        this.mCategoryId = mCategoryId;
     }
 }
