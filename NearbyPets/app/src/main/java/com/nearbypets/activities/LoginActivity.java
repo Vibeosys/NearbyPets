@@ -18,6 +18,10 @@ import android.widget.Toast;
 ;
 
 ;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -33,6 +37,8 @@ import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.views.MyriadProRegularTextView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,20 +97,16 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String emailStr =  mEmailId.getText().toString().trim();
-                if(!isValidEmail(emailStr))
-                {
+                final String emailStr = mEmailId.getText().toString().trim();
+                if (!isValidEmail(emailStr)) {
                     mEmailId.requestFocus();
                     mEmailId.setError("Please provide email Id");
 
-                }
-                else if(mPassword.getText().toString().trim().length()==0)
-                {
+                } else if (mPassword.getText().toString().trim().length() == 0) {
                     mPassword.requestFocus();
                     mPassword.setError("Please provide password");
-                }
-                else
-                {
+                } else {
+                    callToLogin();
                     Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(mainScreen);
                 }
@@ -181,6 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         /*Intent logout = new Intent(context, MainActivity.class);
         context.startActivity(logout);*/
     }
+
     private boolean isValidEmail(String email) {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -188,5 +191,31 @@ public class LoginActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    private void callToLogin() {
+        String url = "https://nearby-pets.appspot.com/loginuser";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("emailid", mEmailId.getText().toString());
+                params.put("password", mPassword.getText().toString());
+                return params;
+            }
+        };
     }
 }
