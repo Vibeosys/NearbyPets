@@ -27,6 +27,7 @@ import com.google.android.gms.common.ConnectionResult;
 
 import com.google.gson.Gson;
 import com.nearbypets.R;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.SessionManager;
 
@@ -64,6 +65,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
+    protected void updateSettings(ArrayList<SettingsDTO> settings) {
+        //Add logic to update settings
+    }
 
     protected void downloadImgFromFbGPlusAndUploadToAws(final String url) {
         URL fbAvatarUrl = null;

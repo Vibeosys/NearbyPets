@@ -1,7 +1,6 @@
 package com.nearbypets;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,7 +8,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -18,18 +16,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.nearbypets.activities.BaseActivity;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
@@ -40,9 +31,10 @@ import com.nearbypets.activities.SettingActivity;
 import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
-import com.nearbypets.adapters.ProductListAdapter;
-import com.nearbypets.data.CategoryDTO;
+import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.DownloadProductDbDataDTO;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.ServerSyncManager;
@@ -50,8 +42,6 @@ import com.nearbypets.utils.ServerSyncManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -84,7 +74,7 @@ public class MainActivity extends BaseActivity
         spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
 
-        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
+       /* mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
@@ -113,8 +103,8 @@ public class MainActivity extends BaseActivity
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
         mProductAdapter.addSectionAdItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
+*/
 
-        mListViewProduct.setAdapter(mProductAdapter);
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +151,21 @@ public class MainActivity extends BaseActivity
     private void fetchList() {
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+    }
 
+    //update the product list adapter
+    private void updateList(ArrayList<ProductDbDTO> data) {
+        mProductAdapter.clear();
+        ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
+        ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
+        for (int i = 0; i < productDataDTOs.size(); i++) {
+            mProductAdapter.addItem(productDataDTOs.get(i));
+            if ((i % 4) == 0) {
+                mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
+            }
+        }
+        mListViewProduct.setAdapter(mProductAdapter);
+        mProductAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -250,8 +254,17 @@ public class MainActivity extends BaseActivity
     public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_LIST:
+                try {
+                    DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
+                    updateSettings(downloadProductDbDataDTO.getSettings());
+                    updateList(downloadProductDbDataDTO.getData());
+                    Log.i(TAG, downloadProductDbDataDTO.toString());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
                 Log.i("TAG", "data" + data);
                 swipeRefreshLayout.setRefreshing(false);
+                break;
         }
     }
 

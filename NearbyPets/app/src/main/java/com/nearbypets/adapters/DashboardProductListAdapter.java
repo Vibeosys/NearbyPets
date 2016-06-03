@@ -8,10 +8,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.utils.CustomVolleyRequestQueue;
 import com.nearbypets.views.RobotoItalicTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -33,6 +36,13 @@ public class DashboardProductListAdapter extends BaseAdapter {
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
     private TreeSet<Integer> sectionAd = new TreeSet<Integer>();
     private LayoutInflater mInflater;
+    private ImageLoader mImageLoader;
+
+    public void clear() {
+        mProductList.clear();
+        sectionHeader.clear();
+        sectionAd.clear();
+    }
 
     public DashboardProductListAdapter(Context context) {
         this.mContext = context;
@@ -100,7 +110,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
             switch (rowType) {
                 case TYPE_ITEM:
                     convertView = mInflater.inflate(R.layout.row_dashboard_product_list, null);
-                    holder.imgProductImage = (ImageView) convertView.findViewById(R.id.productImage);
+                    holder.imgProductImage = (NetworkImageView) convertView.findViewById(R.id.productImage);
                     holder.txtProductTitle = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductTitle);
                     holder.txtProductPrice = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductPrice);
                     holder.txtDesc = (RobotoRegularTextView) convertView.findViewById(R.id.txtDesc);
@@ -132,7 +142,20 @@ public class DashboardProductListAdapter extends BaseAdapter {
                 holder.imgProductImage.setImageResource(imgResId);
                 holder.txtProductPrice.setText(mContext.getResources().
                         getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
-
+                mImageLoader = CustomVolleyRequestQueue.getInstance(mContext)
+                        .getImageLoader();
+                final String url = product.getProductImage();
+                if (url != null && !url.isEmpty()) {
+                    try {
+                        mImageLoader.get(url, ImageLoader.getImageListener(holder.imgProductImage,
+                                R.drawable.default_pet_image, R.drawable.default_pet_image));
+                        holder.imgProductImage.setImageUrl(url, mImageLoader);
+                    } catch (Exception e) {
+                        holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
+                    }
+                } else {
+                    holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
+                }
                 if (product.isFavouriteFlag())
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
                 else
@@ -156,7 +179,8 @@ public class DashboardProductListAdapter extends BaseAdapter {
         RobotoMediumTextView txtProductPrice;
         RobotoRegularTextView txtDesc;
         RobotoItalicTextView txtDistance;
-        ImageView imgFavourite, imgProductImage;
+        ImageView imgFavourite;
+        NetworkImageView imgProductImage;
         RobotoMediumTextView txtDate;
         RelativeLayout adViewContainer;
     }

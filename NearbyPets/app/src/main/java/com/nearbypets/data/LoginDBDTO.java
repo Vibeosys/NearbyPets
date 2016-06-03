@@ -34,7 +34,7 @@ public class LoginDBDTO extends BaseDTO {
         this.password = password;
     }
 
-    public static List<LoginDBDTO> deserializeOrders(List<String> serializedStringList) {
+    public static List<LoginDBDTO> deserialize(List<String> serializedStringList) {
         Gson gson = new Gson();
         ArrayList<LoginDBDTO> objectList = new ArrayList<>();
 
