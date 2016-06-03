@@ -26,8 +26,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.RegisterActivity"
-           android:parentActivityName=".activities.LoginActivity"
-             />
+            android:parentActivityName=".activities.LoginActivity" />
         <activity
             android:name=".activities.ProductDescActivity"
             android:parentActivityName=".activities.ProductListActivity"
@@ -35,9 +34,7 @@
         <activity
             android:name=".activities.CategoryListActivity"
             android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".activities.SplashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <activity android:name=".activities.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

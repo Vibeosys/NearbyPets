@@ -9,7 +9,12 @@ public class TableDataDTO {
     private String operationData;
     private String operation;
 
-    public TableDataDTO(String data, String operation) {
+
+    public TableDataDTO(String operation) {
+        this.operation = operation;
+    }
+
+    public TableDataDTO(String operation, String data) {
         this.operationData = data;
         this.operation = operation;
     }

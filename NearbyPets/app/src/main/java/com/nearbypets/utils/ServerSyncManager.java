@@ -83,7 +83,7 @@ public class ServerSyncManager
         }*/
         String uploadJson = prepareUploadJsonFromData(params);
         String uploadURL = mSessionManager.getUploadUrl();
-        // Log.i(TAG, "##" + uploadJson);
+        Log.i(TAG, "##" + uploadURL);
         uploadJsonToServer(uploadJson, uploadURL, progress, requestTokan);
     }
 

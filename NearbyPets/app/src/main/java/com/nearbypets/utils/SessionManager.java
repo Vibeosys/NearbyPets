@@ -77,6 +77,7 @@ public class SessionManager {
     private static boolean addOrUdateSharedPreferences() {
         SharedPreferences.Editor editor = mProjectSharedPref.edit();
         //editor.putString(PropertyTypeConstants.API_UPLOAD_IMAGE_URL, mPropertyFileReader.getImageUploadUrl());
+        editor.putString(PropertyTypeConstants.API_UPLOAD_URL, mPropertyFileReader.getUploadUrl());
         editor.putString(PropertyTypeConstants.VERSION_NUMBER, String.valueOf(mPropertyFileReader.getVersion()));
         editor.apply();
         return true;
@@ -93,9 +94,11 @@ public class SessionManager {
     public void setUserId(int userId) {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_ID, userId);
     }
+
     public String getUploadUrl() {
         return mProjectSharedPref.getString(PropertyTypeConstants.API_UPLOAD_URL, null);
     }
+
     public String getUserName() {
         return mProjectSharedPref.getString(PropertyTypeConstants.USER_NAME, null);
     }

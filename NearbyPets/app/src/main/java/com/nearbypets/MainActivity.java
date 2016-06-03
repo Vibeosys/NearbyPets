@@ -3,6 +3,7 @@ package com.nearbypets;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
+import com.nearbypets.activities.BaseActivity;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
@@ -40,19 +43,28 @@ import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.data.CategoryDTO;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.ServerSyncManager;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        SwipeRefreshLayout.OnRefreshListener, ServerSyncManager.OnStringResultReceived,
+        ServerSyncManager.OnStringErrorReceived {
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
     private ArrayAdapter<String> mSortAdapter;
     private Spinner spnSortBy;
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    private final int REQ_TOKEN_LIST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,32 +75,8 @@ public class MainActivity extends AppCompatActivity
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
-        RequestQueue queue = Volley.newRequestQueue(this);
-        /*String url = "https://nearby-pets.appspot.com/login";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-            }
-        }) {
-            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("name", "Test to parameter");
-                return params;
-            }
-        };*/
-// Add the request to the RequestQueue.
-       /* queue.add(stringRequest);*/
-
+        mServerSyncManager.setOnStringErrorReceived(this);
+        mServerSyncManager.setOnStringResultReceived(this);
         String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
         mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),
                 R.layout.dropdown_list_item, category);
@@ -171,7 +159,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void fetchList() {
-        swipeRefreshLayout.setRefreshing(false);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+
     }
 
     @Override
@@ -255,4 +245,24 @@ public class MainActivity extends AppCompatActivity
 //logic to refersh list
         fetchList();
     }
+
+    @Override
+    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
+        switch (requestTokan) {
+            case REQ_TOKEN_LIST:
+                Log.i("TAG", "data" + data);
+                swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
+        switch (requestTokan) {
+            case REQ_TOKEN_LIST:
+                Log.i("TAG", "Error " + error.toString());
+                swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+
 }

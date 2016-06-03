@@ -41,9 +41,13 @@ public class PropertyFileReader {
     protected String getEndPointUri() {
         return mProperties.getProperty(PropertyTypeConstants.API_ENDPOINT_URI);
     }
+
     public float getVersion() {
         String versionNumber = mProperties.getProperty(PropertyTypeConstants.VERSION_NUMBER);
         return Float.valueOf(versionNumber);
     }
 
+    public String getUploadUrl() {
+        return getEndPointUri() + mProperties.getProperty(PropertyTypeConstants.API_UPLOAD_URL);
+    }
 }
