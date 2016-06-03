@@ -74,6 +74,7 @@
                 android:textColor="@color/tirnaryText" />
 
             <EditText
+                android:id="@+id/pet_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -87,6 +88,7 @@
                 android:textColor="@color/tirnaryText" />
 
             <EditText
+                android:id="@+id/pet_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -157,12 +159,13 @@
                             android:textSize="20sp" />
 
                         <EditText
+                            android:id="@+id/pet_price"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="3dp"
                             android:layout_marginTop="3dp"
                             android:hint="Price"
-                            android:inputType="numberDecimal" />
+                            android:inputType="numberDecimal|numberSigned" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -188,7 +191,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/sign_in_user_btn"
+                android:id="@+id/postMyAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

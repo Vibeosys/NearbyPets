@@ -124,6 +124,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         signIn.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
 */
         loginBtn.setOnClickListener(this);
+        mServerSyncManager.setOnStringErrorReceived(this);
+        mServerSyncManager.setOnStringResultReceived(this);
         forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +193,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_LOGIN: //error on Login
+                Log.d("TAG","##"+error.toString());
                 break;
 
         }
@@ -201,6 +204,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_LOGIN: //login authentication
+                Log.d("TAG","##"+data.toString());
                 break;
         }
     }
@@ -216,6 +220,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                 View focusView = null;
                 String emailStr = mEmailId.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
+                mEmailId.setError(null);
+                mPassword.setError(null);
                 if (!isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
                     focusView = mEmailId;
                     mEmailId.setError("Please provide email Id");
@@ -226,7 +232,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                     mPassword.setError("Please provide password");
                     cancelFlag = true;
                 }
-                if (!cancelFlag) {
+                if (cancelFlag) {
                     focusView.requestFocus();
                 } else {
                     callToLogin();

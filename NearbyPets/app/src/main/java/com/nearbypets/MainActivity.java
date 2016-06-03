@@ -32,7 +32,7 @@ import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
-import com.nearbypets.data.DownloadProductDbDataDTO;
+import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;

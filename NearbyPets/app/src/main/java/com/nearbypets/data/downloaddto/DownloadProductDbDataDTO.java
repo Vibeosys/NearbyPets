@@ -1,6 +1,9 @@
-package com.nearbypets.data;
+package com.nearbypets.data.downloaddto;
 
 import com.google.gson.Gson;
+import com.nearbypets.data.BaseDTO;
+import com.nearbypets.data.ProductDbDTO;
+import com.nearbypets.data.SettingsDTO;
 
 import java.util.ArrayList;
 import java.util.List;

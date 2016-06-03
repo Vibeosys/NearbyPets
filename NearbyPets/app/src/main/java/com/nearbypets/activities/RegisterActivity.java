@@ -1,29 +1,40 @@
 package com.nearbypets.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
+import com.nearbypets.data.RegisterDBDTO;
+import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.NotificationDTO;
+import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.ServerSyncManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity implements ServerSyncManager.OnStringResultReceived,
+        ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
     private EditText mRegisterEmailId, mRegisterFirstName, mRegisterLastName,
             mRegisterPassword, mRegisterPhoneNumber;
     private Button mRegister;
+    private final int REQ_TOKEN_REGISTER = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,54 +56,9 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterEmailId.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
         mRegisterPassword.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
 
-        mRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String emailString = mRegisterEmailId.getText().toString();
-                if (mRegisterFirstName.getText().toString().trim().length() == 0) {
-                    mRegisterFirstName.requestFocus();
-                    mRegisterFirstName.setError("Please Provide First Name");
-
-                }
-                if (mRegisterFirstName.getText().toString().trim().length() != 0 & mRegisterFirstName.getText().toString().trim().length() < 2 || mRegisterFirstName.getText().toString().trim().length() > 30) {
-                    mRegisterFirstName.requestFocus();
-                    mRegisterFirstName.setError("First Name should have mini 2 and max 30 letters");
-
-                }
-                if (mRegisterLastName.getText().toString().trim().length() == 0) {
-                    mRegisterLastName.requestFocus();
-                    mRegisterLastName.setError("Please Provide Last Name");
-
-                }
-                if (mRegisterLastName.getText().toString().trim().length() != 0 && mRegisterLastName.getText().toString().trim().length() < 2 || mRegisterLastName.getText().toString().trim().length() > 30) {
-                    mRegisterLastName.requestFocus();
-                    mRegisterLastName.setError("Last Name should have mini 2 and max 30 letters");
-
-                }
-                if (!isValidEmail(emailString)) {
-                    mRegisterLastName.requestFocus();
-                    mRegisterEmailId.setError("Please Provide Proper email Id");
-
-                }
-                if (mRegisterPassword.getText().toString().trim().length() == 0) {
-                    mRegisterPassword.requestFocus();
-                    mRegisterPassword.setError("Please Provide Password");
-                }
-                if (mRegisterPassword.getText().toString().trim().length() != 0 && mRegisterPassword.getText().toString().trim().length() < 4 || mRegisterPassword.getText().toString().trim().length() > 20) {
-                    mRegisterPassword.requestFocus();
-                    mRegisterPassword.setError("Last Name should have mini 4 and max 20 letters");
-                }
-
-                if (mRegisterPhoneNumber.getText().toString().trim().length() >= 10) {
-                    mRegisterPhoneNumber.setError("Phone Number must have 10 digit");
-
-                } else {
-                    callToRegister();
-                }
-
-
-            }
-        });
+        mRegister.setOnClickListener(this);
+        mServerSyncManager.setOnStringErrorReceived(this);
+        mServerSyncManager.setOnStringResultReceived(this);
 
     }
 
@@ -105,33 +71,128 @@ public class RegisterActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    private void callToRegister() {
-        String url = "https://nearby-pets.appspot.com/userregistration";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-            }
-        }) {
-            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("fname", mRegisterFirstName.getText().toString());
-                params.put("lname", mRegisterLastName.getText().toString());
-                params.put("phone", mRegisterPhoneNumber.getText().toString());
-                params.put("emailid", mRegisterEmailId.getText().toString());
-                params.put("password", mRegisterPassword.getText().toString());
-                return params;
-            }
-        };
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.register_user:
+                boolean cancelFlag = false;
+                View focusView = null;
+
+                String emailStr = mRegisterEmailId.getText().toString().trim();
+                String password = mRegisterPassword.getText().toString().trim();
+                String firstNameStr = mRegisterFirstName.getText().toString().trim();
+                String LastNameStr = mRegisterLastName.getText().toString().trim();
+                mRegisterFirstName.setError(null);
+                mRegisterLastName.setError(null);
+                if (TextUtils.isEmpty(firstNameStr)) {
+                    focusView = mRegisterFirstName;
+                    mRegisterFirstName.setError("Please provide first name");
+                    cancelFlag = true;
+
+                } else if (firstNameStr.toString().trim().length() < 2) {
+                    focusView = mRegisterFirstName;
+                    mRegisterFirstName.setError("First Name should have atleast 2 character");
+                    cancelFlag = true;
+                } else if (firstNameStr.toString().trim().length() > 30) {
+                    focusView = mRegisterFirstName;
+                    mRegisterFirstName.setError("Maximum 30 characters are allowed");
+                    cancelFlag = true;
+
+                }
+                if (TextUtils.isEmpty(LastNameStr))
+
+                {
+                    focusView = mRegisterLastName;
+                    mRegisterLastName.setError("Please provide Last name");
+                    cancelFlag = true;
+                } else if (LastNameStr.toString().trim().length() < 2) {
+                    focusView = mRegisterLastName;
+                    mRegisterLastName.setError("Last Name should have atleast 2 character");
+                    cancelFlag = true;
+                } else if (LastNameStr.toString().trim().length() > 30) {
+                    focusView = mRegisterLastName;
+                    mRegisterLastName.setError("Maximum 30 characters are allowed");
+                    cancelFlag = true;
+
+                }
+                if (!isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
+                    focusView = mRegisterEmailId;
+                    mRegisterEmailId.setError("Please Provide proper email id");
+                    cancelFlag = true;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    focusView = mRegisterPassword;
+                    mRegisterPassword.setError("Password field cannot be blank");
+                    cancelFlag = true;
+                } else if (password.toString().trim().length() < 4) {
+                    focusView = mRegisterPassword;
+                    mRegisterPassword.setError("Password should have minimum 4 character");
+                    cancelFlag = true;
+                } else if (password.toString().trim().length() > 20) {
+                    focusView = mRegisterPassword;
+                    mRegisterPassword.setError("Maximium 20 characters are allowed");
+                    cancelFlag = true;
+                }
+                if (cancelFlag) {
+                    focusView.requestFocus();
+                } else {
+                    callToRegister();
+                    Toast.makeText(getApplicationContext(), "All validation are done", Toast.LENGTH_LONG).show();
+                }
+        }
+
     }
 
+    public void callToRegister() {
+        RegisterDBDTO register = new RegisterDBDTO(mRegisterFirstName.getText().toString(),
+                mRegisterLastName.getText().toString(), mRegisterEmailId.getText().toString(),
+                mRegisterPassword.getText().toString(), mRegisterPhoneNumber.getText().toString());
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(register);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.USER_REGISTER, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_REGISTER, tableDataDTO);
+    }
+
+    @Override
+    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
+        switch (requestTokan) {
+            case REQ_TOKEN_REGISTER:
+                Log.d("Error", "##REQ" + error.toString());
+                break;
+        }
+
+    }
+
+    @Override
+    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
+        switch (requestTokan) {
+            case REQ_TOKEN_REGISTER:
+                Log.d("RESULT", "##REQ" + data.toString());
+                try {
+                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
+                    updateSettings(download.getSettings());
+                    Log.i(TAG, download.toString());
+                    checkRegistration(download.getData());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
+                break;
+        }
+    }
+
+    private void checkRegistration(ArrayList<NotificationDTO> notificationDTOs) {
+
+        NotificationDTO notificationDTO = notificationDTOs.get(0);
+        if (notificationDTO.getErrorCode() == 0) {
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+            Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(loginIntent);
+        }
+        else {
+            createAlertDialog("Registration error",""+notificationDTO.getMessage());
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+        }
+    }
 }
