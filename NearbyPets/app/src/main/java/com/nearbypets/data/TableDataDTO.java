@@ -3,51 +3,14 @@ package com.nearbypets.data;
 import android.support.annotation.Nullable;
 
 /**
- * Created by mahesh on 10/21/2015.
+ * Created by akshay on 3/6/2016.
  */
 public class TableDataDTO {
-    private String tableName;
-    private String tableData;
-    private String operation;
     private String operationData;
+    private String operation;
 
-    public TableDataDTO(String tableName, String tableData, @Nullable String operation) {
-        this.tableName = tableName;
-        this.tableData = tableData;
-        this.operation = operation;
-    }
-
-    public TableDataDTO(String operation, String operationData) {
-        this.operation = operation;
-        this.operationData = operationData;
-    }
-
-    public TableDataDTO() {
-
-    }
-
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        tableName = tableName;
-    }
-
-    public String getTableData() {
-        return tableData;
-    }
-
-    public void setTableData(String tableData) {
-        tableData = tableData;
-    }
-
-    public String getOperation() {
-        return operation;
-    }
-
-    public void setOperation(String operation) {
+    public TableDataDTO(String data, String operation) {
+        this.operationData = data;
         this.operation = operation;
     }
 
@@ -57,5 +20,13 @@ public class TableDataDTO {
 
     public void setOperationData(String operationData) {
         this.operationData = operationData;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 }

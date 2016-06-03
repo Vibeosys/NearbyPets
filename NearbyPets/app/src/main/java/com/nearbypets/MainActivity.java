@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://nearby-pets.appspot.com/login";
+        /*String url = "https://nearby-pets.appspot.com/login";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -85,9 +85,9 @@ public class MainActivity extends AppCompatActivity
                 params.put("name", "Test to parameter");
                 return params;
             }
-        };
+        };*/
 // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+       /* queue.add(stringRequest);*/
 
         String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
         mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),

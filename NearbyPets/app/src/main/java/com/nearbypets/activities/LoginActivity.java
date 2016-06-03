@@ -4,9 +4,11 @@ package com.nearbypets.activities;
 import android.content.Context;
 import android.content.Intent;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -33,16 +35,24 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.gson.Gson;
 import com.nearbypets.MainActivity;
 import com.nearbypets.R;
+import com.nearbypets.data.LoginDBDTO;
+import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.views.MyriadProRegularTextView;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity implements ServerSyncManager.OnStringResultReceived,
+        ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
     private EditText mEmailId, mPassword;
     private MyriadProRegularTextView forgot_password;
     private MyriadProRegularTextView create_account;
@@ -51,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private static Context context;
-
+    private final int REQ_TOKEN_LOGIN = 1;
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
 
         @Override
@@ -78,10 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-
         setContentView(R.layout.activity_login);
-
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().hide();
@@ -93,27 +100,6 @@ public class LoginActivity extends AppCompatActivity {
         create_account = (MyriadProRegularTextView) findViewById(R.id.create_account_text);
         loginBtn = (Button) findViewById(R.id.login_user);
 
-
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String emailStr = mEmailId.getText().toString().trim();
-                if (!isValidEmail(emailStr)) {
-                    mEmailId.requestFocus();
-                    mEmailId.setError("Please provide email Id");
-
-                } else if (mPassword.getText().toString().trim().length() == 0) {
-                    mPassword.requestFocus();
-                    mPassword.setError("Please provide password");
-                } else {
-                    callToLogin();
-                    Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainScreen);
-                }
-
-
-            }
-        });
         context = this.getApplicationContext();
         forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
         callbackManager = CallbackManager.Factory.create();
@@ -137,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         mPassword.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
         signIn.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
 */
-
+        loginBtn.setOnClickListener(this);
         forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,28 +180,60 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void callToLogin() {
-        String url = "https://nearby-pets.appspot.com/loginuser";
+        LoginDBDTO login = new LoginDBDTO(mEmailId.getText().toString(), mPassword.getText().toString());
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(login);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.USER_LOGIN, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_LOGIN, tableDataDTO);
+    }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-            }
-        }) {
-            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("emailid", mEmailId.getText().toString());
-                params.put("password", mPassword.getText().toString());
-                return params;
-            }
-        };
+    @Override
+    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
+        switch (requestTokan) {
+            case REQ_TOKEN_LOGIN: //error on Login
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
+        switch (requestTokan) {
+            case REQ_TOKEN_LOGIN: //login authentication
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.login_user:
+
+                boolean cancelFlag = false;
+                View focusView = null;
+                String emailStr = mEmailId.getText().toString().trim();
+                String password = mPassword.getText().toString().trim();
+                if (!isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
+                    focusView = mEmailId;
+                    mEmailId.setError("Please provide email Id");
+                    cancelFlag = true;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    focusView = mPassword;
+                    mPassword.setError("Please provide password");
+                    cancelFlag = true;
+                }
+                if (!cancelFlag) {
+                    focusView.requestFocus();
+                } else {
+                    callToLogin();
+                    /*Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainScreen);*/
+                }
+                break;
+        }
     }
 }

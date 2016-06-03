@@ -13,6 +13,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.data.Upload;
+import com.nearbypets.data.UploadUser;
 import com.nearbypets.interfaces.BackgroundTaskCallback;
 
 import org.json.JSONObject;
@@ -67,22 +69,22 @@ public class ServerSyncManager
         new BackgroundTask(aShowProgressDlg).execute(syncData);*/
     }
 
-    public void uploadDataToServer(TableDataDTO... params) {
+    public void uploadDataToServer(int requestTokan, TableDataDTO... params) {
         if (params == null || params.length <= 0) {
             Log.e("UploadNoData", "No data for upload was given by the respective method");
             return;
         }
 
         final ProgressDialog progress = new ProgressDialog(mContext);
-        if (mSessionManager.getUserId() == 0 || mSessionManager.getUserName() == null
+        /*if (mSessionManager.getUserId() == 0 || mSessionManager.getUserName() == null
                 || mSessionManager.getUserName().isEmpty()) {
             Log.e("UserNotAuth", "User is not authenticated before upload");
             return;
-        }
+        }*/
         String uploadJson = prepareUploadJsonFromData(params);
         String uploadURL = mSessionManager.getUploadUrl();
         // Log.i(TAG, "##" + uploadJson);
-        uploadJsonToServer(uploadJson, uploadURL, progress);
+        uploadJsonToServer(uploadJson, uploadURL, progress, requestTokan);
     }
 
     public boolean isDownloadInProgress() {
@@ -103,18 +105,17 @@ public class ServerSyncManager
 
     private String prepareUploadJsonFromData(TableDataDTO... params) {
 
-        // Upload uploadToServer = new Upload();
-        /*uploadToServer.setUser(new UploadUser(
-                mSessionManager.getUserId(),
-                mSessionManager.getUserRestaurantId(),
-                mDbRepository.getPassword(mSessionManager.getUserId()), mSessionManager.getImei(), mSessionManager.getMac()));
-       */
-        // uploadToServer.setData(Arrays.asList(params));
-        String uploadJson = "";// uploadToServer.serializeString();
+        Upload uploadToServer = new Upload();
+        uploadToServer.setUser(new UploadUser(mSessionManager.getUserId(),
+                mSessionManager.getUserEmailId(), mSessionManager.getUserName(),
+                mSessionManager.getUserRollId()));
+        uploadToServer.setData(Arrays.asList(params));
+        String uploadJson = uploadToServer.serializeString();
+        Log.i(TAG, "## request json" + uploadJson);
         return uploadJson;
     }
 
-    private void uploadJsonToServer(String uploadJson, String uploadUrl, final ProgressDialog progress) {
+    private void uploadJsonToServer(String uploadJson, String uploadUrl, final ProgressDialog progress, final int requestTokan) {
         RequestQueue vollyRequest = Volley.newRequestQueue(mContext);
 
         JsonObjectRequest uploadRequest = new JsonObjectRequest(Request.Method.POST,
@@ -123,12 +124,10 @@ public class ServerSyncManager
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Upload Response", "" + response.toString());
-
                 if (mOnStringResultReceived != null)
-                    mOnStringResultReceived.onStingResultReceived(response);
+                    mOnStringResultReceived.onStingResultReceived(response, requestTokan);
                 if (progress != null)
                     progress.dismiss();
-
             }
 
         }, new Response.ErrorListener() {
@@ -137,7 +136,7 @@ public class ServerSyncManager
                 if (progress != null)
                     progress.dismiss();
                 if (mErrorReceived != null)
-                    mErrorReceived.onStingErrorReceived(error);
+                    mErrorReceived.onStingErrorReceived(error, requestTokan);
                 // Log.i(TAG, "##" + error.toString());
             }
         });
@@ -180,11 +179,11 @@ public class ServerSyncManager
     }
 
     public interface OnStringResultReceived {
-        void onStingResultReceived(@NonNull JSONObject data);
+        void onStingResultReceived(@NonNull JSONObject data, int requestTokan);
     }
 
     public interface OnStringErrorReceived {
-        void onStingErrorReceived(@NonNull VolleyError error);
+        void onStingErrorReceived(@NonNull VolleyError error, int requestTokan);
     }
 
     public interface OnNotifyUser {

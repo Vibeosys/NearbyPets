@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/login_background"
     android:fillViewport="true">
 
@@ -19,42 +19,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
             <com.nearbypets.views.AbelRegularTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/str_nearby"
-                android:textColor="@android:color/white"
-                android:textSize="52sp"
                 android:id="@+id/textView2"
-                android:layout_gravity="center"/>
-            <com.nearbypets.views.AbelRegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/str_nearby"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/str_pets"
                 android:textColor="@android:color/white"
+                android:textSize="52sp" />
+
+            <com.nearbypets.views.AbelRegularTextView
                 android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="-16dp"
-                android:textSize="52sp"
-                android:layout_gravity="center"/>
+                android:text="@string/str_pets"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/white"
+                android:textSize="52sp" />
+
             <com.nearbypets.views.MyriadProRegularTextView
+                android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/str_find_pets"
+                android:layout_gravity="center"
                 android:layout_margin="4dp"
-                android:padding="8dp"
-                android:textColor="@android:color/white"
-                android:id="@+id/textView4"
-                android:textSize="14sp"
                 android:background="@drawable/custom_white_border"
-                android:layout_gravity="center"/>
+                android:padding="8dp"
+                android:text="@string/str_find_pets"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -85,12 +87,12 @@
                         android:background="@android:color/transparent"
                         android:drawablePadding="10dp"
                         android:hint="@string/str_first_name_hint"
-                        android:textColorHint="@android:color/white"
                         android:inputType="textEmailAddress"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
                         android:paddingStart="5dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@android:color/white"
+                        android:textSize="16sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -123,9 +125,9 @@
                         android:hint="@string/str_last_name_hint"
                         android:inputType="textEmailAddress"
                         android:paddingStart="5dp"
-                        android:textSize="16sp"
                         android:singleLine="true"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -156,16 +158,17 @@
                         android:background="@android:color/transparent"
                         android:drawablePadding="10dp"
                         android:hint="@string/str_phone_hint"
-                        android:inputType="textEmailAddress"
-                        android:textSize="16sp"
+                        android:inputType="phone"
                         android:paddingStart="5dp"
                         android:singleLine="true"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/emailIdLinearLayout"
                 android:layout_width="match_parent"
@@ -192,9 +195,9 @@
                         android:hint="@string/str_email_hint"
                         android:inputType="textEmailAddress"
                         android:paddingStart="5dp"
-                        android:textSize="16sp"
                         android:singleLine="true"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -225,11 +228,11 @@
                         android:background="@android:color/transparent"
                         android:drawablePadding="10dp"
                         android:hint="@string/str_password_hint"
-                        android:inputType="textEmailAddress"
+                        android:inputType="textPassword"
                         android:paddingStart="5dp"
-                        android:textSize="16sp"
                         android:singleLine="true"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -241,10 +244,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
+                android:gravity="end"
                 android:orientation="horizontal"
-                android:weightSum="3"
-                android:gravity="end">
-
+                android:weightSum="3">
 
 
                 <Button
@@ -253,15 +255,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_weight="1"
-                    android:textSize="16sp"
                     android:background="@drawable/custom_white_border"
                     android:text="@string/str_register_hint"
                     android:textColor="@android:color/white"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
-
-
 
 
         </LinearLayout>
