@@ -236,8 +236,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                     focusView.requestFocus();
                 } else {
                     callToLogin();
-                    /*Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainScreen);*/
+                    Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainScreen);
                 }
                 break;
         }

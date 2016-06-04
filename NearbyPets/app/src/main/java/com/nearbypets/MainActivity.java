@@ -36,6 +36,7 @@ import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.ServerSyncManager;
 
@@ -126,7 +127,9 @@ public class MainActivity extends BaseActivity
         mListViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));
+                Intent intent = new Intent(getApplicationContext(), ProductDescActivity.class);
+                intent.putExtra(AppConstants.PRODUCT_DESC_FLAG, AppConstants.VIEW_AD_DETAILS_SCREEN);
+                startActivity(intent);
             }
         });
 

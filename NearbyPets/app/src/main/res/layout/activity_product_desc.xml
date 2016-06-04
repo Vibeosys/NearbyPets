@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.nearbypets.activities.ProductDescActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible" />
+
     <LinearLayout
+        android:id="@+id/fromProductDesc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:orientation="vertical">
 
         <FrameLayout
@@ -73,6 +83,7 @@
                     android:orientation="horizontal">
 
                     <com.nearbypets.views.RobotoMediumTextView
+                        android:id="@+id/txtProductTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -81,6 +92,7 @@
                         android:textSize="20sp" />
 
                     <com.nearbypets.views.RobotoMediumTextView
+                        android:id="@+id/txtProductPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
@@ -91,6 +103,7 @@
                 </LinearLayout>
 
                 <com.nearbypets.views.RobotoRegularTextView
+                    android:id="@+id/txtProductDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -135,6 +148,7 @@
                         android:textStyle="bold" />
 
                     <com.nearbypets.views.RobotoRegularTextView
+                        android:id="@+id/txtSellerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -158,6 +172,7 @@
                         android:textStyle="bold" />
 
                     <com.nearbypets.views.RobotoRegularTextView
+                        android:id="@+id/txtSellerPh"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="callToDialer"
@@ -182,6 +197,7 @@
                         android:textStyle="bold" />
 
                     <com.nearbypets.views.RobotoRegularTextView
+                        android:id="@+id/txtSellerEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -223,6 +239,7 @@
                         android:textStyle="bold" />
 
                     <com.nearbypets.views.RobotoRegularTextView
+                        android:id="@+id/txtAdded"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -246,6 +263,7 @@
                         android:textStyle="bold" />
 
                     <com.nearbypets.views.RobotoRegularTextView
+                        android:id="@+id/txtViews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -269,6 +287,7 @@
                         android:textStyle="bold" />
 
                     <com.nearbypets.views.RobotoRegularTextView
+                        android:id="@+id/txtDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -293,7 +312,7 @@
                     android:background="@color/secondaryText" />
 
                 <Button
-                    android:id="@+id/sign_in_user_btn"
+                    android:id="@+id/btnAddToFav"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -312,7 +331,7 @@
                     android:orientation="horizontal">
 
                     <Button
-
+                        android:id="@+id/btnSoldOut"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -324,7 +343,7 @@
                         android:textColor="@android:color/white" />
 
                     <Button
-
+                        android:id="@+id/btnDisable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -346,4 +365,4 @@
 
         </ScrollView>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
