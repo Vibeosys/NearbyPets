@@ -11,8 +11,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.nearbypets.R;
 import com.nearbypets.data.CategoryDTO;
+import com.nearbypets.utils.CustomVolleyRequestQueue;
 import com.nearbypets.views.MyriadProRegularTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -26,6 +29,7 @@ public class CategoryAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<CategoryDTO> mCategories = new ArrayList<CategoryDTO>();
+    private ImageLoader mImageLoader;
 
     public CategoryAdapter(Context mContext) {
         this.mContext = mContext;
@@ -58,7 +62,7 @@ public class CategoryAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.categoryName = (RobotoMediumTextView) row.findViewById(R.id.txtCategory);
             viewHolder.categoryCount = (RobotoRegularTextView) row.findViewById(R.id.txtProductCount);
-            viewHolder.imageBackImg = (RelativeLayout) row.findViewById(R.id.imageBackImg);
+            viewHolder.imageView = (NetworkImageView) row.findViewById(R.id.categoryImage);
             row.setTag(viewHolder);
 
         } else viewHolder = (ViewHolder) row.getTag();
@@ -66,15 +70,27 @@ public class CategoryAdapter extends BaseAdapter {
         //Log.d(TAG, friend.toString());
         viewHolder.categoryName.setText(category.getCategoryName());
         viewHolder.categoryCount.setText(category.getProductCount() + " products");
-        int imgResId = mContext.getResources().getIdentifier(category.getCategoryImage(), "drawable", "com.nearbypets");
-        viewHolder.imageBackImg.setBackgroundResource(imgResId);
+        mImageLoader = CustomVolleyRequestQueue.getInstance(mContext)
+                .getImageLoader();
+        final String url = category.getCategoryImage();
+        if (url != null && !url.isEmpty()) {
+            try {
+                mImageLoader.get(url, ImageLoader.getImageListener(viewHolder.imageView,
+                        R.drawable.default_pet_image, R.drawable.default_pet_image));
+                viewHolder.imageView.setImageUrl(url, mImageLoader);
+            } catch (Exception e) {
+                viewHolder.imageView.setImageResource(R.drawable.default_pet_image);
+            }
+        } else {
+            viewHolder.imageView.setImageResource(R.drawable.default_pet_image);
+        }
         return row;
     }
 
     private class ViewHolder {
         RobotoMediumTextView categoryName;
         RobotoRegularTextView categoryCount;
-        RelativeLayout imageBackImg;
+        NetworkImageView imageView;
     }
 
     public void clear() {

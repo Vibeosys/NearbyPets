@@ -36,16 +36,21 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.data.LoginDBDTO;
 import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.ServerSyncManager;
+import com.nearbypets.utils.UserAuth;
 import com.nearbypets.views.MyriadProRegularTextView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -62,6 +67,9 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     private ProfileTracker profileTracker;
     private static Context context;
     private final int REQ_TOKEN_LOGIN = 1;
+    private View formView;
+    private View progressBar;
+
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
 
         @Override
@@ -99,7 +107,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         mPassword = (EditText) findViewById(R.id.user_password_editText);
         create_account = (MyriadProRegularTextView) findViewById(R.id.create_account_text);
         loginBtn = (Button) findViewById(R.id.login_user);
-
+        formView = findViewById(R.id.formLogin);
+        progressBar = findViewById(R.id.progressBar);
         context = this.getApplicationContext();
         forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
         callbackManager = CallbackManager.Factory.create();
@@ -182,6 +191,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     }
 
     private void callToLogin() {
+        showProgress(true, formView, progressBar);
         LoginDBDTO login = new LoginDBDTO(mEmailId.getText().toString(), mPassword.getText().toString());
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(login);
@@ -193,7 +203,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_LOGIN: //error on Login
-                Log.d("TAG","##"+error.toString());
+                showProgress(false, formView, progressBar);
+                Log.d("TAG", "##" + error.toString());
                 break;
 
         }
@@ -204,8 +215,31 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_LOGIN: //login authentication
-                Log.d("TAG","##"+data.toString());
+                showProgress(false, formView, progressBar);
+                Log.d("RESULT", "##REQ" + data.toString());
+                try {
+                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
+                    updateSettings(download.getSettings());
+                    Log.i(TAG, download.toString());
+                    checkLogin(download.getData());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
                 break;
+        }
+    }
+
+    private void checkLogin(ArrayList<NotificationDTO> data) {
+        NotificationDTO notificationDTO = data.get(0);
+        if (notificationDTO.getErrorCode() == 0) {
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+            UserAuth userAuth = new UserAuth();
+            userAuth.saveAuthenticationInfo(notificationDTO.getData(), getApplicationContext());
+            Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(loginIntent);
+        } else {
+            createAlertDialog("Login error", "" + notificationDTO.getMessage());
+            Log.i("TAG", "##" + notificationDTO.getMessage());
         }
     }
 
@@ -236,8 +270,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                     focusView.requestFocus();
                 } else {
                     callToLogin();
-                    Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainScreen);
+                    /*Intent mainScreen = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainScreen);*/
                 }
                 break;
         }

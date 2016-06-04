@@ -35,6 +35,8 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
             mRegisterPassword, mRegisterPhoneNumber;
     private Button mRegister;
     private final int REQ_TOKEN_REGISTER = 2;
+    private View formView;
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,8 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         mRegisterEmailId = (EditText) findViewById(R.id.emailIdEditText);
         mRegisterPassword = (EditText) findViewById(R.id.passwordEditText);
         mRegister = (Button) findViewById(R.id.register_user);
-
+        formView = findViewById(R.id.formRegister);
+        progressBar = findViewById(R.id.progressBar);
         mRegisterFirstName.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
         mRegisterLastName.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
         mRegisterPhoneNumber.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
@@ -139,13 +142,14 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     focusView.requestFocus();
                 } else {
                     callToRegister();
-                    Toast.makeText(getApplicationContext(), "All validation are done", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "All validation are done", Toast.LENGTH_LONG).show();
                 }
         }
 
     }
 
     public void callToRegister() {
+        showProgress(true, formView, progressBar);
         RegisterDBDTO register = new RegisterDBDTO(mRegisterFirstName.getText().toString(),
                 mRegisterLastName.getText().toString(), mRegisterEmailId.getText().toString(),
                 mRegisterPassword.getText().toString(), mRegisterPhoneNumber.getText().toString());
@@ -159,6 +163,8 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_REGISTER:
+                showProgress(true, formView, progressBar);
+                createAlertDialog("Server error!!!", "Try Again Later");
                 Log.d("Error", "##REQ" + error.toString());
                 break;
         }
@@ -169,6 +175,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_REGISTER:
+                showProgress(true, formView, progressBar);
                 Log.d("RESULT", "##REQ" + data.toString());
                 try {
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
@@ -187,11 +194,10 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         NotificationDTO notificationDTO = notificationDTOs.get(0);
         if (notificationDTO.getErrorCode() == 0) {
             Log.i("TAG", "##" + notificationDTO.getMessage());
-            Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginIntent);
-        }
-        else {
-            createAlertDialog("Registration error",""+notificationDTO.getMessage());
+        } else {
+            createAlertDialog("Registration error", "" + notificationDTO.getMessage());
             Log.i("TAG", "##" + notificationDTO.getMessage());
         }
     }

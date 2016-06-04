@@ -63,6 +63,7 @@
                     android:background="@color/colorPrimaryDark" />
 
                 <com.nearbypets.views.RobotoMediumTextView
+                    android:id="@+id/txtName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="15dp"
@@ -100,6 +101,7 @@
                     android:background="@color/colorPrimaryDark" />
 
                 <com.nearbypets.views.RobotoMediumTextView
+                    android:id="@+id/txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="15dp"
@@ -138,6 +140,7 @@
                     android:background="@color/colorPrimaryDark" />
 
                 <com.nearbypets.views.RobotoMediumTextView
+                    android:id="@+id/txtMobNo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="15dp"

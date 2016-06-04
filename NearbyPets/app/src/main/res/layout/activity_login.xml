@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:facebook="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/login_background"
@@ -16,235 +16,251 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/loginTransparnt"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="10dp">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <com.nearbypets.views.AbelRegularTextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/str_nearby"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@android:color/white"
-                    android:textSize="52sp" />
-
-                <com.nearbypets.views.AbelRegularTextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="-16dp"
-                    android:text="@string/str_pets"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@android:color/white"
-                    android:textSize="52sp" />
-
-                <com.nearbypets.views.MyriadProRegularTextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/custom_white_border"
-                    android:padding="8dp"
-                    android:text="@string/str_find_pets"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
-            </LinearLayout>
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone" />
 
 
             <LinearLayout
+                android:id="@+id/formLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/emailIdLinearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/custom_white_border"
-
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:orientation="horizontal">
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_userIdEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:focusable="false"
-                        android:textColorHint="@android:color/white">
-
-                        <EditText
-                            android:id="@+id/user_email_id_editText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:drawablePadding="10dp"
-                            android:hint="@string/str_user_name_hint"
-                            android:inputType="textEmailAddress"
-                            android:paddingStart="5dp"
-
-                            android:singleLine="true"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp" />
-
-                    </android.support.design.widget.TextInputLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/passdLinearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/custom_white_border"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:orientation="horizontal">
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_passIdEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColorHint="@android:color/white">
-
-                        <EditText
-                            android:id="@+id/user_password_editText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:drawablePadding="10dp"
-                            android:focusableInTouchMode="true"
-                            android:hint="@string/str_user_password"
-                            android:inputType="textPassword"
-                            android:paddingStart="5dp"
-                            android:singleLine="true"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp" />
-
-                    </android.support.design.widget.TextInputLayout>
-
-
-                </LinearLayout>
+                android:layout_height="match_parent"
+                android:background="@color/loginTransparnt"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:color/transparent"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.nearbypets.views.MyriadProRegularTextView
-                        android:id="@+id/forgot_password_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:text="@string/str_user_forgot_password"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/login_user"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/custom_white_border"
-                        android:text="@string/str_login_btn"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/buttonLinearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="35dp"
-                    android:gravity="center"
-
+                    android:layout_gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <!--<Button
-                        android:id="@+id/btn_fbLogin"
-                        android:layout_width="fill_parent"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_horizontal"
-                        android:background="#3b579d"
-                        android:text="SIGN IN WITH FACEBOOK"
-                        android:textColor="#ffffff"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />-->
-                    <com.facebook.login.widget.LoginButton
-                        android:id="@+id/connectWithFbButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                    <com.nearbypets.views.AbelRegularTextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
-                        android:text="  connect_with_facebook" />
+                        android:text="@string/str_nearby"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@android:color/white"
+                        android:textSize="52sp" />
+
+                    <com.nearbypets.views.AbelRegularTextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="-16dp"
+                        android:text="@string/str_pets"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@android:color/white"
+                        android:textSize="52sp" />
+
+                    <com.nearbypets.views.MyriadProRegularTextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/custom_white_border"
+                        android:padding="8dp"
+                        android:text="@string/str_find_pets"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:color/transparent"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:orientation="vertical">
 
-                    <com.nearbypets.views.MyriadProRegularTextView
-                        android:id="@+id/signin_new"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:paddingStart="5dp"
-                        android:text="@string/str_nearby_pets"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                    <LinearLayout
+                        android:id="@+id/emailIdLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="35dp"
+                        android:background="@drawable/custom_white_border"
 
-                    <com.nearbypets.views.MyriadProRegularTextView
-                        android:id="@+id/create_account_text"
-                        android:layout_width="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/input_userIdEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:focusable="false"
+                            android:textColorHint="@android:color/white">
+
+                            <EditText
+                                android:id="@+id/user_email_id_editText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:drawablePadding="10dp"
+                                android:hint="@string/str_user_name_hint"
+                                android:inputType="textEmailAddress"
+                                android:paddingStart="5dp"
+
+                                android:singleLine="true"
+                                android:textColor="@android:color/white"
+                                android:textSize="16sp" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/passdLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/custom_white_border"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/input_passIdEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColorHint="@android:color/white">
+
+                            <EditText
+                                android:id="@+id/user_password_editText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:drawablePadding="10dp"
+                                android:focusableInTouchMode="true"
+                                android:hint="@string/str_user_password"
+                                android:inputType="textPassword"
+                                android:paddingStart="5dp"
+                                android:singleLine="true"
+                                android:textColor="@android:color/white"
+                                android:textSize="16sp" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:onClick="callRegister"
-                        android:text="@string/str_create_acc"
-                        android:textColor="#86f206"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <com.nearbypets.views.MyriadProRegularTextView
+                            android:id="@+id/forgot_password_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:paddingStart="5dp"
+                            android:text="@string/str_user_forgot_password"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/login_user"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_white_border"
+                            android:text="@string/str_login_btn"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/buttonLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center"
+
+                        android:orientation="vertical">
+
+                        <!--<Button
+                            android:id="@+id/btn_fbLogin"
+                            android:layout_width="fill_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_horizontal"
+                            android:background="#3b579d"
+                            android:text="SIGN IN WITH FACEBOOK"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />-->
+                        <com.facebook.login.widget.LoginButton
+                            android:id="@+id/connectWithFbButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:text="  connect_with_facebook" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.nearbypets.views.MyriadProRegularTextView
+                            android:id="@+id/signin_new"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="4dp"
+                            android:paddingStart="5dp"
+                            android:text="@string/str_nearby_pets"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <com.nearbypets.views.MyriadProRegularTextView
+                            android:id="@+id/create_account_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:onClick="callRegister"
+                            android:text="@string/str_create_acc"
+                            android:textColor="#86f206"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
                 </LinearLayout>
-
             </LinearLayout>
+
         </LinearLayout>
-
-
     </ScrollView>
 
 </LinearLayout>

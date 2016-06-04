@@ -4,7 +4,7 @@ package com.nearbypets.data;
  * Created by mahesh on 10/23/2015.
  */
 public class UploadUser extends BaseDTO {
-    protected int userId;
+    protected String userId;
     protected String emailId;
     protected String userName;
     protected int rollId;
@@ -13,18 +13,18 @@ public class UploadUser extends BaseDTO {
 
     }
 
-    public UploadUser(int userId, String emailId, String userName, int rollId) {
+    public UploadUser(String userId, String emailId, String userName, int rollId) {
         this.userId = userId;
         this.emailId = emailId;
         this.userName = userName;
         this.rollId = rollId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

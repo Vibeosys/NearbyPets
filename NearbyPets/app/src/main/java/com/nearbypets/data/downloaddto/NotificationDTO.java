@@ -8,6 +8,7 @@ import com.nearbypets.data.BaseDTO;
 public class NotificationDTO extends BaseDTO {
     private int errorCode;
     private String message;
+    private UserDbDTO data;
 
     public NotificationDTO() {
 
@@ -29,11 +30,20 @@ public class NotificationDTO extends BaseDTO {
         this.message = message;
     }
 
+    public UserDbDTO getData() {
+        return data;
+    }
+
+    public void setData(UserDbDTO data) {
+        this.data = data;
+    }
+
     @Override
     public String toString() {
         return "NotificationDTO{" +
-                "errorCode='" + errorCode + '\'' +
+                "errorCode=" + errorCode +
                 ", message='" + message + '\'' +
+                ", data=" + data +
                 '}';
     }
 }

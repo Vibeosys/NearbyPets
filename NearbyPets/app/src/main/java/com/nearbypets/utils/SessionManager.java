@@ -87,11 +87,11 @@ public class SessionManager {
     private SessionManager() {
     }
 
-    public int getUserId() {
-        return mProjectSharedPref.getInt(PropertyTypeConstants.USER_ID, 0);
+    public String getUserId() {
+        return mProjectSharedPref.getString(PropertyTypeConstants.USER_ID, null);
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_ID, userId);
     }
 
@@ -150,5 +150,13 @@ public class SessionManager {
         SharedPreferences.Editor editor = mProjectSharedPref.edit();
         editor.putInt(sharedPrefKey, sharedPrefValue);
         editor.apply();
+    }
+
+    public void setPhone(String phone) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_PHONE, phone);
+    }
+
+    public String getUserPhone() {
+        return mProjectSharedPref.getString(PropertyTypeConstants.USER_PHONE, null);
     }
 }
