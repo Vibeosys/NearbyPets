@@ -14,6 +14,11 @@ public class CategoryDTO {
     private boolean mActive;
     private int mCategoryId;
 
+    public CategoryDTO(String categoryImage,int productCount,String categoryName) {
+        this.mCategoryImage = categoryImage;
+        this.mProductCount = productCount;
+        this.mCategoryName = categoryName;
+    }
 
     public CategoryDTO(String categoryName, int productCount, String categoryImage, Drawable drawable) {
         this.mCategoryName = categoryName;

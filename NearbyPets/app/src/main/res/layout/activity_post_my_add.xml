@@ -30,6 +30,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/firstImg"
                     android:layout_width="46dp"
                     android:layout_height="46dp"
                     android:layout_marginBottom="4dp"
@@ -39,6 +40,7 @@
                     android:src="@drawable/default_pet_image" />
 
                 <ImageView
+                    android:id="@+id/secondImg"
                     android:layout_width="46dp"
                     android:layout_height="46dp"
                     android:layout_margin="4dp"
@@ -46,6 +48,7 @@
                     android:src="@drawable/default_pet_image" />
 
                 <ImageView
+                    android:id="@+id/thirdImg"
                     android:layout_width="46dp"
                     android:layout_height="46dp"
                     android:layout_margin="4dp"

@@ -6,10 +6,16 @@
     android:layout_margin="8dp"
     tools:context="com.nearbypets.activities.CategoryListActivity">
 
-    <ListView
-        android:id="@+id/listCateogry"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_category"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="0dp"></ListView>
+        android:layout_height="wrap_content">
+        <ListView
+            android:id="@+id/listCateogry"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"></ListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 </RelativeLayout>

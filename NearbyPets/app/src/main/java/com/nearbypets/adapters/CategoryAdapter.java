@@ -25,11 +25,10 @@ import java.util.ArrayList;
 public class CategoryAdapter extends BaseAdapter {
 
     private Context mContext;
-    private ArrayList<CategoryDTO> mCategories;
+    private ArrayList<CategoryDTO> mCategories = new ArrayList<CategoryDTO>();
 
-    public CategoryAdapter(Context mContext, ArrayList<CategoryDTO> mCategories) {
+    public CategoryAdapter(Context mContext) {
         this.mContext = mContext;
-        this.mCategories = mCategories;
     }
 
     @Override
@@ -76,5 +75,14 @@ public class CategoryAdapter extends BaseAdapter {
         RobotoMediumTextView categoryName;
         RobotoRegularTextView categoryCount;
         RelativeLayout imageBackImg;
+    }
+
+    public void clear() {
+        mCategories.clear();
+    }
+
+    public void addItem(final CategoryDTO item) {
+        mCategories.add(item);
+        notifyDataSetChanged();
     }
 }
