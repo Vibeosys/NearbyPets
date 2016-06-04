@@ -8,20 +8,31 @@ import java.util.List;
 /**
  * Created by shrinivas on 03-06-2016.
  */
-public class RegisterDBDTO  extends  BaseDTO{
+public class RegisterDBDTO extends BaseDTO {
 
     private String fname;
     private String lname;
     private String email;
     private String phone;
     private String password;
+    private String token;
+    private int source;
 
-    public RegisterDBDTO(String fname, String lname, String email, String phone, String password) {
+    public RegisterDBDTO(String fname, String lname, String email, String token, int source) {
+        this.fname = fname;
+        this.lname = lname;
+        this.email = email;
+        this.token = token;
+        this.source = source;
+    }
+
+    public RegisterDBDTO(String fname, String lname, String email, String phone, String password, int source) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.source = source;
     }
 
     public String getFname() {

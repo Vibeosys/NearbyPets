@@ -152,7 +152,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         showProgress(true, formView, progressBar);
         RegisterDBDTO register = new RegisterDBDTO(mRegisterFirstName.getText().toString(),
                 mRegisterLastName.getText().toString(), mRegisterEmailId.getText().toString(),
-                mRegisterPassword.getText().toString(), mRegisterPhoneNumber.getText().toString());
+                mRegisterPassword.getText().toString(), mRegisterPhoneNumber.getText().toString(), 1);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(register);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.USER_REGISTER, serializedJsonString);

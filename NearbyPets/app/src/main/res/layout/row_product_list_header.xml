@@ -9,10 +9,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
+        <!--<ImageView
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:src="@drawable/fbtestad" />
+            android:src="@drawable/fbtestad" />-->
 
         <RelativeLayout
             android:id="@+id/adViewContainer"

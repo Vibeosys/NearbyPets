@@ -86,9 +86,11 @@ public class UserAuth {
     public static boolean CleanAuthenticationInfo() {
 
         SessionManager theSessionManager = SessionManager.Instance();
+        theSessionManager.setUserId(null);
         theSessionManager.setUserName(null);
         theSessionManager.setUserEmailId(null);
-        theSessionManager.setUserPhotoUrl(null);
+        theSessionManager.setUserRollId(0);
+        theSessionManager.setPhone(null);
        /* theSessionManager.setUserLoginRegdSource(RegistrationSourceTypes.NONE);
         theSessionManager.setUserRegdApiKey(null);*/
 

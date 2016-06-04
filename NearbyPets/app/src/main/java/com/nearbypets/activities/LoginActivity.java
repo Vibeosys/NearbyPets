@@ -31,15 +31,19 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.data.LoginDBDTO;
+import com.nearbypets.data.RegisterDBDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
@@ -48,9 +52,11 @@ import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.UserAuth;
 import com.nearbypets.views.MyriadProRegularTextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -67,40 +73,19 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     private ProfileTracker profileTracker;
     private static Context context;
     private final int REQ_TOKEN_LOGIN = 1;
+    private final int REQ_TOKEN_REGISTER = 2;
     private View formView;
     private View progressBar;
+    private LoginButton btnFbLogin;
 
-    private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
-
-        @Override
-        public void onSuccess(LoginResult loginResult) {
-
-            AccessToken accessToken = loginResult.getAccessToken();
-            Profile profile = Profile.getCurrentProfile();
-            displayMessage(profile);
-
-        }
-
-        @Override
-        public void onCancel() {
-
-        }
-
-        @Override
-        public void onError(FacebookException error) {
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().hide();
-
 
         signIn = (Button) findViewById(R.id.login_user);
         mEmailId = (EditText) findViewById(R.id.user_email_id_editText);
@@ -109,10 +94,12 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         loginBtn = (Button) findViewById(R.id.login_user);
         formView = findViewById(R.id.formLogin);
         progressBar = findViewById(R.id.progressBar);
+        btnFbLogin = (LoginButton) findViewById(R.id.connectWithFbButton);
+        //btnFbLogin.setReadPermissions("email");
         context = this.getApplicationContext();
         forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
-        callbackManager = CallbackManager.Factory.create();
-        accessTokenTracker = new AccessTokenTracker() {
+
+       /* accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
 
@@ -125,7 +112,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
             }
         };
         accessTokenTracker.startTracking();
-        profileTracker.startTracking();
+        profileTracker.startTracking();*/
         mEmailId.setFocusable(false);
         mEmailId.setFocusableInTouchMode(true);
        /* mEmailId.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
@@ -147,6 +134,56 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
             public void onClick(View v) {
                 Intent regist = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(regist);
+            }
+        });
+        //Facebook Code
+        btnFbLogin.setReadPermissions(Arrays.asList(
+                "public_profile", "email", "user_birthday", "user_friends"));
+
+        callbackManager = CallbackManager.Factory.create();
+
+        // Callback registration
+        btnFbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                // App code
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("LoginActivity", response.toString());
+
+                                // Application code
+                                try {
+                                    String email = object.getString("email");
+                                    String firstName = object.getString("first_name");
+                                    String lastName = object.getString("last_name");
+                                    String accessTokan = loginResult.getAccessToken().toString();
+                                    callToRegister(firstName, lastName, email, accessTokan);
+                                    Log.d(TAG, "## email" + email + " first Name" + firstName + " lastname " + lastName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                // 01/31/1980 format
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,first_name,last_name,email,gender,birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                Log.v("LoginActivity", "cancel");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                Log.v("LoginActivity", exception.getCause().toString());
             }
         });
     }
@@ -172,6 +209,15 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
             Log.d("FBLOGIN", "Logout");
         }
 
+    }
+
+    public void callToRegister(String fname, String lname, String email, String accessTokan) {
+        showProgress(true, formView, progressBar);
+        RegisterDBDTO register = new RegisterDBDTO(fname, lname, email, accessTokan, 2);
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(register);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.USER_REGISTER, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_REGISTER, tableDataDTO);
     }
 
     public static void LogoutFacebook() {
@@ -206,7 +252,11 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                 showProgress(false, formView, progressBar);
                 Log.d("TAG", "##" + error.toString());
                 break;
-
+            case REQ_TOKEN_REGISTER:
+                showProgress(true, formView, progressBar);
+                createAlertDialog("Server error!!!", "Try Again Later");
+                Log.d("Error", "##REQ" + error.toString());
+                break;
         }
 
     }
@@ -226,6 +276,18 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                     Log.e(TAG, "## error on response" + e.toString());
                 }
                 break;
+            case REQ_TOKEN_REGISTER:
+                showProgress(true, formView, progressBar);
+                Log.d("RESULT", "##REQ" + data.toString());
+                try {
+                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
+                    updateSettings(download.getSettings());
+                    Log.i(TAG, download.toString());
+                    checkRegistration(download.getData());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
+                break;
         }
     }
 
@@ -237,10 +299,33 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
             userAuth.saveAuthenticationInfo(notificationDTO.getData(), getApplicationContext());
             Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(loginIntent);
+            finish();
         } else {
             createAlertDialog("Login error", "" + notificationDTO.getMessage());
             Log.i("TAG", "##" + notificationDTO.getMessage());
         }
+    }
+
+    private void checkRegistration(ArrayList<NotificationDTO> notificationDTOs) {
+
+        NotificationDTO notificationDTO = notificationDTOs.get(0);
+        if (notificationDTO.getErrorCode() == 0 || notificationDTO.getErrorCode() == 102) {
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+            UserAuth userAuth = new UserAuth();
+            userAuth.saveAuthenticationInfo(notificationDTO.getData(), getApplicationContext());
+            Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(loginIntent);
+            finish();
+        } else {
+            createAlertDialog("Login error", "" + notificationDTO.getMessage());
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LoginManager.getInstance().logOut();
     }
 
     @Override

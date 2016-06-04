@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.ads.AdSettings;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.nearbypets.R;
@@ -20,6 +21,7 @@ import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeSet;
 
 /**
@@ -165,8 +167,10 @@ public class DashboardProductListAdapter extends BaseAdapter {
                 holder.txtDate.setText(product.getDate());
                 break;
             case TYPE_Ad:
+
                 AdView adView = new AdView(mContext, "1715459422041023_1715460668707565", AdSize.BANNER_320_50);
                 holder.adViewContainer.addView(adView);
+                AdSettings.addTestDevice("HASHED ID");
                 adView.loadAd();
                 break;
 

@@ -15,8 +15,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import com.android.volley.VolleyError;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
@@ -85,6 +89,19 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         btnAddToFav = (Button) findViewById(R.id.btnAddToFav);
         btnSoldOut = (Button) findViewById(R.id.btnSoldOut);
         btnDisable = (Button) findViewById(R.id.btnDisable);
+
+        RelativeLayout adViewContainer = (RelativeLayout) findViewById(R.id.adViewContainer);
+        AdView adView = new AdView(getApplicationContext(), "1715459422041023_1722420624678236", AdSize.BANNER_320_50);
+        adViewContainer.addView(adView);
+        AdSettings.addTestDevice("HASHED ID");
+        adView.loadAd();
+
+        RelativeLayout adViewContainer1 = (RelativeLayout) findViewById(R.id.adViewContainer1);
+        AdView adView1 = new AdView(getApplicationContext(), "1715459422041023_1722420858011546", AdSize.BANNER_320_50);
+        adViewContainer1.addView(adView1);
+        AdSettings.addTestDevice("HASHED ID");
+        adView1.loadAd();
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

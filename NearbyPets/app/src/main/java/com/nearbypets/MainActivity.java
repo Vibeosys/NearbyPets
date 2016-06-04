@@ -17,8 +17,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.activities.BaseActivity;
@@ -39,6 +41,7 @@ import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.ServerSyncManager;
+import com.nearbypets.utils.UserAuth;
 
 import org.json.JSONObject;
 
@@ -54,7 +57,7 @@ public class MainActivity extends BaseActivity
     private ArrayAdapter<String> mSortAdapter;
     private Spinner spnSortBy;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
 
     @Override
@@ -115,7 +118,7 @@ public class MainActivity extends BaseActivity
             }
         });*/
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -123,6 +126,12 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+       /* View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
+        txtUserName.setText(mSessionManager.getUserName());
+        TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
+        txtEmail.setText(mSessionManager.getUserEmailId());*/
 
         mListViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -149,7 +158,18 @@ public class MainActivity extends BaseActivity
                                     }
                                 }
         );
+        switch (mSessionManager.getUserRollId()) {
+            case AppConstants.ROLL_ID_ADMIN:
+                navigationView.getMenu().clear(); //clear old inflated items.
+                navigationView.inflateMenu(R.menu.activity_main_admin_drawer);
+                break;
+            case AppConstants.ROLL_ID_USER:
+                navigationView.getMenu().clear(); //clear old inflated items.
+                navigationView.inflateMenu(R.menu.activity_main_user_drawer);
+                break;
+        }
     }
+
 
     private void fetchList() {
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST);
@@ -173,7 +193,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -233,6 +253,9 @@ public class MainActivity extends BaseActivity
             startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
 
         } else if (id == R.id.nav_log_out) {
+            LoginManager.getInstance().logOut();
+            UserAuth userAuth = new UserAuth();
+            userAuth.CleanAuthenticationInfo();
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
         } else if (id == R.id.nav_settings) {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_view_categories"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/nav_opt_view_categories" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Setting" />
+
+        <item
+            android:id="@+id/nav_hidden_ad"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Hidden Ads" />
+        <item
+            android:id="@+id/nav_log_out"
+            android:icon="@drawable/ic_action_io"
+            android:title="@string/nav_opt_logout" />
+    </group>
+</menu>
