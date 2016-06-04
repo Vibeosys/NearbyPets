@@ -6,7 +6,17 @@
     android:layout_margin="16dp"
     tools:context="com.nearbypets.activities.SettingActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
     <ScrollView
+        android:id="@+id/formSettings"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,6 +33,7 @@
                 android:textColor="@color/tirnaryText" />
 
             <EditText
+                android:id="@+id/txtPageSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -38,6 +49,7 @@
                 android:textColor="@color/tirnaryText" />
 
             <EditText
+                android:id="@+id/txtFbAd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -53,6 +65,7 @@
                 android:textColor="@color/tirnaryText" />
 
             <EditText
+                android:id="@+id/txtRadius"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -60,6 +73,17 @@
                 android:inputType="number"
                 android:text="10000" />
 
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/button_custom"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="Save Settings"
+                android:textColor="@android:color/white" />
             <!--<Switch
                 android:id="@+id/printKOT"
                 android:layout_width="match_parent"

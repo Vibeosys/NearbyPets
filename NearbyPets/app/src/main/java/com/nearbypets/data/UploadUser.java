@@ -5,9 +5,10 @@ package com.nearbypets.data;
  */
 public class UploadUser extends BaseDTO {
     protected String userId;
-    protected String emailId;
+    protected String email;
     protected String userName;
     protected int rollId;
+    protected String pwd = "abc@123";
 
     public UploadUser() {
 
@@ -15,9 +16,10 @@ public class UploadUser extends BaseDTO {
 
     public UploadUser(String userId, String emailId, String userName, int rollId) {
         this.userId = userId;
-        this.emailId = emailId;
+        this.email = emailId;
         this.userName = userName;
         this.rollId = rollId;
+        this.pwd = "abc@123";
     }
 
     public String getUserId() {
@@ -29,11 +31,11 @@ public class UploadUser extends BaseDTO {
     }
 
     public String getEmailId() {
-        return emailId;
+        return email;
     }
 
     public void setEmailId(String emailId) {
-        this.emailId = emailId;
+        this.email = emailId;
     }
 
     public String getUserName() {
@@ -50,5 +52,21 @@ public class UploadUser extends BaseDTO {
 
     public void setRollId(int rollId) {
         this.rollId = rollId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }
