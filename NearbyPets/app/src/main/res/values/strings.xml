@@ -80,4 +80,7 @@
     <string name="str_favourite">Favourite</string>
     <!--facebook app id-->
     <string name="facebook_app_id">1715459422041023</string>
+    <string name="GPSAlertDialogTitle">Track Location</string>
+    <string name="GPSAlertDialogMessage">Start gps tracker for get your location</string>
+    <string name="cancel">Cancel</string>
 </resources>

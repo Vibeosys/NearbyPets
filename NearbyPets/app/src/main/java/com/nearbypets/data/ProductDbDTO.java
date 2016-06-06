@@ -9,15 +9,25 @@ import java.util.List;
  * Created by akshay on 03-06-2016.
  */
 public class ProductDbDTO extends BaseDTO {
+    private String adid;
     private String name;
     private String image;
     private String description;
     private double distance;
+    private String date;
     private double price;
    /* private boolean mFavouriteFlag;
     private String mDate;*/
 
     public ProductDbDTO() {
+    }
+
+    public String getAdid() {
+        return adid;
+    }
+
+    public void setAdid(String adid) {
+        this.adid = adid;
     }
 
     public String getName() {
@@ -58,6 +68,14 @@ public class ProductDbDTO extends BaseDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public static List<ProductDbDTO> deserialize(List<String> serializedStringList) {

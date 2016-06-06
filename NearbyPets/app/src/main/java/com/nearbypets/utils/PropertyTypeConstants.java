@@ -17,5 +17,7 @@ public final class PropertyTypeConstants {
     public static final String USER_ROLL_ID = "user.roleid";
     public static final String USER_PHOTO_URL = "user.photo.url";
     public static final String USER_PHONE = "user.phone";
+    public static final String USER_TOKAN = "user.access.tokan";
+    public static final String USER_PASSWORD = "user.pass";
 
 }

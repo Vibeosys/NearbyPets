@@ -46,7 +46,8 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
         formView = findViewById(R.id.formSettings);
         progressBar = findViewById(R.id.progressBar);
         btnSave.setOnClickListener(this);
-
+        mServerSyncManager.setOnStringErrorReceived(this);
+        mServerSyncManager.setOnStringResultReceived(this);
     }
 
     @Override

@@ -11,17 +11,18 @@ import android.widget.Spinner;
 
 import com.nearbypets.R;
 import com.nearbypets.adapters.ProductListAdapter;
+import com.nearbypets.data.BaseDTO;
 import com.nearbypets.data.ProductDataDTO;
 
 import java.util.ArrayList;
 
-public class ProductListActivity extends AppCompatActivity {
+public class ProductListActivity extends BaseActivity {
 
-    private ListView mListViewProduct;
-    private ProductListAdapter mProductAdapter;
+    protected ListView mListViewProduct;
+    protected ProductListAdapter mProductAdapter;
 
-    private ArrayAdapter<String> mSortAdapter;
-    private Spinner spnSortBy;
+    protected ArrayAdapter<String> mSortAdapter;
+    protected Spinner spnSortBy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

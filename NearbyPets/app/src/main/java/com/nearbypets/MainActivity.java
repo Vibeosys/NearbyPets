@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.facebook.login.LoginManager;
@@ -34,12 +35,15 @@ import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.ProductListDbDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.UserAuth;
 
@@ -59,6 +63,7 @@ public class MainActivity extends BaseActivity
     private SwipeRefreshLayout swipeRefreshLayout;
     DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
+    GPSTracker gpsTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,11 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (!UserAuth.isUserLoggedIn()) {
+            // finish();
+            callLogin();
+        }
+        gpsTracker = new GPSTracker(getApplicationContext());
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
@@ -77,37 +87,6 @@ public class MainActivity extends BaseActivity
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
-
-       /* mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
-
-        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title3", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 13/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 13/05/2016"));
-
-        mProductAdapter.addSectionAdItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
-
-        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title5", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title6", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "Posted On 12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 12/05/2016"));
-        mProductAdapter.addSectionAdItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "Posted On 14/05/2016"));
-*/
 
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +133,19 @@ public class MainActivity extends BaseActivity
                                         swipeRefreshLayout.setRefreshing(true);
 
                                         fetchList();
+                                       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener() {
+                                            @Override
+                                            public boolean onLoadMore(int page, int totalItemsCount) {
+                                                customLoadMoreDataFromApi(page);
+                                                // or customLoadMoreDataFromApi(totalItemsCount);
+                                                return true;
+                                            }
+
+                                            @Override
+                                            public int getFooterViewType() {
+                                                return 0;
+                                            }
+                                        });*/
                                         //logic to refersh list
                                     }
                                 }
@@ -170,9 +162,17 @@ public class MainActivity extends BaseActivity
         }
     }
 
+    private void customLoadMoreDataFromApi(int page) {
+        fetchList();
+    }
+
 
     private void fetchList() {
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST);
+        Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
+        ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", 1);
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(productListDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
     }
 
@@ -253,10 +253,13 @@ public class MainActivity extends BaseActivity
             startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
 
         } else if (id == R.id.nav_log_out) {
-            LoginManager.getInstance().logOut();
-            UserAuth userAuth = new UserAuth();
-            userAuth.CleanAuthenticationInfo();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            try {
+                LoginManager.getInstance().logOut();
+            } catch (Exception e) {
+
+            }
+            UserAuth.CleanAuthenticationInfo();
+            callLogin();
 
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(getApplicationContext(), SettingActivity.class));
@@ -280,6 +283,7 @@ public class MainActivity extends BaseActivity
     public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
         switch (requestTokan) {
             case REQ_TOKEN_LIST:
+                Log.i("TAG", "data" + data);
                 try {
                     DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
                     updateSettings(downloadProductDbDataDTO.getSettings());
@@ -288,7 +292,7 @@ public class MainActivity extends BaseActivity
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }
-                Log.i("TAG", "data" + data);
+
                 swipeRefreshLayout.setRefreshing(false);
                 break;
         }
@@ -303,5 +307,11 @@ public class MainActivity extends BaseActivity
         }
     }
 
+    public void callLogin() {
+        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(loginIntent);
+        finish();
+    }
 
 }

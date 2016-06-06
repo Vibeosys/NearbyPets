@@ -161,6 +161,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                                     String lastName = object.getString("last_name");
                                     String accessTokan = loginResult.getAccessToken().toString();
                                     callToRegister(firstName, lastName, email, accessTokan);
+                                    mSessionManager.setUserAccessTokan(accessTokan);
                                     Log.d(TAG, "## email" + email + " first Name" + firstName + " lastname " + lastName);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -325,7 +326,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LoginManager.getInstance().logOut();
+        //LoginManager.getInstance().logOut();
     }
 
     @Override

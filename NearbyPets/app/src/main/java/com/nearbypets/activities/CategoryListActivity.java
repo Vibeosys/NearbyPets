@@ -73,7 +73,7 @@ public class CategoryListActivity extends BaseActivity implements
         mCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+                startActivity(new Intent(getApplicationContext(), ClassifiedAdsActivity.class));
             }
         });
     }

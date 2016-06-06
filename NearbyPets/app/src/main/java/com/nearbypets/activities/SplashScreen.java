@@ -10,6 +10,7 @@ import com.nearbypets.R;
 
 public class SplashScreen extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +26,7 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                Intent mainRun = new Intent(SplashScreen.this, LoginActivity.class);
+                Intent mainRun = new Intent(SplashScreen.this, MainActivity.class);
                 startActivity(mainRun);
 
                 // close this activity

@@ -115,6 +115,22 @@ public class SessionManager {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_EMAIL_ID, userEmailId);
     }
 
+    public String getUserAccessTokan() {
+        return mProjectSharedPref.getString(PropertyTypeConstants.USER_TOKAN, null);
+    }
+
+    public void setUserAccessTokan(String userAccessTokan) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_TOKAN, userAccessTokan);
+    }
+
+    public String getUserPassword() {
+        return mProjectSharedPref.getString(PropertyTypeConstants.USER_PASSWORD, null);
+    }
+
+    public void setUserPassword(String userPassword) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_PASSWORD, userPassword);
+    }
+
     public void setUserActive(boolean active) {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_IS_ACTIVE, String.valueOf(active));
     }

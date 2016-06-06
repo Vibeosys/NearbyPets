@@ -108,7 +108,7 @@ public class ServerSyncManager
         Upload uploadToServer = new Upload();
         uploadToServer.setUser(new UploadUser(mSessionManager.getUserId(),
                 mSessionManager.getUserEmailId(), mSessionManager.getUserName(),
-                mSessionManager.getUserRollId()));
+                mSessionManager.getUserRollId(), mSessionManager.getUserPassword()));
         uploadToServer.setData(Arrays.asList(params));
         String uploadJson = uploadToServer.serializeString();
         Log.i(TAG, "## request json" + uploadJson);

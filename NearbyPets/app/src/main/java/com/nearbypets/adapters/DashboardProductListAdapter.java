@@ -140,8 +140,8 @@ public class DashboardProductListAdapter extends BaseAdapter {
                 holder.txtProductTitle.setText(product.getProductName());
                 holder.txtDesc.setText(product.getProductDesc());
                 holder.txtDistance.setText(product.getDistance());
-                int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
-                holder.imgProductImage.setImageResource(imgResId);
+                /*int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
+                holder.imgProductImage.setImageResource(imgResId);*/
                 holder.txtProductPrice.setText(mContext.getResources().
                         getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
                 mImageLoader = CustomVolleyRequestQueue.getInstance(mContext)

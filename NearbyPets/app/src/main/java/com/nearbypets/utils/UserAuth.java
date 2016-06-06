@@ -91,6 +91,7 @@ public class UserAuth {
         theSessionManager.setUserEmailId(null);
         theSessionManager.setUserRollId(0);
         theSessionManager.setPhone(null);
+        theSessionManager.setUserAccessTokan(null);
        /* theSessionManager.setUserLoginRegdSource(RegistrationSourceTypes.NONE);
         theSessionManager.setUserRegdApiKey(null);*/
 
