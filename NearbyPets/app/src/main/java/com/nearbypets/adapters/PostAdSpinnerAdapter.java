@@ -71,4 +71,7 @@ public class PostAdSpinnerAdapter extends BaseAdapter {
     public void clear() {
         mCategories.clear();
     }
+
+
+
 }
