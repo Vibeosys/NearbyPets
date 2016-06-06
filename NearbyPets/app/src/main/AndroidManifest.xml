@@ -86,6 +86,7 @@
             android:name=".activities.PostedAdDetailsActivity"
             android:parentActivityName=".activities.PostedAdListActivity" />
         <activity android:name=".activities.SavedAdListActivity"></activity>
+        <activity android:name=".activities.SavedAdDetailsActivity"></activity>
     </application>
 
 </manifest>
