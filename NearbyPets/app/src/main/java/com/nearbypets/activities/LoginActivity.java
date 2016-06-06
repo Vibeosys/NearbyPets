@@ -278,7 +278,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                 }
                 break;
             case REQ_TOKEN_REGISTER:
-                showProgress(true, formView, progressBar);
+                showProgress(false, formView, progressBar);
                 Log.d("RESULT", "##REQ" + data.toString());
                 try {
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);

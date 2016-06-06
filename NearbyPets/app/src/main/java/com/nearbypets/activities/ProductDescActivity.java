@@ -1,22 +1,16 @@
 package com.nearbypets.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.facebook.ads.AdSettings;
@@ -29,8 +23,9 @@ import com.nearbypets.adapters.ImageFragmentPagerAdapter;
 import com.nearbypets.data.GetProductDescDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDecs;
+import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.data.downloaddto.ProductDescDbDTO;
-import com.nearbypets.data.downloaddto.ProductImagesDbDTO;
 import com.nearbypets.data.downloaddto.SaveAnAdDbDTO;
 import com.nearbypets.fragments.SwipeFragment;
 import com.nearbypets.utils.AppConstants;
@@ -70,8 +65,16 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         setTitle(getResources().getString(R.string.activity_product_desc));
         imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager(), mImageArray);
         SwipeFragment.setCustomButtonListner(this);
-        mDistance = Double.parseDouble(getIntent().getExtras().getString(AppConstants.PRODUCT_DISTANCE));
-        mAdID = getIntent().getExtras().getString(AppConstants.PRODUCT_AD_ID);
+        try {
+            mDistance = Double.parseDouble(getIntent().getExtras().getString(AppConstants.PRODUCT_DISTANCE));
+        } catch (Exception e) {
+            Log.e("TAG", "ERROR IN PRODUCT DESC DISTANCE");
+        }
+        try {
+            mAdID = getIntent().getExtras().getString(AppConstants.PRODUCT_AD_ID);
+        } catch (Exception e) {
+            Log.e("TAG", "ERROR IN PRODUCT DESC AD ID");
+        }
         setUpUI();
         callToDesc();
         mServerSyncManager.setOnStringResultReceived(this);
@@ -212,9 +215,30 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 Log.i("TAG", "data" + data);
                 break;
             case REQ_TOKAN_SAVE_AD:
-                showProgress(false, formView, progressBar);
-                Log.i("TAG", "data" + data);
+                showProgress(true, formView, progressBar);
+                Log.d("RESULT", "##REQ" + data.toString());
+                try {
+                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
+                    updateSettings(download.getSettings());
+                    Log.i(TAG, download.toString());
+                    checkStatus(download.getData());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
                 break;
+        }
+    }
+
+    private void checkStatus(ArrayList<NotificationDTO> notificationDTOs) {
+
+        NotificationDTO notificationDTO = notificationDTOs.get(0);
+        if (notificationDTO.getErrorCode() == 0 || notificationDTO.getErrorCode() == 102) {
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+            Toast.makeText(getApplicationContext(), "" + notificationDTO.getMessage(), Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            createAlertDialog("Login error", "" + notificationDTO.getMessage());
+            Log.i("TAG", "##" + notificationDTO.getMessage());
         }
     }
 
