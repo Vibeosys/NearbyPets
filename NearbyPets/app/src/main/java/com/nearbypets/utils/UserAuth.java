@@ -69,6 +69,8 @@ public class UserAuth {
         theSessionManager.setUserEmailId(userInfo.getEmail());
         theSessionManager.setUserRollId(userInfo.getRoleid());
         theSessionManager.setPhone(userInfo.getPhone());
+        theSessionManager.setUserPassword(userInfo.getPwd());
+        theSessionManager.setUserAccessTokan(userInfo.getToken());
         //theSessionManager.setUserPhotoUrl(userInfo.getPhotoURL());
         //theSessionManager.setUserLoginRegdSource(userInfo.getLoginSource());
         // theSessionManager.setUserRegdApiKey(userInfo.getApiKey());
@@ -91,6 +93,8 @@ public class UserAuth {
         theSessionManager.setUserEmailId(null);
         theSessionManager.setUserRollId(0);
         theSessionManager.setPhone(null);
+        theSessionManager.setUserAccessTokan(null);
+        theSessionManager.setUserPassword(null);
         theSessionManager.setUserAccessTokan(null);
        /* theSessionManager.setUserLoginRegdSource(RegistrationSourceTypes.NONE);
         theSessionManager.setUserRegdApiKey(null);*/

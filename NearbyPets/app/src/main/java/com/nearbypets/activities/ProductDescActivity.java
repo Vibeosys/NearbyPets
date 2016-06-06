@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import com.android.volley.VolleyError;
 import com.facebook.ads.AdSettings;
@@ -25,13 +26,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.adapters.ImageFragmentPagerAdapter;
+import com.nearbypets.data.GetProductDescDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDecs;
 import com.nearbypets.data.downloaddto.ProductDescDbDTO;
 import com.nearbypets.data.downloaddto.ProductImagesDbDTO;
+import com.nearbypets.data.downloaddto.SaveAnAdDbDTO;
 import com.nearbypets.fragments.SwipeFragment;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.DateUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -41,19 +45,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ProductDescActivity extends BaseActivity implements SwipeFragment.CustomCall,
-        ServerSyncManager.OnStringResultReceived, ServerSyncManager.OnStringErrorReceived {
+        ServerSyncManager.OnStringResultReceived, ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
     static final int NUM_ITEMS = 6;
-    ImageFragmentPagerAdapter imageFragmentPagerAdapter;
-    private RobotoMediumTextView mTxtProductTitle, mTxtProductPrice;
-    private RobotoRegularTextView mTxtProductDesc, mTxtSellerName, mTxtSellerPh, mTxtSellerEmail,
+    protected ImageFragmentPagerAdapter imageFragmentPagerAdapter;
+    protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice;
+    protected RobotoRegularTextView mTxtProductDesc, mTxtSellerName, mTxtSellerPh, mTxtSellerEmail,
             mTxtAdded, mTxtViews, mTxtDistance;
     ViewPager viewPager;
-    private static ArrayList<String> mImageArray = new ArrayList<>();
-    private final int REQ_TOKAN_DESC = 1;
-    private View formView;
-    private View progressBar;
-    private int mScreenFlag;
-    private Button btnAddToFav, btnSoldOut, btnDisable;
+    protected static ArrayList<String> mImageArray = new ArrayList<>();
+    protected final int REQ_TOKAN_DESC = 1;
+    protected final int REQ_TOKAN_SAVE_AD = 2;
+    protected View formView;
+    protected View progressBar;
+    //private int mScreenFlag;
+    protected Button btnAddToFav, btnSoldOut, btnDisable;
+    protected double mDistance;
+    protected String mAdID;
+    protected String mAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +70,8 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         setTitle(getResources().getString(R.string.activity_product_desc));
         imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager(), mImageArray);
         SwipeFragment.setCustomButtonListner(this);
-        mScreenFlag = getIntent().getExtras().getInt(AppConstants.PRODUCT_DESC_FLAG);
-
+        mDistance = Double.parseDouble(getIntent().getExtras().getString(AppConstants.PRODUCT_DISTANCE));
+        mAdID = getIntent().getExtras().getString(AppConstants.PRODUCT_AD_ID);
         setUpUI();
         callToDesc();
         mServerSyncManager.setOnStringResultReceived(this);
@@ -90,6 +98,9 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         btnSoldOut = (Button) findViewById(R.id.btnSoldOut);
         btnDisable = (Button) findViewById(R.id.btnDisable);
 
+        btnAddToFav.setOnClickListener(this);
+        btnSoldOut.setOnClickListener(this);
+        btnDisable.setOnClickListener(this);
         RelativeLayout adViewContainer = (RelativeLayout) findViewById(R.id.adViewContainer);
         AdView adView = new AdView(getApplicationContext(), "1715459422041023_1722420624678236", AdSize.BANNER_320_50);
         adViewContainer.addView(adView);
@@ -128,24 +139,27 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
             }
         });
-        switch (mScreenFlag) {
+       /* switch (mScreenFlag) {
             case AppConstants.VIEW_AD_DETAILS_SCREEN:
                 btnDisable.setVisibility(View.GONE);
                 btnSoldOut.setVisibility(View.GONE);
                 break;
             default:
                 break;
-        }
+        }*/
     }
 
     private void callToDesc() {
         showProgress(true, formView, progressBar);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_DESC);
+        GetProductDescDbDTO productListDbDTO = new GetProductDescDbDTO(mAdID);
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(productListDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_DESC, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKAN_DESC, tableDataDTO);
     }
 
     protected void callToMap(View v) {
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=1600 Amphitheatre Parkway, Mountain+View, California");
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + mAddress);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
@@ -174,6 +188,11 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 createAlertDialog("Error", error.getMessage());
                 Log.i(TAG, "##" + error.toString());
                 break;
+            case REQ_TOKAN_SAVE_AD:
+                showProgress(false, formView, progressBar);
+                createAlertDialog("Error", error.getMessage());
+                Log.i(TAG, "##" + error.toString());
+                break;
         }
     }
 
@@ -192,30 +211,56 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 }
                 Log.i("TAG", "data" + data);
                 break;
+            case REQ_TOKAN_SAVE_AD:
+                showProgress(false, formView, progressBar);
+                Log.i("TAG", "data" + data);
+                break;
         }
     }
 
-    private void updateUI(ArrayList<ProductDescDbDTO> data) {
-        for (ProductDescDbDTO product : data) {
-            mTxtProductTitle.setText(product.getPet().getTitle());
-            mTxtProductPrice.setText(getResources().getString(R.string.str_euro_price_symbol) + " "
-                    + String.format("%.0f", product.getPet().getPrice()));
-            mTxtProductDesc.setText(product.getPet().getDescription());
-            mTxtSellerName.setText(product.getSeller().getName());
-            mTxtSellerPh.setText(product.getSeller().getPhone());
-            mTxtSellerEmail.setText(product.getSeller().getEmail());
-            mTxtAdded.setText(product.getDetails().getDate());
-            mTxtViews.setText("" + product.getDetails().getViews());
-            mTxtDistance.setText(String.format("%.0f", product.getDetails().getDistance())
-                    + " kilometers away from you.");
-            ArrayList<ProductImagesDbDTO> images = product.getImages();
-            mImageArray.clear();
-            for (int j = 0; j < images.size(); j++) {
-                mImageArray.add(images.get(j).getUrl());
-            }
-            imageFragmentPagerAdapter.notifyDataSetChanged();
+    private void updateUI(ProductDescDbDTO product) {
+
+        mTxtProductTitle.setText(product.getAdTitle());
+        mTxtProductPrice.setText(getResources().getString(R.string.str_euro_price_symbol) + " "
+                + String.format("%.2f", product.getPrice()));
+        mTxtProductDesc.setText(product.getDescription());
+        mTxtSellerName.setText(product.getName());
+        mTxtSellerPh.setText(product.getPhone());
+        mTxtSellerEmail.setText(product.getEmail());
+        DateUtils date = new DateUtils();
+        mTxtAdded.setText(date.getLocalDateInFormat(product.getPostedDt()));
+        mTxtViews.setText("" + product.getAdViews());
+        mTxtDistance.setText(String.format("%.2f", mDistance)
+                + " kilometers away from you.");
+        mAddress = product.getAdAddress();
+        ArrayList<String> images = product.getImages();
+        mImageArray.clear();
+        for (int j = 0; j < images.size(); j++) {
+            mImageArray.add(images.get(j));
+        }
+        imageFragmentPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.btnAddToFav:
+                callToSaveAd();
+                break;
+            case R.id.btnDisable:
+                break;
+            case R.id.btnSoldOut:
+                break;
         }
     }
 
-
+    private void callToSaveAd() {
+        showProgress(true, formView, progressBar);
+        SaveAnAdDbDTO saveAnAdDbDTO = new SaveAnAdDbDTO(mAdID, mSessionManager.getUserId());
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(saveAnAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
+    }
 }

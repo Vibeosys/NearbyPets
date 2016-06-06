@@ -6,11 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.utils.AppConstants;
 import com.nearbypets.views.RobotoItalicTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -25,22 +28,30 @@ public class ProductListAdapter extends BaseAdapter {
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
-
+    private int activityFlag = 0;
+    private int roleId;
     private Context mContext;
     private ArrayList<ProductDataDTO> mProductList = new ArrayList<ProductDataDTO>();
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
+    CustomButtonListener customButtonListener;
+    CustomItemListener customItemListener;
 
     private LayoutInflater mInflater;
 
-    public ProductListAdapter(Context context) {
+    public ProductListAdapter(Context context, int roleId) {
         this.mContext = context;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.roleId = roleId;
     }
 
     public void addItem(final ProductDataDTO item) {
         mProductList.add(item);
         notifyDataSetChanged();
+    }
+
+    public void setActivityFlag(int flag) {
+        this.activityFlag = flag;
     }
 
     public void addSectionHeaderItem(final ProductDataDTO item) {
@@ -75,7 +86,7 @@ public class ProductListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         int rowType = getItemViewType(position);
 
@@ -91,6 +102,7 @@ public class ProductListAdapter extends BaseAdapter {
                     holder.txtDistance = (RobotoItalicTextView) convertView.findViewById(R.id.txtDistance);
                     holder.imgFavourite = (ImageView) convertView.findViewById(R.id.imgFavourite);
                     holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
+                    holder.btnHide = (TextView) convertView.findViewById(R.id.btnHideAd);
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.row_product_list_header, null);
@@ -101,21 +113,67 @@ public class ProductListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ProductDataDTO product = mProductList.get(position);
+        final ProductDataDTO product = mProductList.get(position);
         switch (rowType) {
             case TYPE_ITEM:
+
                 holder.txtProductTitle.setText(product.getProductName());
                 holder.txtDesc.setText(product.getProductDesc());
-                holder.txtDistance.setText(product.getDistance());
+                holder.txtDistance.setText("" + product.getDistance() + " kilometers away from you");
                 int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
                 holder.imgProductImage.setImageResource(imgResId);
                 holder.txtProductPrice.setText(mContext.getResources().
                         getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
                 holder.txtDate.setText(product.getDate());
+
+                if (activityFlag == AppConstants.POSTED_AD_FLAG_ADAPTER)
+                    holder.imgFavourite.setVisibility(View.GONE);
+                else
+                    holder.imgFavourite.setVisibility(View.VISIBLE);
                 if (product.isFavouriteFlag())
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
                 else
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
+                holder.imgFavourite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customButtonListener != null)
+                            customButtonListener.onButtonClickListener(v.getId(), position, product.isFavouriteFlag(), product);
+                    }
+                });
+                holder.txtProductTitle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                holder.txtDesc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                holder.txtDistance.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                holder.imgProductImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                if (roleId == AppConstants.ROLL_ID_USER) {
+                    holder.btnHide.setVisibility(View.GONE);
+                } else {
+                    holder.btnHide.setVisibility(View.VISIBLE);
+                }
                 break;
             case TYPE_SEPARATOR:
 
@@ -132,6 +190,22 @@ public class ProductListAdapter extends BaseAdapter {
         RobotoItalicTextView txtDistance;
         ImageView imgFavourite, imgProductImage;
         RobotoMediumTextView txtDate;
+        TextView btnHide;
+    }
 
+    public void setCustomButtonListner(CustomButtonListener listener) {
+        this.customButtonListener = listener;
+    }
+
+    public interface CustomButtonListener {
+        public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData);
+    }
+
+    public void setCustomItemListner(CustomItemListener listener) {
+        this.customItemListener = listener;
+    }
+
+    public interface CustomItemListener {
+        public void onItemClickListener(int position, ProductDataDTO productData);
     }
 }

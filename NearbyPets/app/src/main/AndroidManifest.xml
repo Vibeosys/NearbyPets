@@ -20,7 +20,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.LoginActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -71,7 +71,16 @@
             android:parentActivityName=".activities.ProductDescActivity" />
         <activity
             android:name=".activities.ClassifiedAdsActivity"
-            android:parentActivityName=".activities.CategoryListActivity"></activity>
+            android:parentActivityName=".activities.CategoryListActivity" />
+        <activity
+            android:name=".activities.ClassfiedProductDescActivity"
+            android:parentActivityName=".activities.ClassifiedAdsActivity" />
+        <activity
+            android:name=".activities.PostedAdListActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activities.PostedAdDetailsActivity"
+            android:parentActivityName=".activities.PostedAdListActivity"></activity>
     </application>
 
 </manifest>

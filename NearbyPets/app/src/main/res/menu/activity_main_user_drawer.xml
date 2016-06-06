@@ -7,11 +7,11 @@
             android:icon="@drawable/ic_perm_identity_black_24dp"
             android:title="@string/nav_opt_my_details" />
         <item
-            android:id="@+id/nav_my_posted_ads"
+            android:id="@+id/nav_my_saved_ads"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/nav_opt_my_saved_ads" />
         <item
-            android:id="@+id/nav_my_saved_ads"
+            android:id="@+id/nav_my_posted_ads"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/nav_opt_my_posted_ads" />
         <item

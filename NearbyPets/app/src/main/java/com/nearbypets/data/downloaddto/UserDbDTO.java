@@ -13,6 +13,8 @@ public class UserDbDTO extends BaseDTO {
     private String email;
     private String phone;
     private int roleid;
+    private String pwd;
+    private String token;
 
     public UserDbDTO() {
     }
@@ -63,5 +65,21 @@ public class UserDbDTO extends BaseDTO {
 
     public void setRoleid(int roleid) {
         this.roleid = roleid;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

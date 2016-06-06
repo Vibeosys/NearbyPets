@@ -6,7 +6,10 @@ package com.nearbypets.utils;
 public class AppConstants {
 
     public static final String PRODUCT_DESC_FLAG = "ProdcutDescScreenFlag";
+    public static final String PRODUCT_DISTANCE = "ProdcutDistance";
+    public static final String PRODUCT_AD_ID = "ProdcutAdId";
     public static final int VIEW_AD_DETAILS_SCREEN = 1;
     public static final int ROLL_ID_USER = 2;
     public static final int ROLL_ID_ADMIN = 1;
+    public static final int POSTED_AD_FLAG_ADAPTER = 1;
 }

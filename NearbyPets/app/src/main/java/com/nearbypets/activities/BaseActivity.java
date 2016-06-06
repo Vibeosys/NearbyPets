@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,6 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static SessionManager mSessionManager = null;
     protected final static String TAG = "com.nearbypets";
     //protected Tracker mTracker;
+    protected static HashMap<String, String> settingMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +67,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         mSessionManager = SessionManager.getInstance(getApplicationContext());
         mServerSyncManager = new ServerSyncManager(getApplicationContext(), mSessionManager);
         //mDbRepository = new DbRepository(getApplicationContext(), mSessionManager);
-
+        settingMap.put("AdSearchDistanceInKM", "10000");
+        settingMap.put("ClassifiedAdPageSize", "10");
+        settingMap.put("FacebookAdPageSize", "5");
 
     }
 
     protected void updateSettings(ArrayList<SettingsDTO> settings) {
         //Add logic to update settings
+        for (SettingsDTO setting : settings
+                ) {
+            settingMap.put(setting.getKey(), setting.getValue());
+        }
     }
 
     protected void downloadImgFromFbGPlusAndUploadToAws(final String url) {

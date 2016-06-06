@@ -28,6 +28,7 @@ import com.nearbypets.activities.BaseActivity;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
+import com.nearbypets.activities.PostedAdListActivity;
 import com.nearbypets.activities.ProductDescActivity;
 import com.nearbypets.activities.ProductListActivity;
 import com.nearbypets.activities.SettingActivity;
@@ -87,7 +88,7 @@ public class MainActivity extends BaseActivity
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
-
+        mListViewProduct.setAdapter(mProductAdapter);
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,8 +116,10 @@ public class MainActivity extends BaseActivity
         mListViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
                 Intent intent = new Intent(getApplicationContext(), ProductDescActivity.class);
-                intent.putExtra(AppConstants.PRODUCT_DESC_FLAG, AppConstants.VIEW_AD_DETAILS_SCREEN);
+                intent.putExtra(AppConstants.PRODUCT_DISTANCE, productDataDTO.getDistance());
+                intent.putExtra(AppConstants.PRODUCT_AD_ID, productDataDTO.getAdId());
                 startActivity(intent);
             }
         });
@@ -132,20 +135,8 @@ public class MainActivity extends BaseActivity
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
 
-                                        fetchList();
-                                       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener() {
-                                            @Override
-                                            public boolean onLoadMore(int page, int totalItemsCount) {
-                                                customLoadMoreDataFromApi(page);
-                                                // or customLoadMoreDataFromApi(totalItemsCount);
-                                                return true;
-                                            }
+                                        fetchList(1);
 
-                                            @Override
-                                            public int getFooterViewType() {
-                                                return 0;
-                                            }
-                                        });*/
                                         //logic to refersh list
                                     }
                                 }
@@ -160,16 +151,24 @@ public class MainActivity extends BaseActivity
                 navigationView.inflateMenu(R.menu.activity_main_user_drawer);
                 break;
         }
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
     }
 
     private void customLoadMoreDataFromApi(int page) {
-        fetchList();
+        fetchList(page);
     }
 
 
-    private void fetchList() {
-        Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
-        ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", 1);
+    private void fetchList(int pageNo) {
+        //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
+        ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(productListDbDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
@@ -178,7 +177,7 @@ public class MainActivity extends BaseActivity
 
     //update the product list adapter
     private void updateList(ArrayList<ProductDbDTO> data) {
-        mProductAdapter.clear();
+        //mProductAdapter.clear();
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
         for (int i = 0; i < productDataDTOs.size(); i++) {
@@ -187,8 +186,8 @@ public class MainActivity extends BaseActivity
                 mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
             }
         }
-        mListViewProduct.setAdapter(mProductAdapter);
-        mProductAdapter.notifyDataSetChanged();
+        //
+        //mProductAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -236,7 +235,7 @@ public class MainActivity extends BaseActivity
             // Handle the camera action
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (id == R.id.nav_my_posted_ads) {
-            startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+            startActivity(new Intent(getApplicationContext(), PostedAdListActivity.class));
            /* Uri gmmIntentUri = Uri.parse("geo:0,0?q=1600 Amphitheatre Parkway, Mountain+View, California");
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
@@ -276,7 +275,8 @@ public class MainActivity extends BaseActivity
     @Override
     public void onRefresh() {
 //logic to refersh list
-        fetchList();
+        mProductAdapter.clear();
+        fetchList(1);
     }
 
     @Override

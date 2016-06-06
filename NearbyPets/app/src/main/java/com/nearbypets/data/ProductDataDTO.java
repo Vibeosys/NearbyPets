@@ -5,16 +5,18 @@ package com.nearbypets.data;
  */
 public class ProductDataDTO {
 
+    private String mAdId;
     private String mProductName;
     private String mProductImage;
     private String mProductDesc;
-    private String mDistance;
+    private double mDistance;
     private double mPrice;
     private boolean mFavouriteFlag;
     private String mDate;
 
-    public ProductDataDTO(String productName, String productImage, String productDesc,
-                          String distance, double price, boolean favouriteFlag, String date) {
+    public ProductDataDTO(String adId, String productName, String productImage, String productDesc,
+                          double distance, double price, boolean favouriteFlag, String date) {
+        this.mAdId = adId;
         this.mProductName = productName;
         this.mProductImage = productImage;
         this.mProductDesc = productDesc;
@@ -22,6 +24,25 @@ public class ProductDataDTO {
         this.mPrice = price;
         this.mFavouriteFlag = favouriteFlag;
         this.mDate = date;
+    }
+
+    public ProductDataDTO(String mProductName, String mProductImage, String mProductDesc,
+                          double mDistance, double mPrice, boolean mFavouriteFlag, String mDate) {
+        this.mProductName = mProductName;
+        this.mProductImage = mProductImage;
+        this.mProductDesc = mProductDesc;
+        this.mDistance = mDistance;
+        this.mPrice = mPrice;
+        this.mFavouriteFlag = mFavouriteFlag;
+        this.mDate = mDate;
+    }
+
+    public String getAdId() {
+        return mAdId;
+    }
+
+    public void setAdId(String mAdId) {
+        this.mAdId = mAdId;
     }
 
     public String getProductName() {
@@ -48,11 +69,11 @@ public class ProductDataDTO {
         this.mProductDesc = mProductDesc;
     }
 
-    public String getDistance() {
+    public double getDistance() {
         return mDistance;
     }
 
-    public void setDistance(String mDistance) {
+    public void setDistance(double mDistance) {
         this.mDistance = mDistance;
     }
 

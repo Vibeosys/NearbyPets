@@ -3,6 +3,7 @@ package com.nearbypets.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,7 +17,7 @@ import com.nearbypets.data.ProductDataDTO;
 
 import java.util.ArrayList;
 
-public class ProductListActivity extends BaseActivity {
+public class ProductListActivity extends BaseActivity implements ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener {
 
     protected ListView mListViewProduct;
     protected ProductListAdapter mProductAdapter;
@@ -39,41 +40,47 @@ public class ProductListActivity extends BaseActivity {
         spnSortBy.setAdapter(mSortAdapter);
 
 
-        mProductAdapter = new ProductListAdapter(this);
-
-
+        mProductAdapter = new ProductListAdapter(this, mSessionManager.getUserRollId());
+        mProductAdapter.setCustomButtonListner(this);
+        mProductAdapter.setCustomItemListner(this);
         mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title3", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "13/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "13/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "13/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, true, "13/05/2016"));
 
         mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "13/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "13/05/2016"));
 
         mProductAdapter.addItem(new ProductDataDTO("Product Title5", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "12/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, true, "12/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title6", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, true, "12/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, true, "12/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "12/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "12/05/2016"));
         mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", "10 kilometers away from you", 100, false, "14/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
 
         mListViewProduct.setAdapter(mProductAdapter);
+    }
 
-        mListViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getApplicationContext(), ProductDescActivity.class));
-            }
-        });
+    @Override
+    public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
+        productData.setFavouriteFlag(!value);
+        mProductAdapter.notifyDataSetChanged();
+        Log.i("TAG", "## imageClick" + value);
+    }
+
+    @Override
+    public void onItemClickListener(int position, ProductDataDTO productData) {
+        //Intent
+        Log.i("TAG", "## Call To intent");
     }
 }
