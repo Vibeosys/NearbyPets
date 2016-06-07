@@ -183,6 +183,10 @@ public class ProductListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void clear() {
+        this.mProductList.clear();
+    }
+
     public static class ViewHolder {
         RobotoMediumTextView txtProductTitle;
         RobotoMediumTextView txtProductPrice;

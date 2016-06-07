@@ -43,7 +43,7 @@ public class ProductListActivity extends BaseActivity implements ProductListAdap
         mProductAdapter = new ProductListAdapter(this, mSessionManager.getUserRollId());
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
-        mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
+       /* mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
         mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
@@ -66,7 +66,7 @@ public class ProductListActivity extends BaseActivity implements ProductListAdap
         mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
                 "consectetur adipiscing elit.", 10, 100, false, "12/05/2016"));
         mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
+                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));*/
 
         mListViewProduct.setAdapter(mProductAdapter);
     }

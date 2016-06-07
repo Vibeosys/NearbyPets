@@ -31,6 +31,7 @@ import com.nearbypets.activities.PostMyAdActivity;
 import com.nearbypets.activities.PostedAdListActivity;
 import com.nearbypets.activities.ProductDescActivity;
 import com.nearbypets.activities.ProductListActivity;
+import com.nearbypets.activities.SavedAdListActivity;
 import com.nearbypets.activities.SettingActivity;
 import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
@@ -242,7 +243,7 @@ public class MainActivity extends BaseActivity
             startActivity(mapIntent);*/
 
         } else if (id == R.id.nav_my_saved_ads) {
-            startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+            startActivity(new Intent(getApplicationContext(), SavedAdListActivity.class));
 
 
         } else if (id == R.id.nav_view_categories) {

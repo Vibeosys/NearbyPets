@@ -13,6 +13,8 @@ import com.nearbypets.utils.AppConstants;
 public class ClassifiedAdsActivity extends ProductListActivity implements
         ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener {
 
+    private int mCategoryId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +22,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         setTitle("Classified Ads");
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
+        mCategoryId = getIntent().getExtras().getInt(AppConstants.CATEGORY_ID);
     }
 
     @Override

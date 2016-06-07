@@ -23,6 +23,7 @@ import com.nearbypets.data.CategoryDbDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.CategoryListDBDTO;
+import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.ServerSyncManager;
 
@@ -51,13 +52,6 @@ public class CategoryListActivity extends BaseActivity implements
         swipeRefreshLayout.setOnRefreshListener(this);
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
-       /* ArrayList<CategoryDTO> categories = new ArrayList<>();
-        categories.add(new CategoryDTO("Birds", 23, "birds", getResources().getDrawable(R.drawable.birds)));
-        categories.add(new CategoryDTO("Food", 18, "food", getResources().getDrawable(R.drawable.food)));
-        categories.add(new CategoryDTO("Reptiles", 9, "reptiles", getResources().getDrawable(R.drawable.reptiles)));
-        categories.add(new CategoryDTO("Cats", 276, "cats", getResources().getDrawable(R.drawable.cats)));
-        categories.add(new CategoryDTO("Birds", 276, "birds", getResources().getDrawable(R.drawable.birds)));
-        categories.add(new CategoryDTO("Food", 276, "food", getResources().getDrawable(R.drawable.food)));*/
         mCategoryAdapter = new CategoryAdapter(getApplicationContext());
         mCategoryList.setAdapter(mCategoryAdapter);
 
@@ -73,7 +67,10 @@ public class CategoryListActivity extends BaseActivity implements
         mCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getApplicationContext(), ClassifiedAdsActivity.class));
+                CategoryDTO categoryDTO = (CategoryDTO) mCategoryAdapter.getItem(position);
+                Intent iClassified = new Intent(getApplicationContext(), ClassifiedAdsActivity.class);
+                iClassified.putExtra(AppConstants.CATEGORY_ID, categoryDTO.getCategoryId());
+                startActivity(iClassified);
             }
         });
     }
