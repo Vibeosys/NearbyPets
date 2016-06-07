@@ -11,9 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.utils.AppConstants;
+import com.nearbypets.utils.CustomVolleyRequestQueue;
 import com.nearbypets.views.RobotoItalicTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -35,7 +38,7 @@ public class ProductListAdapter extends BaseAdapter {
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
     CustomButtonListener customButtonListener;
     CustomItemListener customItemListener;
-
+    private ImageLoader mImageLoader;
     private LayoutInflater mInflater;
 
     public ProductListAdapter(Context context, int roleId) {
@@ -95,7 +98,7 @@ public class ProductListAdapter extends BaseAdapter {
             switch (rowType) {
                 case TYPE_ITEM:
                     convertView = mInflater.inflate(R.layout.row_product_list, null);
-                    holder.imgProductImage = (ImageView) convertView.findViewById(R.id.productImage);
+                    holder.imgProductImage = (NetworkImageView) convertView.findViewById(R.id.productImage);
                     holder.txtProductTitle = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductTitle);
                     holder.txtProductPrice = (RobotoMediumTextView) convertView.findViewById(R.id.txtProductPrice);
                     holder.txtDesc = (RobotoRegularTextView) convertView.findViewById(R.id.txtDesc);
@@ -119,11 +122,25 @@ public class ProductListAdapter extends BaseAdapter {
 
                 holder.txtProductTitle.setText(product.getProductName());
                 holder.txtDesc.setText(product.getProductDesc());
-                holder.txtDistance.setText("" + product.getDistance() + " kilometers away from you");
-                int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
-                holder.imgProductImage.setImageResource(imgResId);
+                holder.txtDistance.setText(String.format("%.2f", product.getDistance()) + " kilometers away from you");
+               /* int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
+                holder.imgProductImage.setImageResource(imgResId);*/
                 holder.txtProductPrice.setText(mContext.getResources().
-                        getString(R.string.str_euro_price_symbol) + " " + product.getPrice());
+                        getString(R.string.str_euro_price_symbol) + " " + String.format("%.2f", product.getPrice()));
+                mImageLoader = CustomVolleyRequestQueue.getInstance(mContext)
+                        .getImageLoader();
+                final String url = product.getProductImage();
+                if (url != null && !url.isEmpty()) {
+                    try {
+                        mImageLoader.get(url, ImageLoader.getImageListener(holder.imgProductImage,
+                                R.drawable.default_pet_image, R.drawable.default_pet_image));
+                        holder.imgProductImage.setImageUrl(url, mImageLoader);
+                    } catch (Exception e) {
+                        holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
+                    }
+                } else {
+                    holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
+                }
                 holder.txtDate.setText(product.getDate());
 
                 if (activityFlag == AppConstants.POSTED_AD_FLAG_ADAPTER)
@@ -192,7 +209,8 @@ public class ProductListAdapter extends BaseAdapter {
         RobotoMediumTextView txtProductPrice;
         RobotoRegularTextView txtDesc;
         RobotoItalicTextView txtDistance;
-        ImageView imgFavourite, imgProductImage;
+        ImageView imgFavourite;
+        NetworkImageView imgProductImage;
         RobotoMediumTextView txtDate;
         TextView btnHide;
     }

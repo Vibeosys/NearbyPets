@@ -12,6 +12,7 @@ public class CategoryDbDTO extends BaseDTO {
     private String image;
     private int products;
     private String title;
+    private int categoryId;
 
     public CategoryDbDTO() {
     }
@@ -39,6 +40,15 @@ public class CategoryDbDTO extends BaseDTO {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public static List<CategoryDbDTO> deserialize(List<String> serializedStringList) {
         Gson gson = new Gson();
         ArrayList<CategoryDbDTO> objectList = new ArrayList<>();

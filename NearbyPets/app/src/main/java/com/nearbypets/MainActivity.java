@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
 
         }
@@ -178,7 +178,7 @@ public class MainActivity extends BaseActivity
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
 
         }
@@ -193,6 +193,7 @@ public class MainActivity extends BaseActivity
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
+        int id = Integer.parseInt(settingMap.get("ClassifiedAdPageSize"));
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
         for (int i = 0; i < productDataDTOs.size(); i++) {
             mProductAdapter.addItem(productDataDTOs.get(i));

@@ -14,11 +14,12 @@ public class CateDbToCateDTO {
     public CateDbToCateDTO(ArrayList<CategoryDbDTO> data) {
         this.data = data;
     }
+
     public ArrayList<CategoryDTO> getCategoryDTOs() {
         ArrayList<CategoryDTO> categoryDTOs = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             CategoryDbDTO category = data.get(i);
-            categoryDTOs.add(new CategoryDTO(category.getImage(),category.getProducts(),category.getTitle()));
+            categoryDTOs.add(new CategoryDTO(category.getCategoryId(), category.getImage(), category.getProducts(), category.getTitle()));
 
         }
         return categoryDTOs;

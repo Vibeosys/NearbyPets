@@ -9,19 +9,19 @@ public class UploadUser extends BaseDTO {
     protected String userName;
     protected int rollId;
     protected String pwd;
-    protected String accessTokan;
+    protected String accessToken;
 
     public UploadUser() {
 
     }
 
-    public UploadUser(String userId, String emailId, String userName, int rollId, String pwd) {
+    public UploadUser(String userId, String emailId, String userName, int rollId, String pwd, String accessToken) {
         this.userId = userId;
         this.email = emailId;
         this.userName = userName;
         this.rollId = rollId;
         this.pwd = pwd;
-        //this.accessTokan;
+        this.accessToken = accessToken;
     }
 
     public String getUserId() {
