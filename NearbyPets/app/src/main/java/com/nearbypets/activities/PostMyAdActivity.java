@@ -3,6 +3,8 @@ package com.nearbypets.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PostMyAdActivity extends BaseActivity implements View.OnClickListener,
         ServerSyncManager.OnStringErrorReceived, ServerSyncManager.OnStringResultReceived {
@@ -60,7 +64,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private Spinner addSpinner;
     private Button postMyAdBtn;
     private RadioGroup radioGroup;
-    private RadioButton radioFullAddress,radioCity;
+    private RadioButton radioFullAddress, radioCity, checkBtn;
     private EditText petTitle, petDecsription, petPrice;
     private ImageView firstimg, secondimg, thirdimg;
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -69,8 +73,9 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private final int REQ_TOKEN_POST_ADD_CATEGORY = 15;
     private final int REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER = 16;
     ArrayList<ImagesDbDTO> images = new ArrayList<>();
-    private Bitmap   bitmap;
-
+    private Bitmap bitmap;
+    String mlongi;
+    String mlat;
     ArrayList<TypeDataDTO> categoryDatas = new ArrayList<>();
     PostAdSpinnerAdapter spAdapt;
     PostedAdBirdCategoryAdapter firstAdapt;
@@ -79,8 +84,11 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private final int REQ_TOKEN_POSTMYAD = 20;
     GPSTracker gpsTracker;
     List<String> gpsAddressList = new ArrayList<String>();
-    String userId,display_city,display_full_address = null;
-    int bird_categoryId,bird_Type;
+    String userId, display_city, display_full_address = null;
+    int bird_categoryId, bird_Type;
+    String Full_Address_To_send, City_TO_send;
+    boolean setFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,19 +105,52 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         thirdimg = (ImageView) findViewById(R.id.thirdImg);
         addSpinner = (Spinner) findViewById(R.id.address_spinner);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioFullAddress =(RadioButton) findViewById(R.id.fullAddress);
-        radioCity = (RadioButton)findViewById(R.id.cityName);
+        radioFullAddress = (RadioButton) findViewById(R.id.fullAddress);
+        radioCity = (RadioButton) findViewById(R.id.cityName);
         radioFullAddress.setChecked(true);
         formView = findViewById(R.id.formViewPostAd);
         progressBar = findViewById(R.id.progressBar);
         gpsTracker = new GPSTracker(getApplicationContext());
-        gpsAddressList.add(gpsTracker.getAddressLine(getApplicationContext())+" "+gpsTracker.getLocality(getApplicationContext()));
+        if (gpsTracker.getIsGPSTrackingEnabled()) {
+
+
+            Full_Address_To_send = gpsTracker.getAddressLine(getApplicationContext()) + " " + gpsTracker.getLocality(getApplicationContext());
+            City_TO_send = gpsTracker.getLocality(getApplicationContext());
+            gpsAddressList.add(gpsTracker.getAddressLine(getApplicationContext()) + " " + gpsTracker.getLocality(getApplicationContext()));
+
+            mlat = String.valueOf(gpsTracker.getLatitude());
+            mlongi = String.valueOf(gpsTracker.getLongitude());
+            //  Toast.makeText(getApplicationContext(), "Testing  "+mlat.toString(), Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            createAlertDialog("GPS ","GPS location is disable");
+        }
+
+       /* Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(18.5487939, 73.7894986, 1);
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String featureName = addresses.get(0).getFeatureName();
+
+         //   Toast.makeText(getApplicationContext(),""+address+city+state+featureName,Toast.LENGTH_LONG).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
         userId = mSessionManager.getUserId();
+
         display_city = gpsTracker.getLocality(getApplicationContext());
-        display_full_address = gpsTracker.getLocality(getApplicationContext())+" "+gpsTracker.getCountryName(getApplicationContext());
+        display_full_address = gpsTracker.getLocality(getApplicationContext()) + " " + gpsTracker.getCountryName(getApplicationContext());
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
 
         }
@@ -120,7 +161,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         mServerSyncManager.setOnStringResultReceived(this);
 
 
-
         spAdapt = new PostAdSpinnerAdapter(getApplicationContext());
         firstAdapt = new PostedAdBirdCategoryAdapter(getApplicationContext());
 
@@ -128,7 +168,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spnType.setAdapter(spAdapt);
 
 
-        if(gpsAddressList.size()>= 1) {
+        if (gpsAddressList.size() >= 1) {
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, gpsAddressList);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             addSpinner.setAdapter(dataAdapter);
@@ -143,7 +183,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 mCategories.getCategoryTitle();
                 Log.d("TAG", "## " + mCategories.getCategoryId());
                 Log.d("TAG", "## " + mCategories.getCategoryTitle());
-                Toast.makeText(getApplicationContext(), "Testing", Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -227,59 +267,56 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 //Getting the Bitmap from Gallery
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 //Setting the Bitmap to ImageView
-               // imageView.setImageBitmap(bitmap);
+                // imageView.setImageBitmap(bitmap);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 String currentDateandTime = sdf.format(new Date());
-                String test= currentDateandTime +".JPG";
+                String test = currentDateandTime + ".JPG";
 
                 String strIMG = getStringImage(bitmap);
-                ImagesDbDTO  images1 =new ImagesDbDTO(1,test,strIMG);
+                ImagesDbDTO images1 = new ImagesDbDTO(1, test, strIMG);
                 images.add(images1);
                 firstimg.setImageBitmap(photo);
+                setFlag = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
 
 
         } else if (requestCode == MEDIA_TYPE_SECOND_IMAGE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             Uri filePath1 = data.getData();
 
-            try
-            {
+            try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath1);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 String currentDateandTime = sdf.format(new Date());
-                String test= currentDateandTime +".JPG";
+                String test = currentDateandTime + ".JPG";
 
                 String strIMG = getStringImage(bitmap);
-                ImagesDbDTO  images2 =new ImagesDbDTO(2,test,strIMG);
+                ImagesDbDTO images2 = new ImagesDbDTO(2, test, strIMG);
                 images.add(images2);
                 secondimg.setImageBitmap(photo);
+                setFlag = true;
 
-            }catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
         } else if (requestCode == MEDIA_TYPE_THIRD_IMAGE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             Uri filePath2 = data.getData();
-            try
-            {
+            try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath2);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 String currentDateandTime = sdf.format(new Date());
-                String test= currentDateandTime +".JPG";
+                String test = currentDateandTime + ".JPG";
 
                 String strIMG = getStringImage(bitmap);
-                ImagesDbDTO  images3 =new ImagesDbDTO(3,test,strIMG);
+                ImagesDbDTO images3 = new ImagesDbDTO(3, test, strIMG);
                 images.add(images3);
                 thirdimg.setImageBitmap(photo);
-            }catch (IOException e)
-            {
+                setFlag = true;
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -301,7 +338,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         switch (id) {
             case R.id.postMyAdd:
                 boolean cancelFlag = false;
-                View focusView = null;
+                View focusView=null;
                 String petTitleStr = petTitle.getText().toString().trim();
                 String petPriceStr = petPrice.getText().toString().trim();
                 petTitle.setError(null);
@@ -332,8 +369,30 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.requestFocus();
                     petPrice.setError("pet prices should have 4 digit ");
                     cancelFlag = true;
-                } else {
-                    callToUploadMyAd();
+                }
+                else if(setFlag== false)
+                {
+
+                    Toast toast=  Toast.makeText(getApplicationContext(),"Please upload atleast one image",Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                    cancelFlag = true;
+                }
+                /*if(cancelFlag)
+                {
+                    focusView.requestFocus();
+                }*/
+                else {
+                    int selectedId = radioGroup.getCheckedRadioButtonId();
+                    checkBtn = (RadioButton) findViewById(selectedId);
+                    if (checkBtn.getText().equals("Display Full Address")) {
+                       // Toast.makeText(getApplicationContext(), "Display full address is clicked", Toast.LENGTH_LONG).show();
+                        callToUploadMyAd(Full_Address_To_send);
+                    } else if (checkBtn.getText().equals("Display City Only")) {
+                        callToUploadMyAd(City_TO_send);
+                       // Toast.makeText(getApplicationContext(), "Display city is clicked", Toast.LENGTH_LONG).show();
+                    }
+                    // callToUploadMyAd();
                    /* createAlertDialog("Post Ad", "Ad Posted sucess fully");
 
                     Toast.makeText(getApplicationContext(), "All validations are done", Toast.LENGTH_LONG).show();*/
@@ -342,12 +401,12 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
     }
     // public PostMyAdDBDTO(int categoryId, String title, String description, String address,
-   // String displayAddress, String latitude, String longitude, double price, int typeId, String userId, ArrayList<ImagesDbDTO> images)
+    // String displayAddress, String latitude, String longitude, double price, int typeId, String userId, ArrayList<ImagesDbDTO> images)
 
 
-    public void callToUploadMyAd() {
+    public void callToUploadMyAd(String displayAddress) {
         showProgress(true, formView, progressBar);
-        PostMyAdDBDTO postMyAdDBDTO = new PostMyAdDBDTO(bird_categoryId,petTitle.getText().toString(),""+petDecsription.getText().toString(),display_city,"",""+gpsTracker.getLatitude(),""+gpsTracker.getLongitude(),Double.parseDouble(petPrice.getText().toString()),bird_Type,userId,images);
+        PostMyAdDBDTO postMyAdDBDTO = new PostMyAdDBDTO(bird_categoryId, petTitle.getText().toString(), "" + petDecsription.getText().toString(), display_city, displayAddress, "" + gpsTracker.getLatitude(), "" + gpsTracker.getLongitude(), Double.parseDouble(petPrice.getText().toString()), bird_Type, userId, images);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(postMyAdDBDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POST_MY_AD, serializedJsonString);
@@ -405,9 +464,13 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 break;
             case REQ_TOKEN_POSTMYAD:
                 showProgress(false, formView, progressBar);
-                createAlertDialog("Post Ad", "Ad Posted success fully");
+               // createAlertDialog("Post Ad", "Ad Posted success fully");
+                Toast toast = Toast.makeText(getApplicationContext(),"Ad Posted successfully",Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
+
                 Log.d("Successs for post ad", "##REQ" + data.toString());
 
         }
@@ -432,18 +495,16 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spAdapt.notifyDataSetChanged();
     }
 
-    public String getStringImage(Bitmap bmp){
+    public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try{
+        try {
             System.gc();
             bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
 
 
-        }
-        catch(OutOfMemoryError e)
-        {
-                e.printStackTrace();
-            Log.d("TAG","## ");
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            Log.d("TAG", "## ");
         }
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);

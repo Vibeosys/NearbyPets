@@ -62,11 +62,10 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
 
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
 
         }
-
 
 
         mRegister.setOnClickListener(this);
@@ -79,6 +78,14 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    private boolean isValidateNumber(String email) {
+        String EMAIL_PATTERN = "[A-Za-z]";
+        // str.matches(".*\\d+.*");
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
@@ -113,6 +120,10 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     mRegisterFirstName.setError("Maximum 30 characters are allowed");
                     cancelFlag = true;
 
+                } else if (!isValidateNumber(firstNameStr.toString())) {
+                    focusView = mRegisterFirstName;
+                    mRegisterFirstName.setError("No special characters Or Integer is allowed");
+                    cancelFlag = true;
                 }
                 if (TextUtils.isEmpty(LastNameStr))
 
@@ -129,6 +140,11 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     mRegisterLastName.setError("Maximum 30 characters are allowed");
                     cancelFlag = true;
 
+                }
+                else if (!isValidateNumber(LastNameStr.toString())) {
+                    focusView = mRegisterLastName;
+                    mRegisterLastName.setError("No special characters Or Integer is allowed");
+                    cancelFlag = true;
                 }
                 if (!isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
                     focusView = mRegisterEmailId;
