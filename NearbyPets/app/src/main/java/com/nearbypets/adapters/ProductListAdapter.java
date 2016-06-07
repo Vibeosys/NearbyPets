@@ -17,6 +17,7 @@ import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.CustomVolleyRequestQueue;
+import com.nearbypets.utils.DateUtils;
 import com.nearbypets.views.RobotoItalicTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -38,6 +39,7 @@ public class ProductListAdapter extends BaseAdapter {
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
     CustomButtonListener customButtonListener;
     CustomItemListener customItemListener;
+    CustomHideListener customHideListener;
     private ImageLoader mImageLoader;
     private LayoutInflater mInflater;
 
@@ -58,7 +60,7 @@ public class ProductListAdapter extends BaseAdapter {
     }
 
     public void addSectionHeaderItem(final ProductDataDTO item) {
-       // mProductList.add(item);
+        // mProductList.add(item);
         sectionHeader.add(mProductList.size() - 1);
         notifyDataSetChanged();
     }
@@ -141,7 +143,8 @@ public class ProductListAdapter extends BaseAdapter {
                 } else {
                     holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
                 }
-                holder.txtDate.setText(product.getDate());
+                DateUtils date = new DateUtils();
+                holder.txtDate.setText(date.getLocalDateInFormat(product.getPostedDt()));
 
                 if (activityFlag == AppConstants.POSTED_AD_FLAG_ADAPTER)
                     holder.imgFavourite.setVisibility(View.GONE);
@@ -191,6 +194,13 @@ public class ProductListAdapter extends BaseAdapter {
                 } else {
                     holder.btnHide.setVisibility(View.VISIBLE);
                 }
+                holder.btnHide.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customHideListener != null)
+                            customHideListener.onHideClickListener(position, product);
+                    }
+                });
                 break;
             case TYPE_SEPARATOR:
 
@@ -229,5 +239,13 @@ public class ProductListAdapter extends BaseAdapter {
 
     public interface CustomItemListener {
         public void onItemClickListener(int position, ProductDataDTO productData);
+    }
+
+    public void setCustomHideListener(CustomHideListener listener) {
+        this.customHideListener = listener;
+    }
+
+    public interface CustomHideListener {
+        public void onHideClickListener(int position, ProductDataDTO productData);
     }
 }

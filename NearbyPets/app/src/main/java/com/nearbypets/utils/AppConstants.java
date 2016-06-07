@@ -16,4 +16,5 @@ public class AppConstants {
     public static final String HIDE_AD="Hidden";
     public static final String DISEABLE_AD="Disabled";
     public static final String SOLD_AD ="SoldOut";
+
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -18,9 +19,12 @@ import com.nearbypets.data.ClassifiedDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.ProductListDbDTO;
+import com.nearbypets.data.SoldandDisableDbDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
+import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 public class ClassifiedAdsActivity extends ProductListActivity implements
         ServerSyncManager.OnStringResultReceived,
         ServerSyncManager.OnStringErrorReceived {
+    private static final int REQ_TOKAN_HIDE_AD = 2;
     private static int storedPageNO = 0;
     private int mCategoryId;
     GPSTracker gpsTracker;
@@ -54,6 +59,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         mServerSyncManager.setOnStringResultReceived(this);
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
+        mProductAdapter.setCustomHideListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         spnSortBy.setOnItemSelectedListener(this);
         mProductAdapter.clear();
@@ -116,8 +122,32 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 break;
+            case REQ_TOKAN_HIDE_AD:
+                Log.d("RESULT", "##REQ" + data.toString());
+                try {
+                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
+                    updateSettings(download.getSettings());
+                    Log.i(TAG, download.toString());
+                    checkStatus(download.getData());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
+                break;
         }
 
+    }
+
+    private void checkStatus(ArrayList<NotificationDTO> notificationDTOs) {
+
+        NotificationDTO notificationDTO = notificationDTOs.get(0);
+        if (notificationDTO.getErrorCode() == 0 || notificationDTO.getErrorCode() == 102) {
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+            Toast.makeText(getApplicationContext(), "" + notificationDTO.getMessage(), Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            createAlertDialog("Error", "" + notificationDTO.getMessage());
+            Log.i("TAG", "##" + notificationDTO.getMessage());
+        }
     }
 
     private void updateList(ArrayList<ProductDbDTO> data) {
@@ -193,4 +223,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
     }
 
+    @Override
+    public void onHideClickListener(int position, ProductDataDTO productData) {
+        // showProgress(true, formView, progressBar);
+        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(productData.getAdId(), AppConstants.HIDE_AD);
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKAN_HIDE_AD, tableDataDTO);
+    }
 }

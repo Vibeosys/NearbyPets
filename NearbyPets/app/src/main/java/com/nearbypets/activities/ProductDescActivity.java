@@ -245,7 +245,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
             Toast.makeText(getApplicationContext(), "" + notificationDTO.getMessage(), Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            createAlertDialog("Login error", "" + notificationDTO.getMessage());
+            createAlertDialog("Error", "" + notificationDTO.getMessage());
             Log.i("TAG", "##" + notificationDTO.getMessage());
         }
     }

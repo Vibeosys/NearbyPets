@@ -128,11 +128,11 @@ public class MainActivity extends BaseActivity
         mProductAdapter.setCustomItemListner(this);
         mProductAdapter.setCustomButtonListner(this);
         
-        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+       /* View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
         TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
         txtUserName.setText(mSessionManager.getUserName());
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
-        txtEmail.setText(mSessionManager.getUserEmailId());
+        txtEmail.setText(mSessionManager.getUserEmailId());*/
 
         swipeRefreshLayout.setOnRefreshListener(this);
 

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class ProductListActivity extends BaseActivity implements
         ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener,
-        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
+        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener, ProductListAdapter.CustomHideListener {
 
     protected ListView mListViewProduct;
     protected ProductListAdapter mProductAdapter;
@@ -57,7 +57,7 @@ public class ProductListActivity extends BaseActivity implements
         mProductAdapter = new ProductListAdapter(this, mSessionManager.getUserRollId());
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
-
+        mProductAdapter.setCustomHideListener(this);
 
         mListViewProduct.setAdapter(mProductAdapter);
         swipeRefreshLayout.post(new Runnable() {
@@ -106,6 +106,11 @@ public class ProductListActivity extends BaseActivity implements
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onHideClickListener(int position, ProductDataDTO productData) {
 
     }
 }
