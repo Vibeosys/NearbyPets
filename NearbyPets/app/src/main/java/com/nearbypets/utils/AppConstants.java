@@ -13,4 +13,7 @@ public class AppConstants {
     public static final int ROLL_ID_USER = 2;
     public static final int ROLL_ID_ADMIN = 1;
     public static final int POSTED_AD_FLAG_ADAPTER = 1;
+    public static final String HIDE_AD="Hidden";
+    public static final String DISEABLE_AD="Disabled";
+    public static final String SOLD_AD ="SoldOut";
 }

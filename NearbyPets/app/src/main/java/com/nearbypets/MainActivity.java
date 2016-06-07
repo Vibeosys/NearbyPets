@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.activities.BaseActivity;
 import com.nearbypets.activities.CategoryListActivity;
+import com.nearbypets.activities.HiddenAdActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
 import com.nearbypets.activities.PostedAdDetailsActivity;
@@ -328,7 +329,7 @@ public class MainActivity extends BaseActivity
             startActivity(new Intent(getApplicationContext(), SettingActivity.class));
 
         } else if (id == R.id.nav_hidden_ad) {
-            startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+            startActivity(new Intent(getApplicationContext(), HiddenAdActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

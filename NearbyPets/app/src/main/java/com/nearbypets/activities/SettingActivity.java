@@ -19,6 +19,7 @@ import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -45,9 +46,17 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
         btnSave = (Button) findViewById(R.id.btnSave);
         formView = findViewById(R.id.formSettings);
         progressBar = findViewById(R.id.progressBar);
-        btnSave.setOnClickListener(this);
-        mServerSyncManager.setOnStringErrorReceived(this);
-        mServerSyncManager.setOnStringResultReceived(this);
+        if(!NetworkUtils.isActiveNetworkAvailable(this))
+        {
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+        }else
+        {
+
+            btnSave.setOnClickListener(this);
+            mServerSyncManager.setOnStringErrorReceived(this);
+            mServerSyncManager.setOnStringResultReceived(this);
+        }
+
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.CategoryListDBDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -49,30 +50,37 @@ public class CategoryListActivity extends BaseActivity implements
         mCategoryList = (ListView) findViewById(R.id.listCateogry);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_category);
         setTitle(getResources().getString(R.string.activity_category));
-        swipeRefreshLayout.setOnRefreshListener(this);
-        mServerSyncManager.setOnStringErrorReceived(this);
-        mServerSyncManager.setOnStringResultReceived(this);
-        mCategoryAdapter = new CategoryAdapter(getApplicationContext());
-        mCategoryList.setAdapter(mCategoryAdapter);
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            swipeRefreshLayout.setRefreshing(false);
+        } else {
 
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                fetchCategoryList();
-            }
-        });
+            swipeRefreshLayout.setOnRefreshListener(this);
+            mServerSyncManager.setOnStringErrorReceived(this);
+            mServerSyncManager.setOnStringResultReceived(this);
+            mCategoryAdapter = new CategoryAdapter(getApplicationContext());
+            mCategoryList.setAdapter(mCategoryAdapter);
+
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                    fetchCategoryList();
+                }
+            });
 
 
-        mCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CategoryDTO categoryDTO = (CategoryDTO) mCategoryAdapter.getItem(position);
-                Intent iClassified = new Intent(getApplicationContext(), ClassifiedAdsActivity.class);
-                iClassified.putExtra(AppConstants.CATEGORY_ID, categoryDTO.getCategoryId());
-                startActivity(iClassified);
-            }
-        });
+            mCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    CategoryDTO categoryDTO = (CategoryDTO) mCategoryAdapter.getItem(position);
+                    Intent iClassified = new Intent(getApplicationContext(), ClassifiedAdsActivity.class);
+                    iClassified.putExtra(AppConstants.CATEGORY_ID, categoryDTO.getCategoryId());
+                    startActivity(iClassified);
+                }
+            });
+        }
+
     }
 
     private void fetchCategoryList() {

@@ -21,6 +21,7 @@ import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.adapters.ImageFragmentPagerAdapter;
 import com.nearbypets.data.GetProductDescDbDTO;
+import com.nearbypets.data.SoldandDisableDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDecs;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
@@ -31,6 +32,7 @@ import com.nearbypets.fragments.SwipeFragment;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.DateUtils;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -63,23 +65,29 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_desc);
         setTitle(getResources().getString(R.string.activity_product_desc));
-        imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager(), mImageArray);
-        SwipeFragment.setCustomButtonListner(this);
-        try {
-            mDistance = Double.parseDouble(getIntent().getExtras().getString(AppConstants.PRODUCT_DISTANCE));
-        } catch (Exception e) {
-            Log.e("TAG", "ERROR IN PRODUCT DESC DISTANCE");
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+
+        } else {
+            imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager(), mImageArray);
+            SwipeFragment.setCustomButtonListner(this);
+            try {
+                mDistance = Double.parseDouble(getIntent().getExtras().getString(AppConstants.PRODUCT_DISTANCE));
+            } catch (Exception e) {
+                Log.e("TAG", "ERROR IN PRODUCT DESC DISTANCE");
+            }
+            try {
+                mAdID = getIntent().getExtras().getString(AppConstants.PRODUCT_AD_ID);
+            } catch (Exception e) {
+                Log.e("TAG", "ERROR IN PRODUCT DESC AD ID");
+            }
+            setUpUI();
+            callToDesc();
+            mServerSyncManager.setOnStringResultReceived(this);
+            mServerSyncManager.setOnStringErrorReceived(this);
+            viewPager.setAdapter(imageFragmentPagerAdapter);
         }
-        try {
-            mAdID = getIntent().getExtras().getString(AppConstants.PRODUCT_AD_ID);
-        } catch (Exception e) {
-            Log.e("TAG", "ERROR IN PRODUCT DESC AD ID");
-        }
-        setUpUI();
-        callToDesc();
-        mServerSyncManager.setOnStringResultReceived(this);
-        mServerSyncManager.setOnStringErrorReceived(this);
-        viewPager.setAdapter(imageFragmentPagerAdapter);
+
     }
 
     private void setUpUI() {
@@ -169,7 +177,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     protected void callToDialer(View v) {
-        String posted_by = "123 456 789";
+        String posted_by = mTxtSellerPh.getText().toString();
         String uri = "tel:" + posted_by.trim();
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse(uri));
@@ -273,10 +281,31 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 callToSaveAd();
                 break;
             case R.id.btnDisable:
+                callToDisableAd();
                 break;
             case R.id.btnSoldOut:
+                callToSoldOutAd();
                 break;
         }
+    }
+
+    private void callToSoldOutAd() {
+        showProgress(true, formView, progressBar);
+        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(mAdID, AppConstants.SOLD_AD);
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SOLD_OUT_POST_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
+    }
+
+    private void callToDisableAd() {
+        showProgress(true, formView, progressBar);
+        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(mAdID, AppConstants.DISEABLE_AD);
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.DISABLE_POST_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
+
     }
 
     private void callToSaveAd() {

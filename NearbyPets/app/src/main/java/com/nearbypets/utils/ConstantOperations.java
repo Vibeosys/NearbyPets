@@ -19,4 +19,7 @@ public class ConstantOperations {
     public static final String SAVED_AD = "GetSavedAd";
     public static final String CLASSIFIED_AD = "ClassifiedAds";
     public static final String POSTED_AD = "MyPostedAds";
+    public static final String SOLD_OUT_POST_AD="SoldOutPost";
+    public static final String DISABLE_POST_AD="DisablePost";
+    public static final String HIDDIN_AD="HidePost";
 }

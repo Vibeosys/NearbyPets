@@ -89,10 +89,11 @@
             android:parentActivityName=".activities.PostedAdListActivity" />
         <activity
             android:name=".activities.SavedAdListActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.SavedAdDetailsActivity"
-            android:parentActivityName=".activities.SavedAdListActivity"></activity>
+            android:parentActivityName=".activities.SavedAdListActivity" />
+        <activity android:name=".activities.HiddenAdActivity"></activity>
     </application>
 
 </manifest>
