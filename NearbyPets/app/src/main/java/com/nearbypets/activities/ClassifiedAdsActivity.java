@@ -115,7 +115,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 try {
                     DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
                     updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData());
+                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
                     Log.i(TAG, downloadProductDbDataDTO.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
@@ -128,7 +128,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
                     updateSettings(download.getSettings());
                     Log.i(TAG, download.toString());
-                    checkStatus(download.getData());
+                    checkStatus(download.getData().get(0).getData());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }

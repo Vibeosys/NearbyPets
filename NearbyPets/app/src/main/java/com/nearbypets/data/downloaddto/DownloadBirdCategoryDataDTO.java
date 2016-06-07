@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class DownloadBirdCategoryDataDTO {
     private ArrayList<SettingsDTO> settings;
-    private ArrayList<BirdCategoryDataDTO> data;
+    private ArrayList<BirdDataDTO> data;
 
     public DownloadBirdCategoryDataDTO() {
     }
@@ -23,11 +23,11 @@ public class DownloadBirdCategoryDataDTO {
         this.settings = settings;
     }
 
-    public ArrayList<BirdCategoryDataDTO> getData() {
+    public ArrayList<BirdDataDTO> getData() {
         return data;
     }
 
-    public void setData(ArrayList<BirdCategoryDataDTO> data) {
+    public void setData(ArrayList<BirdDataDTO> data) {
         this.data = data;
     }
 

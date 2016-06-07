@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CategoryListDBDTO {
     private ArrayList<SettingsDTO> settings;
-    private ArrayList<CategoryDbDTO> data;
+    private ArrayList<CategoryDataDbDTO> data;
 
     public CategoryListDBDTO() {
     }
@@ -24,11 +24,11 @@ public class CategoryListDBDTO {
         this.settings = settings;
     }
 
-    public ArrayList<CategoryDbDTO> getData() {
+    public ArrayList<CategoryDataDbDTO> getData() {
         return data;
     }
 
-    public void setData(ArrayList<CategoryDbDTO> data) {
+    public void setData(ArrayList<CategoryDataDbDTO> data) {
         this.data = data;
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DownloadProductDbDataDTO extends BaseDTO {
     private ArrayList<SettingsDTO> settings;
-    private ArrayList<ProductDbDTO> data;
+    private ArrayList<ProductDataDbDTO> data;
 
     public DownloadProductDbDataDTO() {
     }
@@ -26,11 +26,11 @@ public class DownloadProductDbDataDTO extends BaseDTO {
         this.settings = settings;
     }
 
-    public ArrayList<ProductDbDTO> getData() {
+    public ArrayList<ProductDataDbDTO> getData() {
         return data;
     }
 
-    public void setData(ArrayList<ProductDbDTO> data) {
+    public void setData(ArrayList<ProductDataDbDTO> data) {
         this.data = data;
     }
 

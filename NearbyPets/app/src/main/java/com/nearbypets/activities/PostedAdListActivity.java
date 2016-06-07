@@ -108,7 +108,7 @@ public class PostedAdListActivity extends ProductListActivity implements
                 try {
                     DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
                     updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData());
+                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
                     Log.i(TAG, downloadProductDbDataDTO.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());

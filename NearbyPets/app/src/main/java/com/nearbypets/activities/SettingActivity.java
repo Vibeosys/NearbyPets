@@ -46,11 +46,9 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
         btnSave = (Button) findViewById(R.id.btnSave);
         formView = findViewById(R.id.formSettings);
         progressBar = findViewById(R.id.progressBar);
-        if(!NetworkUtils.isActiveNetworkAvailable(this))
-        {
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
-        }else
-        {
+        } else {
 
             btnSave.setOnClickListener(this);
             mServerSyncManager.setOnStringErrorReceived(this);
@@ -79,7 +77,7 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
                     updateSettings(download.getSettings());
                     Log.i(TAG, download.toString());
-                    checkLogin(download.getData());
+                    checkLogin(download.getData().get(0).getData());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }

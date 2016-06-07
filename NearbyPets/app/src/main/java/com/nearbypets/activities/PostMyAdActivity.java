@@ -443,7 +443,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 try {
                     DownloadTypeDataDTO downloadTypeDataDTO = new Gson().fromJson(data.toString(), DownloadTypeDataDTO.class);
                     updateSettings(downloadTypeDataDTO.getSettings());
-                    getAdType(downloadTypeDataDTO.getData());
+                    getAdType(downloadTypeDataDTO.getData().get(0).getData());
                     /*categoryDatas = downloadTypeDataDTO.getData();
                     spAdapt.notifyDataSetChanged();*/
 
@@ -457,7 +457,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 try {
                     DownloadBirdCategoryDataDTO downloadBirdCategoryDataDTO = new Gson().fromJson(data.toString(), DownloadBirdCategoryDataDTO.class);
                     updateSettings(downloadBirdCategoryDataDTO.getSettings());
-                    getAdFirstSpineer(downloadBirdCategoryDataDTO.getData());
+                    getAdFirstSpineer(downloadBirdCategoryDataDTO.getData().get(0).getData());
                     /*categoryDatas = downloadTypeDataDTO.getData();
                     spAdapt.notifyDataSetChanged();*/
 

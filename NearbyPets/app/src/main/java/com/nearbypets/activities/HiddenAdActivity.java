@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class HiddenAdActivity extends ProductListActivity implements
         ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived  {
+        ServerSyncManager.OnStringErrorReceived {
 
     GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
@@ -39,7 +39,7 @@ public class HiddenAdActivity extends ProductListActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_hidden_ad);
+        // setContentView(R.layout.activity_hidden_ad);
         setTitle("Hidden Ad List");
 
 
@@ -110,7 +110,7 @@ public class HiddenAdActivity extends ProductListActivity implements
                 try {
                     DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
                     updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData());
+                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
                     Log.i(TAG, downloadProductDbDataDTO.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());

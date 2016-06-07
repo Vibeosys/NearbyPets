@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class DownloadRegisterDbDTO extends BaseDTO {
     private ArrayList<SettingsDTO> settings;
-    private ArrayList<NotificationDTO> data;
+    private ArrayList<NotificationDataDTO> data;
 
     public DownloadRegisterDbDTO() {
     }
@@ -23,11 +23,11 @@ public class DownloadRegisterDbDTO extends BaseDTO {
         this.settings = settings;
     }
 
-    public ArrayList<NotificationDTO> getData() {
+    public ArrayList<NotificationDataDTO> getData() {
         return data;
     }
 
-    public void setData(ArrayList<NotificationDTO> data) {
+    public void setData(ArrayList<NotificationDataDTO> data) {
         this.data = data;
     }
 

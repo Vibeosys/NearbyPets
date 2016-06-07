@@ -144,7 +144,7 @@ public class CategoryListActivity extends BaseActivity implements
                 try {
                     CategoryListDBDTO categoryListDBDTO = new Gson().fromJson(data.toString(), CategoryListDBDTO.class);
                     updateSettings(categoryListDBDTO.getSettings());
-                    updateCategoryList(categoryListDBDTO.getData());
+                    updateCategoryList(categoryListDBDTO.getData().get(0).getData());
                     Log.i(TAG, categoryListDBDTO.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());

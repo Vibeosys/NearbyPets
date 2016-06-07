@@ -36,6 +36,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
     GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
     private static int storedPageNO = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +107,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
                 try {
                     DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
                     updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData());
+                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
                     Log.i(TAG, downloadProductDbDataDTO.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());

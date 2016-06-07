@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class DownloadTypeDataDTO {
     private ArrayList<SettingsDTO> settings;
-    private ArrayList<TypeDataDTO> data;
+    private ArrayList<TypeDataDbDTO> data;
 
     public DownloadTypeDataDTO() {
     }
@@ -23,11 +23,11 @@ public class DownloadTypeDataDTO {
         this.settings = settings;
     }
 
-    public ArrayList<TypeDataDTO> getData() {
+    public ArrayList<TypeDataDbDTO> getData() {
         return data;
     }
 
-    public void setData(ArrayList<TypeDataDTO> data) {
+    public void setData(ArrayList<TypeDataDbDTO> data) {
         this.data = data;
     }
 

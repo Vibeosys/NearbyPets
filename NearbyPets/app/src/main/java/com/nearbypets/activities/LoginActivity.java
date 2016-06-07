@@ -102,7 +102,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
 
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
 
         }
@@ -281,7 +281,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
                     updateSettings(download.getSettings());
                     Log.i(TAG, download.toString());
-                    checkLogin(download.getData());
+                    checkLogin(download.getData().get(0).getData());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }
@@ -293,7 +293,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
                     updateSettings(download.getSettings());
                     Log.i(TAG, download.toString());
-                    checkRegistration(download.getData());
+                    checkRegistration(download.getData().get(0).getData());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }

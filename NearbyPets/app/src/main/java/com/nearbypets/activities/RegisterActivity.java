@@ -140,8 +140,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     mRegisterLastName.setError("Maximum 30 characters are allowed");
                     cancelFlag = true;
 
-                }
-                else if (!isValidateNumber(LastNameStr.toString())) {
+                } else if (!isValidateNumber(LastNameStr.toString())) {
                     focusView = mRegisterLastName;
                     mRegisterLastName.setError("No special characters Or Integer is allowed");
                     cancelFlag = true;
@@ -207,7 +206,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
                     updateSettings(download.getSettings());
                     Log.i(TAG, download.toString());
-                    checkRegistration(download.getData());
+                    checkRegistration(download.getData().get(0).getData());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }

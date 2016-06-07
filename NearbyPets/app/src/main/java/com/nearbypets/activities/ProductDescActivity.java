@@ -215,7 +215,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 try {
                     DownloadProductDecs downloadData = new Gson().fromJson(data.toString(), DownloadProductDecs.class);
                     updateSettings(downloadData.getSettings());
-                    updateUI(downloadData.getData());
+                    updateUI(downloadData.getData().get(0).getData());
                     Log.i(TAG, downloadData.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
@@ -229,7 +229,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                     DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
                     updateSettings(download.getSettings());
                     Log.i(TAG, download.toString());
-                    checkStatus(download.getData());
+                    checkStatus(download.getData().get(0).getData());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }

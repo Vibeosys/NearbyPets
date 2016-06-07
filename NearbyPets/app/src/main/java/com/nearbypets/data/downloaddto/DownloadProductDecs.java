@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DownloadProductDecs extends BaseDTO {
 
     private ArrayList<SettingsDTO> settings;
-    private ProductDescDbDTO data;
+    private ArrayList<ProductDescDataDTO> data;
 
     public DownloadProductDecs() {
     }
@@ -25,11 +25,11 @@ public class DownloadProductDecs extends BaseDTO {
         this.settings = settings;
     }
 
-    public ProductDescDbDTO getData() {
+    public ArrayList<ProductDescDataDTO> getData() {
         return data;
     }
 
-    public void setData(ProductDescDbDTO data) {
+    public void setData(ArrayList<ProductDescDataDTO> data) {
         this.data = data;
     }
 }
