@@ -48,6 +48,7 @@ import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.UserAuth;
 import com.nearbypets.views.MyriadProRegularTextView;
@@ -99,6 +100,12 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         context = this.getApplicationContext();
         forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
 
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+
+            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+
+
+        }
        /* accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
@@ -115,6 +122,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         profileTracker.startTracking();*/
         mEmailId.setFocusable(false);
         mEmailId.setFocusableInTouchMode(true);
+
+
        /* mEmailId.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
         mPassword.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
         signIn.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));

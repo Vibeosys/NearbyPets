@@ -38,6 +38,7 @@ import com.nearbypets.data.downloaddto.DownloadBirdCategoryDataDTO;
 import com.nearbypets.data.downloaddto.DownloadTypeDataDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -106,6 +107,13 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         userId = mSessionManager.getUserId();
         display_city = gpsTracker.getLocality(getApplicationContext());
         display_full_address = gpsTracker.getLocality(getApplicationContext())+" "+gpsTracker.getCountryName(getApplicationContext());
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+
+            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+
+
+        }
+
         getPostAddCategory();
         getPostAdCategoryFirstSpineer();
         mServerSyncManager.setOnStringErrorReceived(this);

@@ -18,6 +18,7 @@ import com.nearbypets.R;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ForgotDBDTO;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -45,6 +46,13 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
         progressBar = findViewById(R.id.progressBarforgot);
         mEmailId.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
         resendPass.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
+
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+
+            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+
+
+        }
 
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);

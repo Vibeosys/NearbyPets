@@ -159,6 +159,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.finish();
     }
 
+    protected void createAlertNetWorkDialog(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // whatever...
+                        dialog.dismiss();
+                        startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
+                    }
+                }).create().show();
+    }
+
     protected void createAlertDialog(String title, String message) {
         new AlertDialog.Builder(this)
                 .setTitle(title)

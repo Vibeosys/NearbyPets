@@ -46,6 +46,7 @@ import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.UserAuth;
 
@@ -81,6 +82,12 @@ public class MainActivity extends BaseActivity
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+
+            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+
+
+        }
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
         String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
@@ -169,6 +176,12 @@ public class MainActivity extends BaseActivity
 
     private void fetchList(int pageNo) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+
+            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+
+
+        }
         ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(productListDbDTO);

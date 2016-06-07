@@ -21,6 +21,7 @@ import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -58,6 +59,15 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         mRegisterPhoneNumber.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
         mRegisterEmailId.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
         mRegisterPassword.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/MyriadPro-Regular.otf"));
+
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+
+            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+
+
+        }
+
+
 
         mRegister.setOnClickListener(this);
         mServerSyncManager.setOnStringErrorReceived(this);
