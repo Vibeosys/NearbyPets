@@ -25,6 +25,7 @@ import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -34,10 +35,11 @@ import java.util.ArrayList;
 public class ClassifiedAdsActivity extends ProductListActivity implements
         ServerSyncManager.OnStringResultReceived,
         ServerSyncManager.OnStringErrorReceived {
-
+    private static int storedPageNO = 0;
     private int mCategoryId;
     GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
+    private int adDisplay = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         mCategoryId = getIntent().getIntExtra(AppConstants.CATEGORY_ID, 0);
         gpsTracker = new GPSTracker(getApplicationContext());
         //spnSortBy.setVisibility(View.GONE);
+        storedPageNO = 0;
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
         mProductAdapter.setCustomButtonListner(this);
@@ -75,11 +78,16 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
     private void fetchList(int pageNo, int sortOption, String sort) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
-        ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId);
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(productListDbDTO);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.CLASSIFIED_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            swipeRefreshLayout.setRefreshing(false);
+        } else if (storedPageNO != pageNo) {
+            ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId);
+            Gson gson = new Gson();
+            String serializedJsonString = gson.toJson(productListDbDTO);
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.CLASSIFIED_AD, serializedJsonString);
+            mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+        }
     }
 
     @Override
@@ -118,8 +126,9 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
         for (int i = 0; i < productDataDTOs.size(); i++) {
+            adDisplay = adDisplay + 1;
             mProductAdapter.addItem(productDataDTOs.get(i));
-            if ((i % id) == 0) {
+            if ((adDisplay % id) == 0) {
                 mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
             }
         }
@@ -130,6 +139,8 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     @Override
     public void onRefresh() {
         mProductAdapter.clear();
+        storedPageNO = 0;
+        adDisplay = 0;
         fetchList(1, mSortOption, sort);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {

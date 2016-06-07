@@ -23,6 +23,7 @@ import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
+import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
@@ -34,7 +35,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
 
     GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
-
+    private static int storedPageNO = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
         gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
         mServerSyncManager.setOnStringErrorReceived(this);
+        storedPageNO = 0;
         mServerSyncManager.setOnStringResultReceived(this);
         mProductAdapter.setActivityFlag(AppConstants.POSTED_AD_FLAG_ADAPTER);
         mProductAdapter.setCustomButtonListner(this);
@@ -73,11 +75,16 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
 
     private void fetchList(int pageNo) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
-        PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(productListDbDTO);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POSTED_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+        if (!NetworkUtils.isActiveNetworkAvailable(this)) {
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            swipeRefreshLayout.setRefreshing(false);
+        } else if (storedPageNO != pageNo) {
+            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
+            Gson gson = new Gson();
+            String serializedJsonString = gson.toJson(productListDbDTO);
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POSTED_AD, serializedJsonString);
+            mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+        }
     }
 
     @Override
@@ -127,6 +134,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
 
     @Override
     public void onRefresh() {
+        storedPageNO = 0;
         mProductAdapter.clear();
         fetchList(1);
     }

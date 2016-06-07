@@ -40,6 +40,8 @@ public class DashboardProductListAdapter extends BaseAdapter {
     private TreeSet<Integer> sectionAd = new TreeSet<Integer>();
     private LayoutInflater mInflater;
     private ImageLoader mImageLoader;
+    CustomButtonListener customButtonListener;
+    CustomItemListener customItemListener;
 
     public void clear() {
         mProductList.clear();
@@ -59,13 +61,14 @@ public class DashboardProductListAdapter extends BaseAdapter {
     }
 
     public void addSectionHeaderItem(final ProductDataDTO item) {
-        mProductList.add(item);
+        addItem(item);
         sectionHeader.add(mProductList.size() - 1);
         notifyDataSetChanged();
     }
 
     public void addSectionAdItem(final ProductDataDTO item) {
-        mProductList.add(item);
+        //mProductList.add(item);
+        //addItem(item);
         sectionAd.add(mProductList.size() - 1);
         notifyDataSetChanged();
     }
@@ -104,7 +107,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         int rowType = getItemViewType(position);
 
@@ -135,7 +138,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ProductDataDTO product = mProductList.get(position);
+        final ProductDataDTO product = mProductList.get(position);
         switch (rowType) {
             case TYPE_ITEM:
                 holder.txtProductTitle.setText(product.getProductName());
@@ -164,11 +167,47 @@ public class DashboardProductListAdapter extends BaseAdapter {
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
                 else
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
+                holder.imgFavourite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customButtonListener != null)
+                            customButtonListener.onButtonClickListener(v.getId(), position, product.isFavouriteFlag(), product);
+                    }
+                });
+                holder.txtProductTitle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                holder.txtDesc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                holder.txtDistance.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+                holder.imgProductImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customItemListener != null)
+                            customItemListener.onItemClickListener(position, product);
+                    }
+                });
+
                 break;
             case TYPE_SEPARATOR:
                 DateUtils date = new DateUtils();
-                //holder.txtDate.setText("Posted On " +date.getLocalDateInFormat(product.getPostedDt()));
-                holder.txtDate.setText("Posted On " + product.getDate());
+                holder.txtDate.setText("Posted On " + date.getLocalDateInFormat(product.getPostedDt()));
+                //holder.txtDate.setText("Posted On " + product.getDate());
                 break;
             case TYPE_Ad:
 
@@ -191,5 +230,21 @@ public class DashboardProductListAdapter extends BaseAdapter {
         NetworkImageView imgProductImage;
         RobotoMediumTextView txtDate;
         RelativeLayout adViewContainer;
+    }
+
+    public void setCustomButtonListner(CustomButtonListener listener) {
+        this.customButtonListener = listener;
+    }
+
+    public interface CustomButtonListener {
+        public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData);
+    }
+
+    public void setCustomItemListner(CustomItemListener listener) {
+        this.customItemListener = listener;
+    }
+
+    public interface CustomItemListener {
+        public void onItemClickListener(int position, ProductDataDTO productData);
     }
 }

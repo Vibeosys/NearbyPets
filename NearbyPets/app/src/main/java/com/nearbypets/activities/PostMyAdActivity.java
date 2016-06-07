@@ -121,10 +121,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
             mlat = String.valueOf(gpsTracker.getLatitude());
             mlongi = String.valueOf(gpsTracker.getLongitude());
             //  Toast.makeText(getApplicationContext(), "Testing  "+mlat.toString(), Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            createAlertDialog("GPS ","GPS location is disable");
+        } else {
+            createAlertDialog("GPS ", "GPS location is disable");
         }
 
        /* Geocoder geocoder;
@@ -259,10 +257,17 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MEDIA_TYPE_IMAGE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri filePath = data.getData();
+            Uri filePath = getImageUri(getApplicationContext(), photo);
             try {
                 //Getting the Bitmap from Gallery
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
@@ -284,7 +289,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
         } else if (requestCode == MEDIA_TYPE_SECOND_IMAGE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri filePath1 = data.getData();
+            Uri filePath1 = getImageUri(getApplicationContext(), photo);
 
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath1);
@@ -304,7 +309,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
         } else if (requestCode == MEDIA_TYPE_THIRD_IMAGE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri filePath2 = data.getData();
+            Uri filePath2 = getImageUri(getApplicationContext(), photo);
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath2);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -338,7 +343,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         switch (id) {
             case R.id.postMyAdd:
                 boolean cancelFlag = false;
-                View focusView=null;
+                View focusView = null;
                 String petTitleStr = petTitle.getText().toString().trim();
                 String petPriceStr = petPrice.getText().toString().trim();
                 petTitle.setError(null);
@@ -369,11 +374,9 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.requestFocus();
                     petPrice.setError("pet prices should have 4 digit ");
                     cancelFlag = true;
-                }
-                else if(setFlag== false)
-                {
+                } else if (setFlag == false) {
 
-                    Toast toast=  Toast.makeText(getApplicationContext(),"Please upload atleast one image",Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Please upload atleast one image", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     cancelFlag = true;
@@ -386,11 +389,11 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     int selectedId = radioGroup.getCheckedRadioButtonId();
                     checkBtn = (RadioButton) findViewById(selectedId);
                     if (checkBtn.getText().equals("Display Full Address")) {
-                       // Toast.makeText(getApplicationContext(), "Display full address is clicked", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), "Display full address is clicked", Toast.LENGTH_LONG).show();
                         callToUploadMyAd(Full_Address_To_send);
                     } else if (checkBtn.getText().equals("Display City Only")) {
                         callToUploadMyAd(City_TO_send);
-                       // Toast.makeText(getApplicationContext(), "Display city is clicked", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), "Display city is clicked", Toast.LENGTH_LONG).show();
                     }
                     // callToUploadMyAd();
                    /* createAlertDialog("Post Ad", "Ad Posted sucess fully");
@@ -464,8 +467,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 break;
             case REQ_TOKEN_POSTMYAD:
                 showProgress(false, formView, progressBar);
-               // createAlertDialog("Post Ad", "Ad Posted success fully");
-                Toast toast = Toast.makeText(getApplicationContext(),"Ad Posted successfully",Toast.LENGTH_LONG);
+                // createAlertDialog("Post Ad", "Ad Posted success fully");
+                Toast toast = Toast.makeText(getApplicationContext(), "Ad Posted successfully", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -499,7 +502,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             System.gc();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
 
         } catch (OutOfMemoryError e) {

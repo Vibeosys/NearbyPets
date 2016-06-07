@@ -55,12 +55,13 @@ import com.nearbypets.utils.UserAuth;
 
 import org.json.JSONObject;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         SwipeRefreshLayout.OnRefreshListener, ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived {
+        ServerSyncManager.OnStringErrorReceived, DashboardProductListAdapter.CustomButtonListener, DashboardProductListAdapter.CustomItemListener {
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
@@ -72,6 +73,9 @@ public class MainActivity extends BaseActivity
     GPSTracker gpsTracker;
     private static int mSortOption = 0;
     private static String sort = "DESC";
+    private static int storedPageNO = 0;
+    private int adDisplay = 0;
+    private Date dateToCompaire = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,7 @@ public class MainActivity extends BaseActivity
             // finish();
             callLogin();
         }
+        storedPageNO = 0;
         gpsTracker = new GPSTracker(getApplicationContext());
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
@@ -95,7 +100,8 @@ public class MainActivity extends BaseActivity
         }
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
-
+        dateToCompaire = null;
+        adDisplay = 0;
         mSortAdapter = new SortAdapter(getApplicationContext());
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         mSortAdapter.addItem(new SortDTO("Sort By", 0, "DESC"));
@@ -108,14 +114,7 @@ public class MainActivity extends BaseActivity
         spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
         mListViewProduct.setAdapter(mProductAdapter);
-       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,23 +124,14 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-       /* View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        mProductAdapter.setCustomItemListner(this);
+        mProductAdapter.setCustomButtonListner(this);
+        
+        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
         TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
         txtUserName.setText(mSessionManager.getUserName());
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
-        txtEmail.setText(mSessionManager.getUserEmailId());*/
-
-        mListViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
-                Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
-                intent.putExtra(AppConstants.PRODUCT_DISTANCE, productDataDTO.getDistance());
-                intent.putExtra(AppConstants.PRODUCT_AD_ID, productDataDTO.getAdId());
-                startActivity(intent);
-            }
-        });
+        txtEmail.setText(mSessionManager.getUserEmailId());
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -153,9 +143,7 @@ public class MainActivity extends BaseActivity
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-
                                         fetchList(1, mSortOption, sort);
-
                                         //logic to refersh list
                                     }
                                 }
@@ -183,11 +171,20 @@ public class MainActivity extends BaseActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SortDTO sortDTO = (SortDTO) mSortAdapter.getItem(position);
+                dateToCompaire = null;
                 mSortOption = sortDTO.getValue();
                 sort = sortDTO.getSorting();
                 swipeRefreshLayout.setRefreshing(true);
                 mProductAdapter.clear();
                 fetchList(1, mSortOption, sort);
+                mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                        (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount) {
+                        customLoadMoreDataFromApi(page);
+                    }
+                });
             }
 
             @Override
@@ -207,12 +204,13 @@ public class MainActivity extends BaseActivity
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
-        } else {
+        } else if (storedPageNO != pageNo) {
             ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+            storedPageNO = pageNo;
         }
 
     }
@@ -223,20 +221,34 @@ public class MainActivity extends BaseActivity
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
         int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
-        for (int i = 0; i < productDataDTOs.size(); i++) {
-            if (i == 0) {
-                mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
-            }
-            if (i != 0) {
-                //int dateCompaire = productDataDTOs.get(i).getPostedDt().compareTo(productDataDTOs.get(i + 1).getPostedDt());
-                if (productDataDTOs.get(i).getDate().equals(productDataDTOs.get(i - 1).getDate())) {
+        // mProductAdapter.addSectionHeaderItem(productDataDTOs.get(0));
+        if (mSortOption == 0) {
+            for (int i = 0; i < productDataDTOs.size(); i++) {
+                if (dateToCompaire != null) {
+                    int compiare = dateToCompaire.compareTo(productDataDTOs.get(i).getPostedDt());
+                    if (compiare != 0) {
+                        mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
+                        dateToCompaire = productDataDTOs.get(i).getPostedDt();
+                    } else {
+                        mProductAdapter.addItem(productDataDTOs.get(i));
+                        adDisplay = adDisplay + 1;
+                    }
+                } else {
                     mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
+                    dateToCompaire = productDataDTOs.get(i).getPostedDt();
                 }
+                if (adDisplay % id == 0) {
+                    mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
+                }
+                //mProductAdapter.addItem(productDataDTOs.get(i));
             }
-            if ((i % id) == 0) {
-                mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
+        } else {
+            for (int i = 0; i < productDataDTOs.size(); i++) {
+                adDisplay = adDisplay + 1;
+                mProductAdapter.addItem(productDataDTOs.get(i));
+                if (adDisplay % id == 0)
+                    mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
             }
-            mProductAdapter.addItem(productDataDTOs.get(i));
         }
         //
         //mProductAdapter.notifyDataSetChanged();
@@ -328,7 +340,18 @@ public class MainActivity extends BaseActivity
     public void onRefresh() {
 //logic to refersh list
         mProductAdapter.clear();
+        storedPageNO = 0;
+        dateToCompaire = null;
+        adDisplay = 0;
         fetchList(1, mSortOption, sort);
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
     }
 
     @Override
@@ -366,4 +389,18 @@ public class MainActivity extends BaseActivity
         finish();
     }
 
+    @Override
+    public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
+        productData.setFavouriteFlag(!value);
+        mProductAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClickListener(int position, ProductDataDTO productData) {
+        ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
+        Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
+        intent.putExtra(AppConstants.PRODUCT_DISTANCE, productDataDTO.getDistance());
+        intent.putExtra(AppConstants.PRODUCT_AD_ID, productDataDTO.getAdId());
+        startActivity(intent);
+    }
 }
