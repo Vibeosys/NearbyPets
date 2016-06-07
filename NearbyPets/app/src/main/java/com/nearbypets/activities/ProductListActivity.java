@@ -13,21 +13,25 @@ import android.widget.Spinner;
 
 import com.nearbypets.R;
 import com.nearbypets.adapters.ProductListAdapter;
+import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.data.BaseDTO;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.data.SortDTO;
 import com.nearbypets.utils.EndlessScrollListener;
 
 import java.util.ArrayList;
 
 public class ProductListActivity extends BaseActivity implements
         ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
 
     protected ListView mListViewProduct;
     protected ProductListAdapter mProductAdapter;
     protected SwipeRefreshLayout swipeRefreshLayout;
-    protected ArrayAdapter<String> mSortAdapter;
+    protected SortAdapter mSortAdapter;
     protected Spinner spnSortBy;
+    protected static int mSortOption = 0;
+    protected static String sort = "DESC";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,39 +41,23 @@ public class ProductListActivity extends BaseActivity implements
         mListViewProduct = (ListView) findViewById(R.id.productList);
         spnSortBy = (Spinner) findViewById(R.id.spnSortBy);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
-        mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                R.layout.dropdown_list_item, category);
+        mSortAdapter = new SortAdapter(getApplicationContext());
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        mSortAdapter.addItem(new SortDTO("Sort By", 0, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Date Desc", 0, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Date Asc", 0, "ASC"));
+        mSortAdapter.addItem(new SortDTO("Price Desc", 2, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Price Asc", 2, "ASC"));
+        mSortAdapter.addItem(new SortDTO("Distance Desc", 1, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Distance Asc", 1, "ASC"));
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spnSortBy.setAdapter(mSortAdapter);
+        spnSortBy.setOnItemSelectedListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         mProductAdapter = new ProductListAdapter(this, mSessionManager.getUserRollId());
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
-       /* mProductAdapter.addItem(new ProductDataDTO("Product Title1", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title2", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
 
-        mProductAdapter.addItem(new ProductDataDTO("Product Title3", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "13/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, true, "13/05/2016"));
-
-        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));
-
-        mProductAdapter.addItem(new ProductDataDTO("Product Title4", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "13/05/2016"));
-
-        mProductAdapter.addItem(new ProductDataDTO("Product Title5", "boxdogs", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, true, "12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title6", "boxbirds", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, true, "12/05/2016"));
-        mProductAdapter.addItem(new ProductDataDTO("Product Title7", "boxcats", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "12/05/2016"));
-        mProductAdapter.addSectionHeaderItem(new ProductDataDTO("Product Title1", "fbtestad", "Lorem ipsum dolor sit amet," +
-                "consectetur adipiscing elit.", 10, 100, false, "14/05/2016"));*/
 
         mListViewProduct.setAdapter(mProductAdapter);
         swipeRefreshLayout.post(new Runnable() {
@@ -108,6 +96,16 @@ public class ProductListActivity extends BaseActivity implements
 
     @Override
     public void onRefresh() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

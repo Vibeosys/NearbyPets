@@ -16,6 +16,7 @@ import com.facebook.ads.AdView;
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.utils.CustomVolleyRequestQueue;
+import com.nearbypets.utils.DateUtils;
 import com.nearbypets.views.RobotoItalicTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
@@ -165,7 +166,9 @@ public class DashboardProductListAdapter extends BaseAdapter {
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
                 break;
             case TYPE_SEPARATOR:
-                holder.txtDate.setText(product.getDate());
+                DateUtils date = new DateUtils();
+                //holder.txtDate.setText("Posted On " +date.getLocalDateInFormat(product.getPostedDt()));
+                holder.txtDate.setText("Posted On " + product.getDate());
                 break;
             case TYPE_Ad:
 

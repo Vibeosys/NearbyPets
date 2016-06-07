@@ -28,6 +28,7 @@ import com.nearbypets.activities.BaseActivity;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
+import com.nearbypets.activities.PostedAdDetailsActivity;
 import com.nearbypets.activities.PostedAdListActivity;
 import com.nearbypets.activities.ProductDescActivity;
 import com.nearbypets.activities.ProductListActivity;
@@ -36,8 +37,10 @@ import com.nearbypets.activities.SettingActivity;
 import com.nearbypets.activities.UserProfileActivity;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
+import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.ProductListDbDTO;
+import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
@@ -61,12 +64,14 @@ public class MainActivity extends BaseActivity
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
-    private ArrayAdapter<String> mSortAdapter;
+    private SortAdapter mSortAdapter;
     private Spinner spnSortBy;
     private SwipeRefreshLayout swipeRefreshLayout;
     DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
     GPSTracker gpsTracker;
+    private static int mSortOption = 0;
+    private static String sort = "DESC";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +95,16 @@ public class MainActivity extends BaseActivity
         }
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
-        String[] category = {"Sort By", "Date Desc", "Date Asc", "Price Desc", "Price Asc", "Distance Desc", "Distance Asc"};
-        mSortAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                R.layout.dropdown_list_item, category);
+
+        mSortAdapter = new SortAdapter(getApplicationContext());
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        mSortAdapter.addItem(new SortDTO("Sort By", 0, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Date Desc", 0, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Date Asc", 0, "ASC"));
+        mSortAdapter.addItem(new SortDTO("Price Desc", 2, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Price Asc", 2, "ASC"));
+        mSortAdapter.addItem(new SortDTO("Distance Desc", 1, "DESC"));
+        mSortAdapter.addItem(new SortDTO("Distance Asc", 1, "ASC"));
         spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
         mListViewProduct.setAdapter(mProductAdapter);
@@ -125,7 +136,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
-                Intent intent = new Intent(getApplicationContext(), ProductDescActivity.class);
+                Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
                 intent.putExtra(AppConstants.PRODUCT_DISTANCE, productDataDTO.getDistance());
                 intent.putExtra(AppConstants.PRODUCT_AD_ID, productDataDTO.getAdId());
                 startActivity(intent);
@@ -143,7 +154,7 @@ public class MainActivity extends BaseActivity
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
 
-                                        fetchList(1);
+                                        fetchList(1, mSortOption, sort);
 
                                         //logic to refersh list
                                     }
@@ -167,39 +178,65 @@ public class MainActivity extends BaseActivity
                 customLoadMoreDataFromApi(page);
             }
         });
+
+        spnSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SortDTO sortDTO = (SortDTO) mSortAdapter.getItem(position);
+                mSortOption = sortDTO.getValue();
+                sort = sortDTO.getSorting();
+                swipeRefreshLayout.setRefreshing(true);
+                mProductAdapter.clear();
+                fetchList(1, mSortOption, sort);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void customLoadMoreDataFromApi(int page) {
-        fetchList(page);
+        fetchList(page, mSortOption, sort);
     }
 
 
-    private void fetchList(int pageNo) {
+    private void fetchList(int pageNo, int sortOption, String sort) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
-
-
+            swipeRefreshLayout.setRefreshing(false);
+        } else {
+            ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo);
+            Gson gson = new Gson();
+            String serializedJsonString = gson.toJson(productListDbDTO);
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
+            mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
         }
-        ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo);
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(productListDbDTO);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+
     }
 
     //update the product list adapter
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
-        int id = Integer.parseInt(settingMap.get("ClassifiedAdPageSize"));
+        int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
         for (int i = 0; i < productDataDTOs.size(); i++) {
-            mProductAdapter.addItem(productDataDTOs.get(i));
-            if ((i % 4) == 0) {
+            if (i == 0) {
+                mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
+            }
+            if (i != 0) {
+                //int dateCompaire = productDataDTOs.get(i).getPostedDt().compareTo(productDataDTOs.get(i + 1).getPostedDt());
+                if (productDataDTOs.get(i).getDate().equals(productDataDTOs.get(i - 1).getDate())) {
+                    mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
+                }
+            }
+            if ((i % id) == 0) {
                 mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
             }
+            mProductAdapter.addItem(productDataDTOs.get(i));
         }
         //
         //mProductAdapter.notifyDataSetChanged();
@@ -291,7 +328,7 @@ public class MainActivity extends BaseActivity
     public void onRefresh() {
 //logic to refersh list
         mProductAdapter.clear();
-        fetchList(1);
+        fetchList(1, mSortOption, sort);
     }
 
     @Override

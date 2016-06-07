@@ -1,5 +1,10 @@
 package com.nearbypets.data;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 /**
  * Created by akshay on 30-05-2016.
  */
@@ -13,6 +18,7 @@ public class ProductDataDTO {
     private double mPrice;
     private boolean mFavouriteFlag;
     private String mDate;
+    private Date mDt;
 
     public ProductDataDTO(String adId, String productName, String productImage, String productDesc,
                           double distance, double price, boolean favouriteFlag, String date) {
@@ -99,5 +105,24 @@ public class ProductDataDTO {
 
     public void setDate(String mDate) {
         this.mDate = mDate;
+    }
+
+    public Date getPostedDt() {
+        if (this.mDate == null || this.mDate.isEmpty())
+            return this.mDt;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        //formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+        java.util.Date value = null;
+        try {
+            value = formatter.parse(this.mDate);
+            mDt = new Date(value.getTime());
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            calendar.setTime(value);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        return mDt;
     }
 }

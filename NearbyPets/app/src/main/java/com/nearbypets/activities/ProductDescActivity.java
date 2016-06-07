@@ -162,7 +162,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     protected void callToMap(View v) {
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + mAddress);
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mAddress);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);

@@ -112,10 +112,14 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
 
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
+        int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
         for (int i = 0; i < productDataDTOs.size(); i++) {
             mProductAdapter.addItem(productDataDTOs.get(i));
+            if ((i % id) == 0) {
+                mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
+            }
         }
         //
         //mProductAdapter.notifyDataSetChanged();

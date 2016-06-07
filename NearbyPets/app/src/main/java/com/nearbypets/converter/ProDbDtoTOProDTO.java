@@ -21,7 +21,7 @@ public class ProDbDtoTOProDTO {
         for (int i = 0; i < productDbDTOs.size(); i++) {
             ProductDbDTO product = productDbDTOs.get(i);
             productDataDTOs.add(new ProductDataDTO(product.getAdid(), product.getName(), product.getImage(),
-                    product.getDescription(), product.getDistance(), product.getPrice(), false, "Posted On 14/5/2016"));
+                    product.getDescription(), product.getDistance(), product.getPrice(), false, product.getDate()));
 
         }
         return productDataDTOs;

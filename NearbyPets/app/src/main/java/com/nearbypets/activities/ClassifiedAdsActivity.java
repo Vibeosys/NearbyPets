@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import com.nearbypets.data.ClassifiedDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.ProductListDbDTO;
+import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.service.GPSTracker;
@@ -44,22 +46,19 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         setTitle("Classified Ads");
         mCategoryId = getIntent().getIntExtra(AppConstants.CATEGORY_ID, 0);
         gpsTracker = new GPSTracker(getApplicationContext());
-        spnSortBy.setVisibility(View.GONE);
+        //spnSortBy.setVisibility(View.GONE);
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
-        mProductAdapter.setActivityFlag(AppConstants.POSTED_AD_FLAG_ADAPTER);
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
         swipeRefreshLayout.setOnRefreshListener(this);
+        spnSortBy.setOnItemSelectedListener(this);
         mProductAdapter.clear();
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-
-                                        //fetchList(1);
-                                        fetchList(1);
-                                        //logic to refersh list
+                                        fetchList(1, mSortOption, sort);
                                     }
                                 }
         );
@@ -68,15 +67,15 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page);
+                fetchList(page, mSortOption, sort);
             }
         });
 
     }
 
-    private void fetchList(int pageNo) {
+    private void fetchList(int pageNo, int sortOption, String sort) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
-        ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mCategoryId);
+        ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(productListDbDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.CLASSIFIED_AD, serializedJsonString);
@@ -115,19 +114,33 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
+        int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
         for (int i = 0; i < productDataDTOs.size(); i++) {
             mProductAdapter.addItem(productDataDTOs.get(i));
+            if ((i % id) == 0) {
+                mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
+            }
         }
         //
         //mProductAdapter.notifyDataSetChanged();
     }
+
     @Override
     public void onRefresh() {
         mProductAdapter.clear();
-        fetchList(1);
+        fetchList(1, mSortOption, sort);
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchList(page, mSortOption, sort);
+            }
+        });
     }
+
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
@@ -146,5 +159,27 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         startActivity(intent);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        SortDTO sortDTO = (SortDTO) mSortAdapter.getItem(position);
+        mSortOption = sortDTO.getValue();
+        sort = sortDTO.getSorting();
+        swipeRefreshLayout.setRefreshing(true);
+        mProductAdapter.clear();
+        fetchList(1, mSortOption, sort);
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchList(page, mSortOption, sort);
+            }
+        });
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
 }
