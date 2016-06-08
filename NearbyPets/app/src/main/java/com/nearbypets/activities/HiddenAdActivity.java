@@ -13,8 +13,10 @@ import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
@@ -99,7 +101,8 @@ public class HiddenAdActivity extends ProductListActivity implements
         }
     }
 
-    @Override
+
+   /* @Override
     public void onResultReceived(@NonNull JSONObject data, int requestToken) {
 
         switch (requestToken) {
@@ -117,7 +120,7 @@ public class HiddenAdActivity extends ProductListActivity implements
                 break;
         }
 
-    }
+    }*/
 
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
@@ -159,4 +162,34 @@ public class HiddenAdActivity extends ProductListActivity implements
         startActivity(intent);
     }
 
+    @Override
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        createAlertDialog("Login error", "" + errorDbDTO.getMessage());
+        Log.i("TAG", "##" + errorDbDTO.getMessage());
+    }
+
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+
+        switch (requestToken) {
+            case REQ_TOKEN_LIST:
+                Log.i("TAG", "data" + data);
+                try {
+                    ArrayList<ProductDbDTO> downloadProductDbDataDTO = ProductDbDTO.deserializeToArray(data);
+
+                    updateList(downloadProductDbDataDTO);
+                    Log.i(TAG, downloadProductDbDataDTO.toString());
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+        }
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        updateSettings(settings);
+    }
 }

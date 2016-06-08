@@ -16,9 +16,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.data.RegisterDBDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
+import com.nearbypets.data.downloaddto.UserDbDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
@@ -195,25 +198,11 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
 
     }
 
-    @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
-        switch (requestToken) {
-            case REQ_TOKEN_REGISTER:
-                showProgress(true, formView, progressBar);
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
-                    updateSettings(download.getSettings());
-                    Log.i(TAG, download.toString());
-                    checkRegistration(download.getData().get(0).getData());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                break;
-        }
-    }
 
-    private void checkRegistration(ArrayList<NotificationDTO> notificationDTOs) {
+
+
+
+   /* private void checkRegistration(ArrayList<NotificationDTO> notificationDTOs) {
 
         NotificationDTO notificationDTO = notificationDTOs.get(0);
         if (notificationDTO.getErrorCode() == 0) {
@@ -224,5 +213,39 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
             createAlertDialog("Registration error", "" + notificationDTO.getMessage());
             Log.i("TAG", "##" + notificationDTO.getMessage());
         }
+    }*/
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+
+                showProgress(true, formView, progressBar);
+                Log.d("RESULT", "##REQ" + data.toString());
+                try {
+                    UserDbDTO registerUser = UserDbDTO.deserializeJson(data);
+
+                    Log.i(TAG, registerUser.toString());
+
+                } catch (JsonSyntaxException e) {
+                    Log.e(TAG, "## error on response" + e.toString());
+                }
+
+
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        updateSettings(settings);
+    }
+    @Override
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        if (errorDbDTO.getErrorCode() == 0) {
+            Log.i("TAG", "##" + errorDbDTO.getMessage());
+            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(loginIntent);
+        } else {
+            createAlertDialog("Registration error", "" + errorDbDTO.getMessage());
+            Log.i("TAG", "##" + errorDbDTO.getMessage());
+        }
+
     }
 }

@@ -13,7 +13,9 @@ import android.widget.EditText;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.nearbypets.R;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.ForgotDBDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
@@ -21,6 +23,7 @@ import com.nearbypets.utils.ServerSyncManager;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,7 +117,9 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
 
     }
 
-    @Override
+
+
+   /* @Override
     public void onResultReceived(@NonNull JSONObject data, int requestToken) {
         switch(requestToken)
         {
@@ -125,6 +130,25 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
                 Log.d("success", "##REQ" + data.toString());
                 break;
         }
+
+    }*/
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+        ForgotDBDTO forgotDBDTO = ForgotDBDTO.deserializeJson(data);
+        showProgress(false, formView, progressBar);
+        createAlertDialog("Succes Message!!!", "Go to login activity");
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+
+    }
+    @Override
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        showProgress(false, formView, progressBar);
+        createAlertDialog("Forgot password error", "" + errorDbDTO.getMessage());
+        Log.i("TAG", "##" + errorDbDTO.getMessage());
 
     }
 }

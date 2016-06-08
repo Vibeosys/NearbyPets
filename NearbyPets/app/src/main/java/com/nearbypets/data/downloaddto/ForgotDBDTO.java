@@ -1,6 +1,9 @@
 package com.nearbypets.data.downloaddto;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +35,15 @@ public class ForgotDBDTO {
             objectList.add(deserializeObject);
         }
         return objectList;
+    }
+    public static ForgotDBDTO deserializeJson(String serializedString) {
+        Gson gson = new Gson();
+        ForgotDBDTO forgotDBDTO = null;
+        try {
+            forgotDBDTO = gson.fromJson(serializedString, ForgotDBDTO.class);
+        } catch (JsonParseException e) {
+            Log.d("Forgot password Db DTO", "Exception in deserialization" + e.toString());
+        }
+        return forgotDBDTO;
     }
 }
