@@ -8,8 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.nearbypets.R;
-import com.nearbypets.data.BirdCategoryDataDTO;
-import com.nearbypets.data.TypeDataDTO;
+import com.nearbypets.data.CategoryDataDTO;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ import java.util.ArrayList;
  */
 public class PostedAdBirdCategoryAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<BirdCategoryDataDTO> mCategories = new ArrayList<>();
+    private ArrayList<CategoryDataDTO> mCategories = new ArrayList<>();
 
     public PostedAdBirdCategoryAdapter(Context mContext) {
         this.mContext = mContext;
@@ -54,7 +53,7 @@ public class PostedAdBirdCategoryAdapter extends BaseAdapter {
 
         } else
             viewHolder = (ViewHolder) convertView.getTag();
-        BirdCategoryDataDTO category = mCategories.get(position);
+        CategoryDataDTO category = mCategories.get(position);
         viewHolder.categoryType.setText(category.getCategoryTitle());
 
         return row;
@@ -64,7 +63,7 @@ public class PostedAdBirdCategoryAdapter extends BaseAdapter {
         TextView categoryType;
     }
 
-    public void addItem(final BirdCategoryDataDTO item) {
+    public void addItem(final CategoryDataDTO item) {
         mCategories.add(item);
         notifyDataSetChanged();
     }

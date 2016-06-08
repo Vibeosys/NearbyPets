@@ -25,26 +25,21 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.adapters.PostAdSpinnerAdapter;
 import com.nearbypets.adapters.PostedAdBirdCategoryAdapter;
-import com.nearbypets.data.BirdCategoryDataDTO;
+import com.nearbypets.data.CategoryDataDTO;
 import com.nearbypets.data.ImagesDbDTO;
 import com.nearbypets.data.PostMyAdDBDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.TypeDataDTO;
-import com.nearbypets.data.downloaddto.DownloadBirdCategoryDataDTO;
-import com.nearbypets.data.downloaddto.DownloadTypeDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -175,7 +170,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                BirdCategoryDataDTO mCategories = (BirdCategoryDataDTO) firstAdapt.getItem(position);
+                CategoryDataDTO mCategories = (CategoryDataDTO) firstAdapt.getItem(position);
                 bird_categoryId = mCategories.getCategoryId();
                 mCategories.getCategoryTitle();
                 Log.d("TAG", "## " + mCategories.getCategoryId());
@@ -451,7 +446,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
             case REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER:
                 showProgress(false, formView, progressBar);
                 Log.d("Succes", "##REQ" + data.toString());
-                ArrayList<BirdCategoryDataDTO> birdCategoryDataDTOs = BirdCategoryDataDTO.deserializeToArray(data);
+                ArrayList<CategoryDataDTO> birdCategoryDataDTOs = CategoryDataDTO.deserializeToArray(data);
                 getAdFirstSpineer(birdCategoryDataDTOs);
                 break;
             case REQ_TOKEN_POSTMYAD:
@@ -472,7 +467,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void getAdFirstSpineer(ArrayList<BirdCategoryDataDTO> data) {
+    private void getAdFirstSpineer(ArrayList<CategoryDataDTO> data) {
         firstAdapt.clear();
         for (int i = 0; i < data.size(); i++) {
             firstAdapt.addItem(data.get(i));

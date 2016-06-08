@@ -143,7 +143,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     cancelFlag = true;
 
                 }
-                if (!editTextValidation.isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
+                if (  TextUtils.isEmpty(emailStr)) {
                     focusView = mRegisterEmailId;
                     mRegisterEmailId.setError("Please Provide proper email id");
                     cancelFlag = true;
@@ -187,7 +187,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_REGISTER:
-                showProgress(true, formView, progressBar);
+                showProgress(false, formView, progressBar);
                 createAlertDialog("Server error!!!", "Try Again Later");
                 Log.d("Error", "##REQ" + error.toString());
                 break;
@@ -215,7 +215,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
 
-        showProgress(true, formView, progressBar);
+        showProgress(false, formView, progressBar);
         Log.d("RESULT", "##REQ" + data.toString());
         try {
             UserDbDTO registerUser = UserDbDTO.deserializeJson(data);
@@ -237,10 +237,12 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
         if (errorDbDTO.getErrorCode() == 0) {
+            showProgress(false, formView, progressBar);
             Log.i("TAG", "##" + errorDbDTO.getMessage());
             Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginIntent);
         } else {
+            showProgress(false, formView, progressBar);
             createAlertDialog("Registration error", "" + errorDbDTO.getMessage());
             Log.i("TAG", "##" + errorDbDTO.getMessage());
         }

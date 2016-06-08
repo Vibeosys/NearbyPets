@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.nearbypets.R;
-import com.nearbypets.data.BirdCategoryDataDTO;
 import com.nearbypets.data.SortDTO;
 
 import java.util.ArrayList;

@@ -1,6 +1,9 @@
 package com.nearbypets.data;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +36,23 @@ public class TypeDataDTO extends BaseDTO {
 
     public static ArrayList<TypeDataDTO> deserializeToArray(String serializedString) {
         Gson gson = new Gson();
-        TypeDataDTO[] deserializeObject = gson.fromJson(serializedString, TypeDataDTO[].class);
-        ArrayList<TypeDataDTO> objectList = (ArrayList<TypeDataDTO>) Arrays.asList(deserializeObject);
-        return objectList;
+        ArrayList<TypeDataDTO> typeDataDTOs = null;
+
+        try
+        {
+            TypeDataDTO[] deserializeObject = gson.fromJson(serializedString, TypeDataDTO[].class);
+            typeDataDTOs = new ArrayList<>();
+            for(TypeDataDTO typeDataDTO: deserializeObject)
+            {
+                typeDataDTOs.add(typeDataDTO);
+            }
+
+
+        }catch (JsonSyntaxException e)
+        {
+            Log.e("Deserialization", "## error in post Ad type spinner DTO" + e.toString());
+        }
+        return typeDataDTOs;
+
     }
 }
