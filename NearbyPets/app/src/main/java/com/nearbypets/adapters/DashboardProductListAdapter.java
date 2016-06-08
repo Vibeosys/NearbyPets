@@ -15,6 +15,7 @@ import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.nearbypets.R;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.CustomVolleyRequestQueue;
 import com.nearbypets.utils.DateUtils;
 import com.nearbypets.views.RobotoItalicTextView;
@@ -40,6 +41,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
     private TreeSet<Integer> sectionAd = new TreeSet<Integer>();
     private LayoutInflater mInflater;
     private ImageLoader mImageLoader;
+    private int roleId;
     CustomButtonListener customButtonListener;
     CustomItemListener customItemListener;
 
@@ -49,8 +51,9 @@ public class DashboardProductListAdapter extends BaseAdapter {
         sectionAd.clear();
     }
 
-    public DashboardProductListAdapter(Context context) {
+    public DashboardProductListAdapter(Context context, int roleId) {
         this.mContext = context;
+        this.roleId = roleId;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -202,7 +205,9 @@ public class DashboardProductListAdapter extends BaseAdapter {
                                 customItemListener.onItemClickListener(position, product);
                         }
                     });
-
+                    if (roleId == AppConstants.ROLL_ID_ADMIN) {
+                        holder.imgFavourite.setVisibility(View.GONE);
+                    }
                     break;
                 case TYPE_SEPARATOR:
                     DateUtils date = new DateUtils();

@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity
         mSortAdapter.addItem(new SortDTO("Distance Desc", 1, "DESC"));
         mSortAdapter.addItem(new SortDTO("Distance Asc", 1, "ASC"));
         spnSortBy.setAdapter(mSortAdapter);
-        mProductAdapter = new DashboardProductListAdapter(this);
+        mProductAdapter = new DashboardProductListAdapter(this, mSessionManager.getUserRoleId());
         try {
             mListViewProduct.setAdapter(mProductAdapter);
 
