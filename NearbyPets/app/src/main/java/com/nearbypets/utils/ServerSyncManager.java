@@ -72,6 +72,7 @@ public class ServerSyncManager
 
     public void setOnStringResultReceived(OnSuccessResultReceived stringResultReceived) {
         mOnSuccessResultReceived = stringResultReceived;
+        mOnSuccessResultSettingsReceived = stringResultReceived;
     }
 
     public void setOnStringErrorReceived(OnErrorResultReceived stringErrorReceived) {

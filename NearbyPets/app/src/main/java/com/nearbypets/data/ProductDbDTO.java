@@ -85,14 +85,17 @@ public class ProductDbDTO extends BaseDTO {
 
     public static ArrayList<ProductDbDTO> deserializeToArray(String serializedString) {
         Gson gson = new Gson();
-        ArrayList<ProductDbDTO> objectList = null;
+        ArrayList<ProductDbDTO> productDbList = null;
         try {
             ProductDbDTO[] deserializeObject = gson.fromJson(serializedString, ProductDbDTO[].class);
-            objectList = (ArrayList<ProductDbDTO>) Arrays.asList(deserializeObject);
+            productDbList = new ArrayList<>();
+            for (ProductDbDTO productDbRow : deserializeObject                    ) {
+                productDbList.add(productDbRow);
+            }
         } catch (JsonSyntaxException e) {
             Log.e("Deserialization", "## error in Product Db DTO" + e.toString());
         }
-        return objectList;
+        return productDbList;
     }
 
     @Override
