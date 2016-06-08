@@ -2,7 +2,9 @@ package com.nearbypets.data;
 
 import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -78,14 +80,10 @@ public class ProductDbDTO extends BaseDTO {
         this.date = date;
     }
 
-    public static List<ProductDbDTO> deserialize(List<String> serializedStringList) {
+    public static ArrayList<ProductDbDTO> deserializeToArray(String serializedString) {
         Gson gson = new Gson();
-        ArrayList<ProductDbDTO> objectList = new ArrayList<>();
-
-        for (String serializedString : serializedStringList) {
-            ProductDbDTO deserializeObject = gson.fromJson(serializedString, ProductDbDTO.class);
-            objectList.add(deserializeObject);
-        }
+        ProductDbDTO[] deserializeObject = gson.fromJson(serializedString, ProductDbDTO[].class);
+        ArrayList<ProductDbDTO> objectList = (ArrayList<ProductDbDTO>) Arrays.asList(deserializeObject);
         return objectList;
     }
 

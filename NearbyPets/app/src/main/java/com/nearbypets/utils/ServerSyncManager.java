@@ -12,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.Upload;
 import com.nearbypets.data.UploadUser;
@@ -21,6 +22,7 @@ import com.nearbypets.interfaces.BackgroundTaskCallback;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -36,6 +38,7 @@ public class ServerSyncManager
     //private OnDownloadReceived mOnDownloadReceived;
     private OnSuccessResultReceived mOnSuccessResultReceived;
     private OnErrorResultReceived mErrorReceived;
+    private OnSuccessResultReceived mOnSuccessResultSettingsReceived;
     private String TAG = ServerSyncManager.class.getSimpleName();
     //private OnNotifyUser mNotifyUser;
 
@@ -102,8 +105,12 @@ public class ServerSyncManager
                     if (mErrorReceived != null)
                         mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
                 }
+
                 if (mOnSuccessResultReceived != null)
+                {
                     mOnSuccessResultReceived.onResultReceived(downloadDataDbDTO.getData(), requestToken);
+                    mOnSuccessResultSettingsReceived.onResultReceived(downloadDataDbDTO.getData(), downloadDataDbDTO.getSettings(), requestToken);
+                }
                 if (progress != null)
                     progress.dismiss();
             }
@@ -153,7 +160,10 @@ public class ServerSyncManager
 
     public interface OnSuccessResultReceived {
         void onResultReceived(@NonNull String data, int requestToken);
+
+        void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken);
     }
+
 
     public interface OnErrorResultReceived {
         void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken);

@@ -39,6 +39,7 @@ import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.data.LoginDBDTO;
 import com.nearbypets.data.RegisterDBDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
@@ -285,6 +286,11 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(loginIntent);
         finish();
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+
     }
 
 
