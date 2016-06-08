@@ -23,6 +23,7 @@ import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.data.downloaddto.UserDbDTO;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.EditTextValidation;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
@@ -40,7 +41,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     private final int REQ_TOKEN_REGISTER = 2;
     private View formView;
     private View progressBar;
-
+    EditTextValidation editTextValidation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,52 +103,45 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                 boolean cancelFlag = false;
                 View focusView = null;
 
+
+                String firstNameStr = mRegisterFirstName.getText().toString().trim();
+                String lastNameStr = mRegisterLastName.getText().toString().trim();
                 String emailStr = mRegisterEmailId.getText().toString().trim();
                 String password = mRegisterPassword.getText().toString().trim();
-                String firstNameStr = mRegisterFirstName.getText().toString().trim();
-                String LastNameStr = mRegisterLastName.getText().toString().trim();
-                mRegisterFirstName.setError(null);
-                mRegisterLastName.setError(null);
+
+
                 if (TextUtils.isEmpty(firstNameStr)) {
                     focusView = mRegisterFirstName;
                     mRegisterFirstName.setError("Please provide first name");
                     cancelFlag = true;
 
-                } else if (firstNameStr.toString().trim().length() < 2) {
+                } else if (firstNameStr.length() < 2) {
                     focusView = mRegisterFirstName;
                     mRegisterFirstName.setError("First Name should have atleast 2 character");
                     cancelFlag = true;
-                } else if (firstNameStr.toString().trim().length() > 30) {
+                } else if (firstNameStr.length() > 30) {
                     focusView = mRegisterFirstName;
                     mRegisterFirstName.setError("Maximum 30 characters are allowed");
                     cancelFlag = true;
 
-                } else if (!isValidateNumber(firstNameStr.toString())) {
-                    focusView = mRegisterFirstName;
-                    mRegisterFirstName.setError("No special characters Or Integer is allowed");
-                    cancelFlag = true;
                 }
-                if (TextUtils.isEmpty(LastNameStr))
+                if (TextUtils.isEmpty(lastNameStr))
 
                 {
                     focusView = mRegisterLastName;
                     mRegisterLastName.setError("Please provide Last name");
                     cancelFlag = true;
-                } else if (LastNameStr.toString().trim().length() < 2) {
+                } else if (lastNameStr.length() < 2) {
                     focusView = mRegisterLastName;
                     mRegisterLastName.setError("Last Name should have atleast 2 character");
                     cancelFlag = true;
-                } else if (LastNameStr.toString().trim().length() > 30) {
+                } else if (lastNameStr.length() > 30) {
                     focusView = mRegisterLastName;
                     mRegisterLastName.setError("Maximum 30 characters are allowed");
                     cancelFlag = true;
 
-                } else if (!isValidateNumber(LastNameStr.toString())) {
-                    focusView = mRegisterLastName;
-                    mRegisterLastName.setError("No special characters Or Integer is allowed");
-                    cancelFlag = true;
                 }
-                if (!isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
+                if (!editTextValidation.isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
                     focusView = mRegisterEmailId;
                     mRegisterEmailId.setError("Please Provide proper email id");
                     cancelFlag = true;
@@ -156,20 +150,21 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
                     focusView = mRegisterPassword;
                     mRegisterPassword.setError("Password field cannot be blank");
                     cancelFlag = true;
-                } else if (password.toString().trim().length() < 4) {
+                } else if (password.length() < 4) {
                     focusView = mRegisterPassword;
                     mRegisterPassword.setError("Password should have minimum 4 character");
                     cancelFlag = true;
-                } else if (password.toString().trim().length() > 20) {
+                } else if (password.length() > 20) {
                     focusView = mRegisterPassword;
                     mRegisterPassword.setError("Maximium 20 characters are allowed");
                     cancelFlag = true;
+
                 }
                 if (cancelFlag) {
                     focusView.requestFocus();
                 } else {
                     callToRegister();
-                    //Toast.makeText(getApplicationContext(), "All validation are done", Toast.LENGTH_LONG).show();
+
                 }
         }
 

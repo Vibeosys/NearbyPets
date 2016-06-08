@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.nearbypets.data.SettingsDTO;
+import com.nearbypets.utils.EditTextValidation;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.SessionManager;
 
@@ -27,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ServerSyncManager mServerSyncManager = null;
     protected static SessionManager mSessionManager = null;
     protected final static String TAG = "com.nearbypets";
+   static EditTextValidation editTextValidation =null;
     //protected Tracker mTracker;
     protected static HashMap<String, String> settingMap = new HashMap<>();
 
@@ -39,7 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         settingMap.put("AdSearchDistanceInKM", "10000");
         settingMap.put("ClassifiedAdPageSize", "10");
         settingMap.put("FacebookAdPageSize", "5");
-
+        editTextValidation= new EditTextValidation();
     }
 
     protected void updateSettings(ArrayList<SettingsDTO> settings) {
