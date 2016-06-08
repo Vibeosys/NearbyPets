@@ -20,11 +20,5 @@ public class EditTextValidation {
         return matcher.matches();
     }
 
-    public boolean isValidateNumber(String email) {
-        String EMAIL_PATTERN = "[A-Za-z]";
-        // str.matches(".*\\d+.*");
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
+
 }

@@ -28,7 +28,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         mTxtName = (RobotoMediumTextView) findViewById(R.id.txtName);
         mTxtEmail = (RobotoMediumTextView) findViewById(R.id.txtEmail);
         mTxtMobNo = (RobotoMediumTextView) findViewById(R.id.txtMobNo);
-        formView=findViewById(R.id.)
+      //  formView=findViewById(R.id.)
         mTxtName.setText("");
         mTxtEmail.setText("");
         mTxtMobNo.setText("");
