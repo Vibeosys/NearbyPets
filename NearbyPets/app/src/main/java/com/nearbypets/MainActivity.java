@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        View headerView = navigationView.getHeaderView(0);
         TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
         txtUserName.setText(mSessionManager.getUserName());
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
@@ -147,18 +147,16 @@ public class MainActivity extends BaseActivity
 
         /**
          * Showing Swipe Refresh animation on activity create
-         * As animation won't start on onCreate, post runnable is used
-         */
-        fetchList(1, mSortOption, sort);
-        /*swipeRefreshLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipeRefreshLayout.setRefreshing(true);
+         * As animation won't start on onCreate, post runnable is F
+         fetchList(1, mSortOption, sort);
+         /*swipeRefreshLayout.post(new Runnable() {
+        @Override public void run() {
+        swipeRefreshLayout.setRefreshing(true);
 
-                                        //logic to refersh list
-                                    }
-                                }
-        );*/
+        //logic to refersh list
+        }
+        }
+         );*/
         switch (mSessionManager.getUserRoleId()) {
             case AppConstants.ROLL_ID_ADMIN:
                 navigationView.getMenu().clear(); //clear old inflated items.
@@ -352,7 +350,7 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_log_out) {
             try {
-                LoginManager.getInstance().logOut();
+                LoginActivity.LogoutFacebook();
             } catch (Exception e) {
 
             }
@@ -433,6 +431,14 @@ public class MainActivity extends BaseActivity
         updateSettings(settings);
         ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
         updateList(productDbDTOs);
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
         //swipeRefreshLayout.setRefreshing(false);
 
     }

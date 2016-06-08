@@ -78,15 +78,15 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
             imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager(), mImageArray);
             SwipeFragment.setCustomButtonListner(this);
-            try {
-                String distance = getIntent().getStringExtra(AppConstants.PRODUCT_DISTANCE);
+            /*try {*/
+               /* String distance =
                 if (distance == null || TextUtils.isEmpty(distance)) {
 
-                } else
-                    mDistance = Double.parseDouble(distance);
-            } catch (Exception e) {
+                } else*/
+            mDistance = getIntent().getDoubleExtra(AppConstants.PRODUCT_DISTANCE, 0);
+            /*} catch (Exception e) {
                 Log.e("TAG", "ERROR IN PRODUCT DESC DISTANCE");
-            }
+            }*/
             try {
                 mAdID = getIntent().getExtras().getString(AppConstants.PRODUCT_AD_ID);
             } catch (Exception e) {
@@ -287,6 +287,13 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
             mImageArray.add(images.get(j));
         }
         imageFragmentPagerAdapter.notifyDataSetChanged();
+        if (product.getEmail().equals(mSessionManager.getUserEmailId())) {
+            btnSoldOut.setVisibility(View.VISIBLE);
+            btnDisable.setVisibility(View.VISIBLE);
+        } else {
+            btnSoldOut.setVisibility(View.GONE);
+            btnDisable.setVisibility(View.GONE);
+        }
     }
 
     @Override
