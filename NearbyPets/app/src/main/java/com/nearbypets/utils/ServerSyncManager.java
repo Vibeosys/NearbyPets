@@ -81,8 +81,7 @@ public class ServerSyncManager
 
         Upload uploadToServer = new Upload();
         uploadToServer.setUser(new UploadUser(mSessionManager.getUserId(),
-                mSessionManager.getUserEmailId(), mSessionManager.getUserName(),
-                mSessionManager.getUserRoleId(), mSessionManager.getUserPassword(),
+                mSessionManager.getUserEmailId(), mSessionManager.getUserPassword(),
                 mSessionManager.getUserAccessToken()));
         uploadToServer.setData(Arrays.asList(params));
         String uploadJson = uploadToServer.serializeString();
@@ -106,8 +105,7 @@ public class ServerSyncManager
                         mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
                 }
 
-                if (mOnSuccessResultReceived != null)
-                {
+                if (mOnSuccessResultReceived != null) {
                     mOnSuccessResultReceived.onResultReceived(downloadDataDbDTO.getData(), requestToken);
                     mOnSuccessResultSettingsReceived.onResultReceived(downloadDataDbDTO.getData(), downloadDataDbDTO.getSettings(), requestToken);
                 }

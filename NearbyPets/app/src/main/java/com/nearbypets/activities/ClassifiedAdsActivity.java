@@ -15,11 +15,13 @@ import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.ClassifiedDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SoldandDisableDbDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
@@ -103,34 +105,39 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     }
 
     @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
-
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_LIST:
-                Log.i("TAG", "data" + data);
-                try {
-                    DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
-                    updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
-                    Log.i(TAG, downloadProductDbDataDTO.toString());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
+                if (errorDbDTO.getErrorCode() != 0) {
+                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
                 }
-                swipeRefreshLayout.setRefreshing(false);
                 break;
             case REQ_TOKAN_HIDE_AD:
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
-                    updateSettings(download.getSettings());
-                    Log.i(TAG, download.toString());
-                    checkStatus(download.getData().get(0).getData());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
+                if (errorDbDTO.getErrorCode() == 0) {
+                    Toast.makeText(getApplicationContext(), errorDbDTO.getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
                 }
                 break;
         }
+    }
 
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        updateSettings(settings);
+        switch (requestToken) {
+            case REQ_TOKEN_LIST:
+                Log.i("TAG", "data" + data);
+                ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
+                updateList(productDbDTOs);
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+        }
     }
 
     private void checkStatus(ArrayList<NotificationDTO> notificationDTOs) {
@@ -228,4 +235,6 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKAN_HIDE_AD, tableDataDTO);
     }
+
+
 }

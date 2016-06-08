@@ -7,20 +7,16 @@ public class UploadUser extends BaseDTO {
     protected String userId;
     protected String email;
     protected String userName;
-    protected int rollId;
-    protected String pwd;
     protected String accessToken;
 
     public UploadUser() {
 
     }
 
-    public UploadUser(String userId, String emailId, String userName, int rollId, String pwd, String accessToken) {
+    public UploadUser(String userId, String emailId, String userName, String accessToken) {
         this.userId = userId;
         this.email = emailId;
         this.userName = userName;
-        this.rollId = rollId;
-        this.pwd = pwd;
         this.accessToken = accessToken;
     }
 
@@ -48,13 +44,6 @@ public class UploadUser extends BaseDTO {
         this.userName = userName;
     }
 
-    public int getRollId() {
-        return rollId;
-    }
-
-    public void setRollId(int rollId) {
-        this.rollId = rollId;
-    }
 
     public String getEmail() {
         return email;
@@ -64,11 +53,4 @@ public class UploadUser extends BaseDTO {
         this.email = email;
     }
 
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
 }
