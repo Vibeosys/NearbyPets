@@ -1,6 +1,9 @@
 package com.nearbypets.data;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,9 +66,19 @@ public class CategoryDbDTO extends BaseDTO {
 
     public static ArrayList<CategoryDbDTO> deserializeToArray(String serializedString) {
         Gson gson = new Gson();
-        CategoryDbDTO[] deserializeObject = gson.fromJson(serializedString, CategoryDbDTO[].class);
-        ArrayList<CategoryDbDTO> objectList = (ArrayList<CategoryDbDTO>) Arrays.asList(deserializeObject);
-        return objectList;
+        ArrayList<CategoryDbDTO> categoryDbDTOs = null;
+        try {
+            CategoryDbDTO[] deserializeObject = gson.fromJson(serializedString, CategoryDbDTO[].class);
+            for (CategoryDbDTO categoryDbDTO : deserializeObject) {
+                categoryDbDTOs = new ArrayList<>();
+                categoryDbDTOs.add(categoryDbDTO);
+            }
+        } catch (JsonSyntaxException e) {
+            Log.e("Deserilization", "Category  DB DTO error" + e.toString());
+        }
+
+
+        return categoryDbDTOs;
     }
 
 
