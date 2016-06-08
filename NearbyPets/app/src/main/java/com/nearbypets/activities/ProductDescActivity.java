@@ -42,7 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ProductDescActivity extends BaseActivity implements SwipeFragment.CustomCall,
-        ServerSyncManager.OnStringResultReceived, ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
+        ServerSyncManager.OnSuccessResultReceived, ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
     static final int NUM_ITEMS = 6;
     protected ImageFragmentPagerAdapter imageFragmentPagerAdapter;
     protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice;
@@ -192,7 +192,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);
@@ -208,7 +208,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);

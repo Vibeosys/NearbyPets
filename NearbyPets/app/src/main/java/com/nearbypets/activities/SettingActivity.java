@@ -1,9 +1,7 @@
 package com.nearbypets.activities;
 
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,8 +24,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SettingActivity extends BaseActivity implements ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
+public class SettingActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
+        ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
 
     EditText txtPageSize, txtFbAd, txtRadius;
     Button btnSave;
@@ -58,7 +56,7 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_SETTINGS:
                 showProgress(false, formView, progressBar);
@@ -68,7 +66,7 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_SETTINGS:
                 showProgress(false, formView, progressBar);

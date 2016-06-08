@@ -56,8 +56,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        SwipeRefreshLayout.OnRefreshListener, ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived, DashboardProductListAdapter.CustomButtonListener, DashboardProductListAdapter.CustomItemListener {
+        SwipeRefreshLayout.OnRefreshListener, ServerSyncManager.OnSuccessResultReceived,
+        ServerSyncManager.OnErrorResultReceived, DashboardProductListAdapter.CustomButtonListener, DashboardProductListAdapter.CustomItemListener {
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
@@ -351,7 +351,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "data" + data);
@@ -370,7 +370,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "Error " + error.toString());

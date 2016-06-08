@@ -14,11 +14,11 @@ public class DownloadRegisterDbDTO extends DownloadDataDbDTO {
     public DownloadRegisterDbDTO() {
     }
 
-    public UserDbDTO getData() {
+   /* public UserDbDTO getData() {
         return data;
     }
 
     public void setData(UserDbDTO data) {
         this.data = data;
-    }
+    }*/
 }

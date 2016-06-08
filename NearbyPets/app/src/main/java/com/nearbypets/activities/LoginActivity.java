@@ -41,7 +41,9 @@ import com.nearbypets.data.LoginDBDTO;
 import com.nearbypets.data.RegisterDBDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
+import com.nearbypets.data.downloaddto.UserDbDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
@@ -56,8 +58,8 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LoginActivity extends BaseActivity implements ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
+public class LoginActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
+        ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
     private EditText mEmailId, mPassword;
     private MyriadProRegularTextView forgot_password;
     private MyriadProRegularTextView create_account;
@@ -71,7 +73,6 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     private View formView;
     private View progressBar;
     private LoginButton btnFbLogin;
-    private String FbCurrentToken;
 
 
     @Override
@@ -95,10 +96,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
 
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
-
-
         }
        /* accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -162,17 +160,16 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                                     String email = object.getString("email");
                                     String firstName = object.getString("first_name");
                                     String lastName = object.getString("last_name");
-                                    String accessTokan = loginResult.getAccessToken().toString();
                                     AccessToken Fbtoken = AccessToken.getCurrentAccessToken();
-                                    if(Fbtoken!=null)
-                                    {
-                                        String FbAppId= Fbtoken.getApplicationId();
+                                    String FbCurrentToken = null;
+                                    if (Fbtoken != null) {
+                                        String FbAppId = Fbtoken.getApplicationId();
                                         FbCurrentToken = Fbtoken.getToken();
                                         Fbtoken.isExpired();
                                     }
 
                                     callToRegister(firstName, lastName, email, FbCurrentToken);
-                                    mSessionManager.setUserAccessToken(accessTokan);
+                                    mSessionManager.setUserAccessToken(FbCurrentToken);
                                     Log.d(TAG, "## email" + email + " first Name" + firstName + " lastname " + lastName);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -258,7 +255,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_LOGIN: //error on Login
                 showProgress(false, formView, progressBar);
@@ -274,65 +271,22 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
-        switch (requestToken) {
-            case REQ_TOKEN_LOGIN: //login authentication
-                showProgress(false, formView, progressBar);
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
-                    updateSettings(download.getSettings());
-                    Log.i(TAG, download.toString());
-                    checkLogin(download.getData().get(0).getData());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                break;
-            case REQ_TOKEN_REGISTER:
-                showProgress(false, formView, progressBar);
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
-                    updateSettings(download.getSettings());
-                    Log.i(TAG, download.toString());
-                    checkRegistration(download.getData().get(0).getData());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                break;
-        }
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        createAlertDialog("Login error", "" + errorDbDTO.getMessage());
+        Log.i("TAG", "##" + errorDbDTO.getMessage());
+
     }
 
-    private void checkLogin(ArrayList<NotificationDTO> data) {
-        NotificationDTO notificationDTO = data.get(0);
-        if (notificationDTO.getErrorCode() == 0) {
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-            UserAuth userAuth = new UserAuth();
-            userAuth.saveAuthenticationInfo(notificationDTO.getData(), getApplicationContext());
-            Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(loginIntent);
-            finish();
-        } else {
-            createAlertDialog("Login error", "" + notificationDTO.getMessage());
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-        }
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+        UserDbDTO userDbDTO = UserDbDTO.deserializeJson(data);
+        UserAuth userAuth = new UserAuth();
+        userAuth.saveAuthenticationInfo(userDbDTO, getApplicationContext());
+        Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(loginIntent);
+        finish();
     }
 
-    private void checkRegistration(ArrayList<NotificationDTO> notificationDTOs) {
-
-        NotificationDTO notificationDTO = notificationDTOs.get(0);
-        if (notificationDTO.getErrorCode() == 0 || notificationDTO.getErrorCode() == 102) {
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-            UserAuth userAuth = new UserAuth();
-            userAuth.saveAuthenticationInfo(notificationDTO.getData(), getApplicationContext());
-            Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(loginIntent);
-            finish();
-        } else {
-            createAlertDialog("Login error", "" + notificationDTO.getMessage());
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -373,4 +327,6 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                 break;
         }
     }
+
+
 }

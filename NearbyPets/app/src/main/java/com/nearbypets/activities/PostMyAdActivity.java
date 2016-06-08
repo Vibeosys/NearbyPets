@@ -3,8 +3,6 @@ package com.nearbypets.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -52,10 +50,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class PostMyAdActivity extends BaseActivity implements View.OnClickListener,
-        ServerSyncManager.OnStringErrorReceived, ServerSyncManager.OnStringResultReceived {
+        ServerSyncManager.OnErrorResultReceived, ServerSyncManager.OnSuccessResultReceived {
 
     private ArrayAdapter<String> mCategoryAdapter;
     private ArrayAdapter<String> mTypeAdapter;
@@ -417,7 +414,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_POST_ADD_CATEGORY:
                 Log.d("Error", "##REQ" + error.toString());
@@ -435,7 +432,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_POST_ADD_CATEGORY:
                 showProgress(false, formView, progressBar);

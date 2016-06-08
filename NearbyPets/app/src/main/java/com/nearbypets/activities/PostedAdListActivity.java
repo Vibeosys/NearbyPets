@@ -2,7 +2,6 @@ package com.nearbypets.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,10 +9,7 @@ import android.view.View;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.nearbypets.R;
-import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
-import com.nearbypets.data.ClassifiedDbDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
@@ -31,8 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class PostedAdListActivity extends ProductListActivity implements
-        ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived {
+        ServerSyncManager.OnSuccessResultReceived,
+        ServerSyncManager.OnErrorResultReceived {
     GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
     private static int storedPageNO = 0;
@@ -90,7 +86,7 @@ public class PostedAdListActivity extends ProductListActivity implements
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "Error " + error.toString());
@@ -100,7 +96,7 @@ public class PostedAdListActivity extends ProductListActivity implements
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
 
         switch (requestToken) {
             case REQ_TOKEN_LIST:

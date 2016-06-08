@@ -20,7 +20,6 @@ import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.converter.CateDbToCateDTO;
 import com.nearbypets.data.CategoryDTO;
 import com.nearbypets.data.CategoryDbDTO;
-import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.CategoryListDBDTO;
 import com.nearbypets.utils.AppConstants;
@@ -34,8 +33,8 @@ import java.util.ArrayList;
 
 public class CategoryListActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener,
-        ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived {
+        ServerSyncManager.OnSuccessResultReceived,
+        ServerSyncManager.OnErrorResultReceived {
 
     private ListView mCategoryList;
     private CategoryAdapter mCategoryAdapter;
@@ -124,7 +123,7 @@ public class CategoryListActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_CATEGORY_LIST:
                 Log.d("Error", "##REQ" + error.toString());
@@ -136,7 +135,7 @@ public class CategoryListActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
 
         switch (requestToken) {
             case REQ_TOKEN_CATEGORY_LIST:

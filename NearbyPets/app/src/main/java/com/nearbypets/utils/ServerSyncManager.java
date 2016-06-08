@@ -15,6 +15,8 @@ import com.android.volley.toolbox.Volley;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.Upload;
 import com.nearbypets.data.UploadUser;
+import com.nearbypets.data.downloaddto.DownloadDataDbDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.interfaces.BackgroundTaskCallback;
 
 import org.json.JSONObject;
@@ -32,8 +34,8 @@ public class ServerSyncManager
     private Context mContext;
     //private boolean mIsWorkInProgress;
     //private OnDownloadReceived mOnDownloadReceived;
-    private OnStringResultReceived mOnStringResultReceived;
-    private OnStringErrorReceived mErrorReceived;
+    private OnSuccessResultReceived mOnSuccessResultReceived;
+    private OnErrorResultReceived mErrorReceived;
     private String TAG = ServerSyncManager.class.getSimpleName();
     //private OnNotifyUser mNotifyUser;
 
@@ -64,11 +66,11 @@ public class ServerSyncManager
         uploadJsonToServer(uploadJson, uploadURL, progress, requestTokan);
     }
 
-    public void setOnStringResultReceived(OnStringResultReceived stringResultReceived) {
-        mOnStringResultReceived = stringResultReceived;
+    public void setOnStringResultReceived(OnSuccessResultReceived stringResultReceived) {
+        mOnSuccessResultReceived = stringResultReceived;
     }
 
-    public void setOnStringErrorReceived(OnStringErrorReceived stringErrorReceived) {
+    public void setOnStringErrorReceived(OnErrorResultReceived stringErrorReceived) {
         mErrorReceived = stringErrorReceived;
     }
 
@@ -95,8 +97,13 @@ public class ServerSyncManager
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Upload Response", "" + response.toString());
-                if (mOnStringResultReceived != null)
-                    mOnStringResultReceived.onStringResultReceived(response, requestToken);
+                DownloadDataDbDTO downloadDataDbDTO = DownloadDataDbDTO.deserializeJson(response.toString());
+                if (downloadDataDbDTO == null) {
+                    if (mErrorReceived != null)
+                        mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
+                }
+                if (mOnSuccessResultReceived != null)
+                    mOnSuccessResultReceived.onResultReceived(downloadDataDbDTO.getData(), requestToken);
                 if (progress != null)
                     progress.dismiss();
             }
@@ -107,7 +114,7 @@ public class ServerSyncManager
                 if (progress != null)
                     progress.dismiss();
                 if (mErrorReceived != null)
-                    mErrorReceived.onStringErrorReceived(error, requestToken);
+                    mErrorReceived.onVolleyErrorReceived(error, requestToken);
                 // Log.i(TAG, "##" + error.toString());
             }
         });
@@ -144,12 +151,14 @@ public class ServerSyncManager
 
     }
 
-    public interface OnStringResultReceived {
-        void onStringResultReceived(@NonNull JSONObject data, int requestToken);
+    public interface OnSuccessResultReceived {
+        void onResultReceived(@NonNull String data, int requestToken);
     }
 
-    public interface OnStringErrorReceived {
-        void onStringErrorReceived(@NonNull VolleyError error, int requestToken);
+    public interface OnErrorResultReceived {
+        void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken);
+
+        void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken);
     }
 
 }

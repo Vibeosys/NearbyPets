@@ -1,5 +1,9 @@
 package com.nearbypets.data.downloaddto;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.nearbypets.data.BaseDTO;
 
 /**
@@ -81,5 +85,16 @@ public class UserDbDTO extends BaseDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public static UserDbDTO deserializeJson(String serializedString) {
+        Gson gson = new Gson();
+        UserDbDTO userDbDTO = null;
+        try {
+            userDbDTO = gson.fromJson(serializedString, UserDbDTO.class);
+        } catch (JsonParseException e) {
+            Log.d("Download User Db DTO", "Exception in deserialization" + e.toString());
+        }
+        return userDbDTO;
     }
 }

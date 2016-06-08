@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -30,8 +29,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegisterActivity extends BaseActivity implements ServerSyncManager.OnStringResultReceived,
-        ServerSyncManager.OnStringErrorReceived, View.OnClickListener {
+public class RegisterActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
+        ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
     private EditText mRegisterEmailId, mRegisterFirstName, mRegisterLastName,
             mRegisterPassword, mRegisterPhoneNumber;
     private Button mRegister;
@@ -185,7 +184,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     }
 
     @Override
-    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_REGISTER:
                 showProgress(true, formView, progressBar);
@@ -197,7 +196,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     }
 
     @Override
-    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_REGISTER:
                 showProgress(true, formView, progressBar);
