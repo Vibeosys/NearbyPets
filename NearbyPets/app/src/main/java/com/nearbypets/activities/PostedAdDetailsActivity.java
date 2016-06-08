@@ -20,6 +20,8 @@ public class PostedAdDetailsActivity extends ProductDescActivity {
         //setContentView(R.layout.activity_posted_ad_details);
 
         btnAddToFav.setVisibility(View.GONE);
+        mServerSyncManager.setOnStringErrorReceived(this);
+        mServerSyncManager.setOnStringResultReceived(this);
     }
 
     @Override

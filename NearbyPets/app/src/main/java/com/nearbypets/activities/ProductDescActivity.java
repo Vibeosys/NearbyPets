@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -68,14 +69,21 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_desc);
         setTitle(getResources().getString(R.string.activity_product_desc));
+        mServerSyncManager.setOnStringResultReceived(this);
+        mServerSyncManager.setOnStringErrorReceived(this);
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
         } else {
+
             imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager(), mImageArray);
             SwipeFragment.setCustomButtonListner(this);
             try {
-                mDistance = Double.parseDouble(getIntent().getExtras().getString(AppConstants.PRODUCT_DISTANCE));
+                String distance = getIntent().getStringExtra(AppConstants.PRODUCT_DISTANCE);
+                if (distance == null || TextUtils.isEmpty(distance)) {
+
+                } else
+                    mDistance = Double.parseDouble(distance);
             } catch (Exception e) {
                 Log.e("TAG", "ERROR IN PRODUCT DESC DISTANCE");
             }
@@ -86,8 +94,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
             }
             setUpUI();
             callToDesc();
-            mServerSyncManager.setOnStringResultReceived(this);
-            mServerSyncManager.setOnStringErrorReceived(this);
+
             viewPager.setAdapter(imageFragmentPagerAdapter);
         }
 
@@ -212,6 +219,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        showProgress(false, formView, progressBar);
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 if (errorDbDTO.getErrorCode() != 0) {

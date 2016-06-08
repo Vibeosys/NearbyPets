@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -208,13 +209,14 @@ public class MainActivity extends BaseActivity
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
+            storedPageNO = pageNo;
             Toast.makeText(getApplicationContext(), gpsTracker.getLatitude() + " " + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
             ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
-            storedPageNO = pageNo;
+
         }
 
     }
@@ -228,25 +230,30 @@ public class MainActivity extends BaseActivity
         // mProductAdapter.addSectionHeaderItem(productDataDTOs.get(0));
         if (mSortOption == 0) {
             for (int i = 0; i < productDataDTOs.size(); i++) {
+                adDisplay = adDisplay + 1;
+                ProductDataDTO productDataDTO = productDataDTOs.get(i);
                 if (dateToCompaire != null) {
-                    int compiare = dateToCompaire.compareTo(productDataDTOs.get(i).getPostedDt());
+                    int compiare = dateToCompaire.compareTo(productDataDTO.getPostedDt());
                     if (compiare != 0) {
-                        mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
-                        dateToCompaire = productDataDTOs.get(i).getPostedDt();
+                        mProductAdapter.addSectionHeaderItem(productDataDTO);
+                        mProductAdapter.addItem(productDataDTO);
+                        dateToCompaire = productDataDTO.getPostedDt();
                     } else {
-                        mProductAdapter.addItem(productDataDTOs.get(i));
-                        adDisplay = adDisplay + 1;
+                        mProductAdapter.addItem(productDataDTO);
+
                     }
                 } else {
-                    mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
-                    dateToCompaire = productDataDTOs.get(i).getPostedDt();
+                    mProductAdapter.addSectionHeaderItem(productDataDTO);
+                    mProductAdapter.addItem(productDataDTO);
+                    dateToCompaire = productDataDTO.getPostedDt();
                 }
                 if (adDisplay % id == 0) {
-                    mProductAdapter.addSectionAdItem(productDataDTOs.get(i));
+                    mProductAdapter.addSectionAdItem(productDataDTO);
                 }
                 //mProductAdapter.addItem(productDataDTOs.get(i));
             }
         } else {
+            //mProductAdapter.clear();
             for (int i = 0; i < productDataDTOs.size(); i++) {
                 adDisplay = adDisplay + 1;
                 mProductAdapter.addItem(productDataDTOs.get(i));
@@ -408,7 +415,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
         if (errorDbDTO.getErrorCode() != 0) {
-            createAlertDialog("Error", errorDbDTO.getMessage());
+            Snackbar.make(getCurrentFocus(), "No more ads found", Snackbar.LENGTH_SHORT).show();
         }
         swipeRefreshLayout.setRefreshing(false);
     }

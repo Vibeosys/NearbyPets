@@ -61,15 +61,14 @@ public class DashboardProductListAdapter extends BaseAdapter {
     }
 
     public void addSectionHeaderItem(final ProductDataDTO item) {
-        addItem(item);
-        sectionHeader.add(mProductList.size() - 1);
+        mProductList.add(item);
+        sectionHeader.add(mProductList.size()-1);
         notifyDataSetChanged();
     }
 
     public void addSectionAdItem(final ProductDataDTO item) {
-        //mProductList.add(item);
-        //addItem(item);
-        sectionAd.add(mProductList.size() - 1);
+        mProductList.add(item);
+        sectionAd.add(mProductList.size()-1);
         notifyDataSetChanged();
     }
 
