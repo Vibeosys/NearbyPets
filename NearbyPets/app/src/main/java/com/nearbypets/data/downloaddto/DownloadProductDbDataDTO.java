@@ -11,26 +11,17 @@ import java.util.List;
 /**
  * Created by akshay on 03-06-2016.
  */
-public class DownloadProductDbDataDTO extends BaseDTO {
-    private ArrayList<SettingsDTO> settings;
-    private ArrayList<ProductDataDbDTO> data;
+public class DownloadProductDbDataDTO extends DownloadDataDbDTO {
+    private ArrayList<ProductDbDTO> data;
 
     public DownloadProductDbDataDTO() {
     }
 
-    public ArrayList<SettingsDTO> getSettings() {
-        return settings;
-    }
-
-    public void setSettings(ArrayList<SettingsDTO> settings) {
-        this.settings = settings;
-    }
-
-    public ArrayList<ProductDataDbDTO> getData() {
+    public ArrayList<ProductDbDTO> getData() {
         return data;
     }
 
-    public void setData(ArrayList<ProductDataDbDTO> data) {
+    public void setData(ArrayList<ProductDbDTO> data) {
         this.data = data;
     }
 

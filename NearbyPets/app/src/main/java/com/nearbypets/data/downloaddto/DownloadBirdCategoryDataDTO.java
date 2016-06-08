@@ -1,26 +1,15 @@
 package com.nearbypets.data.downloaddto;
 
-import com.nearbypets.data.BirdCategoryDataDTO;
-import com.nearbypets.data.SettingsDTO;
-
 import java.util.ArrayList;
 
 /**
  * Created by shrinivas on 04-06-2016.
  */
-public class DownloadBirdCategoryDataDTO {
-    private ArrayList<SettingsDTO> settings;
+public class DownloadBirdCategoryDataDTO extends DownloadDataDbDTO {
+
     private ArrayList<BirdDataDTO> data;
 
     public DownloadBirdCategoryDataDTO() {
-    }
-
-    public ArrayList<SettingsDTO> getSettings() {
-        return settings;
-    }
-
-    public void setSettings(ArrayList<SettingsDTO> settings) {
-        this.settings = settings;
     }
 
     public ArrayList<BirdDataDTO> getData() {
@@ -29,13 +18,5 @@ public class DownloadBirdCategoryDataDTO {
 
     public void setData(ArrayList<BirdDataDTO> data) {
         this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "DownloadBirdCategoryDataDTO{" +
-                "settings=" + settings +
-                ", data=" + data +
-                '}';
     }
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by akshay on 07-06-2016.
  */
-public class NotificationDataDTO extends DataDbDTO {
+public class NotificationDataDTO extends DownloadDataDbDTO {
     private ArrayList<NotificationDTO> data;
 
     public NotificationDataDTO() {

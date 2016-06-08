@@ -1,6 +1,5 @@
 package com.nearbypets.data.downloaddto;
 
-import com.nearbypets.data.BaseDTO;
 import com.nearbypets.data.ProductDbDTO;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by akshay on 07-06-2016.
  */
-public class ProductDataDbDTO extends DataDbDTO {
+public class ProductDataDbDTO extends DownloadDataDbDTO {
 
     private ArrayList<ProductDbDTO> data;
 

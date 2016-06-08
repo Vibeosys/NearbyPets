@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by akshay on 07-06-2016.
  */
-public class TypeDataDbDTO extends DataDbDTO {
+public class TypeDataDbDTO extends DownloadDataDbDTO {
     private ArrayList<TypeDataDTO> data;
 
     public TypeDataDbDTO() {

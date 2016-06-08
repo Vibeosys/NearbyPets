@@ -3,21 +3,21 @@ package com.nearbypets.data.downloaddto;
 import com.nearbypets.data.BaseDTO;
 
 /**
- * Created by akshay on 07-06-2016.
+ * Created by akshay on 08-06-2016.
  */
-public class DataDbDTO extends BaseDTO {
+public class ErrorDbDTO extends BaseDTO {
 
-    private String errorCode;
+    private int errorCode;
     private String message;
 
-    public DataDbDTO() {
+    public ErrorDbDTO() {
     }
 
-    public String getErrorCode() {
+    public int getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(String errorCode) {
+    public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
     }
 

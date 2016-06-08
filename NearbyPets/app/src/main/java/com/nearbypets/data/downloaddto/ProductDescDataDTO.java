@@ -3,7 +3,7 @@ package com.nearbypets.data.downloaddto;
 /**
  * Created by akshay on 07-06-2016.
  */
-public class ProductDescDataDTO extends DataDbDTO {
+public class ProductDescDataDTO extends DownloadDataDbDTO {
     private ProductDescDbDTO data;
 
     public ProductDescDataDTO() {
