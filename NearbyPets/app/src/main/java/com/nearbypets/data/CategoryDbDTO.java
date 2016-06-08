@@ -3,6 +3,7 @@ package com.nearbypets.data;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,6 +60,14 @@ public class CategoryDbDTO extends BaseDTO {
         }
         return objectList;
     }
+
+    public static ArrayList<CategoryDbDTO> deserializeToArray(String serializedString) {
+        Gson gson = new Gson();
+        CategoryDbDTO[] deserializeObject = gson.fromJson(serializedString, CategoryDbDTO[].class);
+        ArrayList<CategoryDbDTO> objectList = (ArrayList<CategoryDbDTO>) Arrays.asList(deserializeObject);
+        return objectList;
+    }
+
 
     @Override
     public String toString() {

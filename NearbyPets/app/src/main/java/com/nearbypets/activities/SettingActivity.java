@@ -1,7 +1,7 @@
 package com.nearbypets.activities;
 
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,17 +10,14 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.data.SettingsDBDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
-import com.nearbypets.data.downloaddto.NotificationDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -57,39 +54,14 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
-        switch (requestToken) {
-            case REQ_TOKEN_SETTINGS:
-                showProgress(false, formView, progressBar);
-                Log.d("RESULT", "##REQ" + error.toString());
-                break;
-        }
+        showProgress(false, formView, progressBar);
+        Log.d("RESULT", "##REQ" + error.toString());
     }
 
     @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
-        switch (requestToken) {
-            case REQ_TOKEN_SETTINGS:
-                showProgress(false, formView, progressBar);
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
-                    updateSettings(download.getSettings());
-                    Log.i(TAG, download.toString());
-                    checkLogin(download.getData().get(0).getData());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                break;
-        }
-    }
-
-    private void checkLogin(ArrayList<NotificationDTO> data) {
-        NotificationDTO notificationDTO = data.get(0);
-        if (notificationDTO.getErrorCode() == 0) {
-            Toast.makeText(getApplicationContext(), "" + notificationDTO.getMessage(), Toast.LENGTH_SHORT).show();
-        } else {
-            createAlertDialog("Save error", "" + notificationDTO.getMessage());
-            Log.i("TAG", "##" + notificationDTO.getMessage());
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        if (errorDbDTO.getErrorCode() != 0) {
+            createAlertDialog("Save error", "" + errorDbDTO.getMessage());
         }
     }
 
@@ -113,5 +85,18 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
         String serializedJsonString = gson.toJson(settingsDBDTOs);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SETTINGS, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_SETTINGS, tableDataDTO);
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        showProgress(false, formView, progressBar);
+        Log.d("RESULT", "##REQ" + data.toString());
+        updateSettings(settings);
+        Toast.makeText(getApplicationContext(), "Settings saved succesfully", Toast.LENGTH_SHORT).show();
+        //checkLogin(download.getData().get(0).getData());
     }
 }

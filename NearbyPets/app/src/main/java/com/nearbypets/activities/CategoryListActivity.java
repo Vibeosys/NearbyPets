@@ -1,10 +1,10 @@
 package com.nearbypets.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,21 +13,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.converter.CateDbToCateDTO;
 import com.nearbypets.data.CategoryDTO;
 import com.nearbypets.data.CategoryDbDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.CategoryListDBDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -124,34 +121,14 @@ public class CategoryListActivity extends BaseActivity implements
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
-        switch (requestToken) {
-            case REQ_TOKEN_CATEGORY_LIST:
-                Log.d("Error", "##REQ" + error.toString());
-                break;
-
-
-        }
-
+        Log.d("Error", "##REQ" + error.toString());
     }
 
     @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
-
-        switch (requestToken) {
-            case REQ_TOKEN_CATEGORY_LIST:
-                Log.d(TAG, "## Result response" + data.toString());
-                try {
-                    CategoryListDBDTO categoryListDBDTO = new Gson().fromJson(data.toString(), CategoryListDBDTO.class);
-                    updateSettings(categoryListDBDTO.getSettings());
-                    updateCategoryList(categoryListDBDTO.getData().get(0).getData());
-                    Log.i(TAG, categoryListDBDTO.toString());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                break;
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        if (errorDbDTO.getErrorCode() != 0) {
+            createAlertDialog("Save error", "" + errorDbDTO.getMessage());
         }
-
     }
 
     private void updateCategoryList(ArrayList<CategoryDbDTO> data) {
@@ -167,4 +144,16 @@ public class CategoryListActivity extends BaseActivity implements
     }
 
 
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+        Log.d(TAG, "## Result response" + data.toString());
+        ArrayList<CategoryDbDTO> categoryLists = CategoryDbDTO.deserializeToArray(data);
+        updateCategoryList(categoryLists);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+
+    }
 }

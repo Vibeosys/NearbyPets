@@ -1,28 +1,26 @@
 package com.nearbypets.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -95,23 +93,27 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
     }
 
     @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
-
-        switch (requestToken) {
-            case REQ_TOKEN_LIST:
-                Log.i("TAG", "data" + data);
-                try {
-                    DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
-                    updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
-                    Log.i(TAG, downloadProductDbDataDTO.toString());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                break;
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        if (errorDbDTO.getErrorCode() != 0) {
+            createAlertDialog("Error", errorDbDTO.getMessage());
+            swipeRefreshLayout.setRefreshing(false);
         }
+    }
 
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+
+
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        updateSettings(settings);
+        Log.i("TAG", "data" + data);
+        ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
+        updateList(productDbDTOs);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateList(ArrayList<ProductDbDTO> data) {
