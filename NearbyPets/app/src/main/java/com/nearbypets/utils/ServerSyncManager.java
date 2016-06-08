@@ -102,8 +102,8 @@ public class ServerSyncManager
                 Log.d("Upload Response", "" + response.toString());
                 DownloadDataDbDTO downloadDataDbDTO = DownloadDataDbDTO.deserializeJson(response.toString());
                 if (downloadDataDbDTO == null) {
-                    if (mErrorReceived != null)
-                        mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
+                    //if (mErrorReceived != null)
+                    //    mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
                     Log.e("Data Error", "Error to get the data");
                     return;
                 }

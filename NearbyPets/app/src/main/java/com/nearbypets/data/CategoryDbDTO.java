@@ -69,8 +69,8 @@ public class CategoryDbDTO extends BaseDTO {
         ArrayList<CategoryDbDTO> categoryDbDTOs = null;
         try {
             CategoryDbDTO[] deserializeObject = gson.fromJson(serializedString, CategoryDbDTO[].class);
+            categoryDbDTOs = new ArrayList<>();
             for (CategoryDbDTO categoryDbDTO : deserializeObject) {
-                categoryDbDTOs = new ArrayList<>();
                 categoryDbDTOs.add(categoryDbDTO);
             }
         } catch (JsonSyntaxException e) {

@@ -71,9 +71,14 @@ public class CategoryListActivity extends BaseActivity implements
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     CategoryDTO categoryDTO = (CategoryDTO) mCategoryAdapter.getItem(position);
-                    Intent iClassified = new Intent(getApplicationContext(), ClassifiedAdsActivity.class);
-                    iClassified.putExtra(AppConstants.CATEGORY_ID, categoryDTO.getCategoryId());
-                    startActivity(iClassified);
+                    if (categoryDTO.getProductCount() == 0) {
+                        createAlertDialog("No Classified Ads", "There are no ads");
+                    } else {
+                        Intent iClassified = new Intent(getApplicationContext(), ClassifiedAdsActivity.class);
+                        iClassified.putExtra(AppConstants.CATEGORY_ID, categoryDTO.getCategoryId());
+                        startActivity(iClassified);
+                    }
+
                 }
             });
         }

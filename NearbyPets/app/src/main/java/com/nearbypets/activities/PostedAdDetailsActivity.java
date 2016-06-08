@@ -18,24 +18,9 @@ public class PostedAdDetailsActivity extends ProductDescActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_posted_ad_details);
-
         btnAddToFav.setVisibility(View.GONE);
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
     }
 
-    @Override
-    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
-
-    }
-
-    @Override
-    public void onResultReceived(@NonNull String data, int requestToken) {
-
-    }
-
-    @Override
-    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
-
-    }
 }

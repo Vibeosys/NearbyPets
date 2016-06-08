@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -68,13 +70,13 @@ public class MainActivity extends BaseActivity
     private CategoryAdapter mCategoryAdapter;
     private SortAdapter mSortAdapter;
     private Spinner spnSortBy;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    //private SwipeRefreshLayout swipeRefreshLayout;
     DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
     GPSTracker gpsTracker;
     private static int mSortOption = 0;
     private static String sort = "DESC";
-    private static int storedPageNO = 0;
+    private static ArrayList<Integer> storedPageNO = new ArrayList<>();
     private int adDisplay = 0;
     private Date dateToCompaire = null;
 
@@ -89,9 +91,9 @@ public class MainActivity extends BaseActivity
             callLogin();
             return;
         }
-        storedPageNO = 0;
+//        /storedPageNO = 0;
         gpsTracker = new GPSTracker(getApplicationContext());
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        //swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
@@ -115,7 +117,12 @@ public class MainActivity extends BaseActivity
         mSortAdapter.addItem(new SortDTO("Distance Asc", 1, "ASC"));
         spnSortBy.setAdapter(mSortAdapter);
         mProductAdapter = new DashboardProductListAdapter(this);
-        mListViewProduct.setAdapter(mProductAdapter);
+        try {
+            mListViewProduct.setAdapter(mProductAdapter);
+
+        } catch (Exception e) {
+            Log.e("Main Activity", "Adapter set to be null");
+        }
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -124,32 +131,34 @@ public class MainActivity extends BaseActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
         mProductAdapter.setCustomItemListner(this);
         mProductAdapter.setCustomButtonListner(this);
-        
-       /* View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
         TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
         txtUserName.setText(mSessionManager.getUserName());
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
-        txtEmail.setText(mSessionManager.getUserEmailId());*/
-
-        swipeRefreshLayout.setOnRefreshListener(this);
+        txtEmail.setText(mSessionManager.getUserEmailId());
+        navigationView.setNavigationItemSelectedListener(this);
+        // swipeRefreshLayout.setOnRefreshListener(this);
 
         /**
          * Showing Swipe Refresh animation on activity create
          * As animation won't start on onCreate, post runnable is used
          */
-        swipeRefreshLayout.post(new Runnable() {
+        fetchList(1, mSortOption, sort);
+        /*swipeRefreshLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        fetchList(1, mSortOption, sort);
+
                                         //logic to refersh list
                                     }
                                 }
-        );
+        );*/
         switch (mSessionManager.getUserRoleId()) {
             case AppConstants.ROLL_ID_ADMIN:
                 navigationView.getMenu().clear(); //clear old inflated items.
@@ -178,17 +187,20 @@ public class MainActivity extends BaseActivity
                 dateToCompaire = null;
                 mSortOption = sortDTO.getValue();
                 sort = sortDTO.getSorting();
-                swipeRefreshLayout.setRefreshing(true);
+                //swipeRefreshLayout.setRefreshing(true);
                 mProductAdapter.clear();
+                storedPageNO = new ArrayList<Integer>();
+                dateToCompaire = null;
+                adDisplay = 0;
                 fetchList(1, mSortOption, sort);
-                mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                /*mListViewProduct.setOnScrollListener(new EndlessScrollListener
                         (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
                     @Override
                     public void onLoadMore(int page, int totalItemsCount) {
                         customLoadMoreDataFromApi(page);
                     }
-                });
+                });*/
             }
 
             @Override
@@ -202,15 +214,27 @@ public class MainActivity extends BaseActivity
         fetchList(page, mSortOption, sort);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
+    }
 
     private void fetchList(int pageNo, int sortOption, String sort) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
-            swipeRefreshLayout.setRefreshing(false);
-        } else if (storedPageNO != pageNo) {
-            storedPageNO = pageNo;
-            Toast.makeText(getApplicationContext(), gpsTracker.getLatitude() + " " + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
+            //swipeRefreshLayout.setRefreshing(false);
+        } else if (!storedPageNO.contains(pageNo)) {
+            storedPageNO.add(pageNo);
+            //Toast.makeText(getApplicationContext(), gpsTracker.getLatitude() + " " + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
             ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
@@ -351,18 +375,11 @@ public class MainActivity extends BaseActivity
     public void onRefresh() {
 //logic to refersh list
         mProductAdapter.clear();
-        storedPageNO = 0;
+        storedPageNO = new ArrayList<>();
         dateToCompaire = null;
         adDisplay = 0;
         fetchList(1, mSortOption, sort);
-        mListViewProduct.setOnScrollListener(new EndlessScrollListener
-                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                customLoadMoreDataFromApi(page);
-            }
-        });
     }
 
 
@@ -371,7 +388,7 @@ public class MainActivity extends BaseActivity
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "Error " + error.toString());
-                swipeRefreshLayout.setRefreshing(false);
+                //swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -391,11 +408,19 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onItemClickListener(int position, ProductDataDTO productData) {
-        ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
-        Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
-        intent.putExtra(AppConstants.PRODUCT_DISTANCE, productDataDTO.getDistance());
-        intent.putExtra(AppConstants.PRODUCT_AD_ID, productDataDTO.getAdId());
-        startActivity(intent);
+        if (productData != null) {
+            ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
+            Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
+            intent.putExtra(AppConstants.PRODUCT_DISTANCE, productDataDTO.getDistance());
+            intent.putExtra(AppConstants.PRODUCT_AD_ID, productDataDTO.getAdId());
+            startActivity(intent);
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -408,7 +433,7 @@ public class MainActivity extends BaseActivity
         updateSettings(settings);
         ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
         updateList(productDbDTOs);
-        swipeRefreshLayout.setRefreshing(false);
+        //swipeRefreshLayout.setRefreshing(false);
 
     }
 
@@ -417,6 +442,6 @@ public class MainActivity extends BaseActivity
         if (errorDbDTO.getErrorCode() != 0) {
             Snackbar.make(getCurrentFocus(), "No more ads found", Snackbar.LENGTH_SHORT).show();
         }
-        swipeRefreshLayout.setRefreshing(false);
+        //swipeRefreshLayout.setRefreshing(false);
     }
 }

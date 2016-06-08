@@ -60,7 +60,7 @@ public class ProductListAdapter extends BaseAdapter {
     }
 
     public void addSectionHeaderItem(final ProductDataDTO item) {
-        // mProductList.add(item);
+        mProductList.add(item);
         sectionHeader.add(mProductList.size() - 1);
         notifyDataSetChanged();
     }

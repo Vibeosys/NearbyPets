@@ -3,6 +3,7 @@ package com.nearbypets.activities;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -87,6 +88,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
+            storedPageNO = pageNo;
             ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
@@ -110,7 +112,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 if (errorDbDTO.getErrorCode() != 0) {
-                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
+                    Snackbar.make(getCurrentFocus(), "No more ads found", Snackbar.LENGTH_SHORT).show();
                 }
                 break;
             case REQ_TOKAN_HIDE_AD:
@@ -137,6 +139,9 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
                 updateList(productDbDTOs);
                 swipeRefreshLayout.setRefreshing(false);
+                break;
+            case REQ_TOKAN_HIDE_AD:
+                Toast.makeText(getApplicationContext(), "Hide ad successfully", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -38,7 +38,8 @@
         <activity
             android:name=".activities.CategoryListActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".activities.SplashScreen">
+        <activity android:name=".activities.SplashScreen"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

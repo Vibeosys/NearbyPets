@@ -1,5 +1,6 @@
 package com.nearbypets.activities;
 
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,16 +9,23 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.android.volley.VolleyError;
 import com.nearbypets.R;
 import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SortDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.utils.EndlessScrollListener;
+import com.nearbypets.utils.ServerSyncManager;
+
+import java.util.List;
 
 public class ProductListActivity extends BaseActivity implements
         ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener,
-        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener, ProductListAdapter.CustomHideListener {
+        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener,
+        ProductListAdapter.CustomHideListener, ServerSyncManager.OnErrorResultReceived, ServerSyncManager.OnSuccessResultReceived {
 
     protected ListView mListViewProduct;
     protected ProductListAdapter mProductAdapter;
@@ -52,7 +60,8 @@ public class ProductListActivity extends BaseActivity implements
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
         mProductAdapter.setCustomHideListener(this);
-
+        mServerSyncManager.setOnStringErrorReceived(this);
+        mServerSyncManager.setOnStringResultReceived(this);
         mListViewProduct.setAdapter(mProductAdapter);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
@@ -105,6 +114,26 @@ public class ProductListActivity extends BaseActivity implements
 
     @Override
     public void onHideClickListener(int position, ProductDataDTO productData) {
+
+    }
+
+    @Override
+    public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
+
+    }
+
+    @Override
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
 
     }
 }

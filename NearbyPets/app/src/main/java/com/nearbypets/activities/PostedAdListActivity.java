@@ -80,6 +80,7 @@ public class PostedAdListActivity extends ProductListActivity implements
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
+            storedPageNO = pageNo;
             PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);

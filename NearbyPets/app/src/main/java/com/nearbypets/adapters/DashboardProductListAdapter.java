@@ -62,13 +62,13 @@ public class DashboardProductListAdapter extends BaseAdapter {
 
     public void addSectionHeaderItem(final ProductDataDTO item) {
         mProductList.add(item);
-        sectionHeader.add(mProductList.size()-1);
+        sectionHeader.add(mProductList.size() - 1);
         notifyDataSetChanged();
     }
 
     public void addSectionAdItem(final ProductDataDTO item) {
         mProductList.add(item);
-        sectionAd.add(mProductList.size()-1);
+        sectionAd.add(mProductList.size() - 1);
         notifyDataSetChanged();
     }
 
@@ -137,87 +137,93 @@ public class DashboardProductListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final ProductDataDTO product = mProductList.get(position);
-        switch (rowType) {
-            case TYPE_ITEM:
-                holder.txtProductTitle.setText(product.getProductName());
-                holder.txtDesc.setText(product.getProductDesc());
-                holder.txtDistance.setText(String.format("%.2f", product.getDistance()) + " kilometers away from you");
+        try {
+            final ProductDataDTO product = mProductList.get(position);
+            switch (rowType) {
+                case TYPE_ITEM:
+                    holder.txtProductTitle.setText(product.getProductName());
+                    holder.txtDesc.setText(product.getProductDesc());
+                    holder.txtDistance.setText(String.format("%.2f", product.getDistance()) + " kilometers away from you");
                 /*int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
                 holder.imgProductImage.setImageResource(imgResId);*/
-                holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
-                holder.txtProductPrice.setText(mContext.getResources().
-                        getString(R.string.str_euro_price_symbol) + " " + String.format("%.2f", product.getPrice()));
-                mImageLoader = CustomVolleyRequestQueue.getInstance(mContext)
-                        .getImageLoader();
-                final String url = product.getProductImage();
-                if (url != null && !url.isEmpty()) {
-                    try {
-                        mImageLoader.get(url, ImageLoader.getImageListener(holder.imgProductImage,
-                                R.drawable.default_pet_image, R.drawable.default_pet_image));
-                        holder.imgProductImage.setImageUrl(url, mImageLoader);
-                    } catch (Exception e) {
+                    holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
+                    holder.txtProductPrice.setText(mContext.getResources().
+                            getString(R.string.str_euro_price_symbol) + " " + String.format("%.2f", product.getPrice()));
+                    mImageLoader = CustomVolleyRequestQueue.getInstance(mContext)
+                            .getImageLoader();
+                    final String url = product.getProductImage();
+                    if (url != null && !url.isEmpty()) {
+                        try {
+                            mImageLoader.get(url, ImageLoader.getImageListener(holder.imgProductImage,
+                                    R.drawable.default_pet_image, R.drawable.default_pet_image));
+                            holder.imgProductImage.setImageUrl(url, mImageLoader);
+                        } catch (Exception e) {
+                            holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
+                        }
+                    } else {
                         holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
                     }
-                } else {
-                    holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
-                }
-                if (product.isFavouriteFlag())
-                    holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
-                else
-                    holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
-                holder.imgFavourite.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (customButtonListener != null)
-                            customButtonListener.onButtonClickListener(v.getId(), position, product.isFavouriteFlag(), product);
-                    }
-                });
-                holder.txtProductTitle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (customItemListener != null)
-                            customItemListener.onItemClickListener(position, product);
-                    }
-                });
-                holder.txtDesc.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (customItemListener != null)
-                            customItemListener.onItemClickListener(position, product);
-                    }
-                });
-                holder.txtDistance.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (customItemListener != null)
-                            customItemListener.onItemClickListener(position, product);
-                    }
-                });
-                holder.imgProductImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (customItemListener != null)
-                            customItemListener.onItemClickListener(position, product);
-                    }
-                });
+                    if (product.isFavouriteFlag())
+                        holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
+                    else
+                        holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    holder.imgFavourite.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (customButtonListener != null)
+                                customButtonListener.onButtonClickListener(v.getId(), position, product.isFavouriteFlag(), product);
+                        }
+                    });
+                    holder.txtProductTitle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (customItemListener != null)
+                                customItemListener.onItemClickListener(position, product);
+                        }
+                    });
+                    holder.txtDesc.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (customItemListener != null)
+                                customItemListener.onItemClickListener(position, product);
+                        }
+                    });
+                    holder.txtDistance.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (customItemListener != null)
+                                customItemListener.onItemClickListener(position, product);
+                        }
+                    });
+                    holder.imgProductImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (customItemListener != null)
+                                customItemListener.onItemClickListener(position, product);
+                        }
+                    });
 
-                break;
-            case TYPE_SEPARATOR:
-                DateUtils date = new DateUtils();
-                holder.txtDate.setText("Posted On " + date.getLocalDateInFormat(product.getPostedDt()));
-                //holder.txtDate.setText("Posted On " + product.getDate());
-                break;
-            case TYPE_Ad:
+                    break;
+                case TYPE_SEPARATOR:
+                    DateUtils date = new DateUtils();
+                    holder.txtDate.setText("Posted On " + date.getLocalDateInFormat(product.getPostedDt()));
+                    //holder.txtDate.setText("Posted On " + product.getDate());
+                    break;
+                case TYPE_Ad:
 
-                AdView adView = new AdView(mContext, "1715459422041023_1715460668707565", AdSize.BANNER_320_50);
-                holder.adViewContainer.addView(adView);
-                AdSettings.addTestDevice("HASHED ID");
-                adView.loadAd();
-                break;
+                    AdView adView = new AdView(mContext, "1715459422041023_1715460668707565", AdSize.BANNER_320_50);
+                    holder.adViewContainer.addView(adView);
+                    AdSettings.addTestDevice("HASHED ID");
+                    adView.loadAd();
+                    break;
 
+            }
+            return convertView;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
         }
-        return convertView;
+
+
     }
 
     public static class ViewHolder {
