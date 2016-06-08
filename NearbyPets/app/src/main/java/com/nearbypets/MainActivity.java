@@ -147,16 +147,17 @@ public class MainActivity extends BaseActivity
 
         /**
          * Showing Swipe Refresh animation on activity create
-         * As animation won't start on onCreate, post runnable is F
-         fetchList(1, mSortOption, sort);
-         /*swipeRefreshLayout.post(new Runnable() {
-        @Override public void run() {
-        swipeRefreshLayout.setRefreshing(true);
+         * As animation won't start on onCreate, post runnable is F*/
+        fetchList(1, mSortOption, sort);
+        /*swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
 
-        //logic to refersh list
-        }
-        }
-         );*/
+                                        //logic to refersh list
+                                    }
+                                }
+        );*/
         switch (mSessionManager.getUserRoleId()) {
             case AppConstants.ROLL_ID_ADMIN:
                 navigationView.getMenu().clear(); //clear old inflated items.
@@ -187,18 +188,10 @@ public class MainActivity extends BaseActivity
                 sort = sortDTO.getSorting();
                 //swipeRefreshLayout.setRefreshing(true);
                 mProductAdapter.clear();
-                storedPageNO = new ArrayList<Integer>();
-                dateToCompaire = null;
+                storedPageNO = new ArrayList<>();
                 adDisplay = 0;
                 fetchList(1, mSortOption, sort);
-                /*mListViewProduct.setOnScrollListener(new EndlessScrollListener
-                        (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
-                    @Override
-                    public void onLoadMore(int page, int totalItemsCount) {
-                        customLoadMoreDataFromApi(page);
-                    }
-                });*/
             }
 
             @Override
@@ -215,14 +208,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mListViewProduct.setOnScrollListener(new EndlessScrollListener
-                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
-
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                customLoadMoreDataFromApi(page);
-            }
-        });
     }
 
     private void fetchList(int pageNo, int sortOption, String sort) {
@@ -239,6 +224,8 @@ public class MainActivity extends BaseActivity
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
 
+        } else if (storedPageNO.size() == 0) {
+            mListViewProduct.smoothScrollToPosition(0);
         }
 
     }
@@ -350,7 +337,7 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_log_out) {
             try {
-                LoginActivity.LogoutFacebook();
+                LoginManager.getInstance().logOut();
             } catch (Exception e) {
 
             }
@@ -431,14 +418,14 @@ public class MainActivity extends BaseActivity
         updateSettings(settings);
         ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
         updateList(productDbDTOs);
-        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 customLoadMoreDataFromApi(page);
             }
-        });
+        });*/
         //swipeRefreshLayout.setRefreshing(false);
 
     }
