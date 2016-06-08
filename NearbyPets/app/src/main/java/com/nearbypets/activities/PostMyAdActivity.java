@@ -430,6 +430,13 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        switch (requestToken) {
+            case REQ_TOKEN_POSTMYAD:
+                showProgress(false, formView, progressBar);
+                createAlertDialog("Post Ad", "Error in posting ad");
+                Log.d("Error for post my ad", "##REQ" + errorDbDTO.toString());
+                break;
+        }
 
     }
 
@@ -456,7 +463,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 toast.show();
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
-                Log.d("Successs for post ad", "##REQ" + data.toString());
+           //     Log.d("Successs for post ad", "##REQ" + data.toString());
 
         }
     }

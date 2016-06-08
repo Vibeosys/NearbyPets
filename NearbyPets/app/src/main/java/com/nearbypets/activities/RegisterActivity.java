@@ -6,10 +6,12 @@ import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -219,7 +221,11 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         Log.d("RESULT", "##REQ" + data.toString());
         try {
             UserDbDTO registerUser = UserDbDTO.deserializeJson(data);
-
+            Toast toast= Toast.makeText(getApplicationContext(),"Register Sucessfully",Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
+            Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(loginIntent);
             Log.i(TAG, registerUser.toString());
 
         } catch (JsonSyntaxException e) {
