@@ -14,11 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.facebook.login.LoginManager;
@@ -31,8 +28,6 @@ import com.nearbypets.activities.LoginActivity;
 import com.nearbypets.activities.PostMyAdActivity;
 import com.nearbypets.activities.PostedAdDetailsActivity;
 import com.nearbypets.activities.PostedAdListActivity;
-import com.nearbypets.activities.ProductDescActivity;
-import com.nearbypets.activities.ProductListActivity;
 import com.nearbypets.activities.SavedAdListActivity;
 import com.nearbypets.activities.SettingActivity;
 import com.nearbypets.activities.UserProfileActivity;
@@ -149,7 +144,7 @@ public class MainActivity extends BaseActivity
                                     }
                                 }
         );
-        switch (mSessionManager.getUserRollId()) {
+        switch (mSessionManager.getUserRoleId()) {
             case AppConstants.ROLL_ID_ADMIN:
                 navigationView.getMenu().clear(); //clear old inflated items.
                 navigationView.inflateMenu(R.menu.activity_main_admin_drawer);
@@ -356,8 +351,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "data" + data);
                 try {
@@ -375,8 +370,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "Error " + error.toString());
                 swipeRefreshLayout.setRefreshing(false);

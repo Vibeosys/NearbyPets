@@ -124,8 +124,8 @@ public class CategoryListActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_CATEGORY_LIST:
                 Log.d("Error", "##REQ" + error.toString());
                 break;
@@ -136,9 +136,9 @@ public class CategoryListActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
 
-        switch (requestTokan) {
+        switch (requestToken) {
             case REQ_TOKEN_CATEGORY_LIST:
                 Log.d(TAG, "## Result response" + data.toString());
                 try {

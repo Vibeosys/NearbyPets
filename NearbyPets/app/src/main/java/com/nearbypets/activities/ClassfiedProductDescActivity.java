@@ -1,10 +1,8 @@
 package com.nearbypets.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.nearbypets.R;
 import com.nearbypets.utils.AppConstants;
 
 public class ClassfiedProductDescActivity extends ProductDescActivity {
@@ -14,7 +12,7 @@ public class ClassfiedProductDescActivity extends ProductDescActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_classfied_product_desc);
         
-        if (mSessionManager.getUserRollId() == AppConstants.ROLL_ID_ADMIN)
+        if (mSessionManager.getUserRoleId() == AppConstants.ROLL_ID_ADMIN)
             btnAddToFav.setVisibility(View.GONE);
         else
             btnAddToFav.setVisibility(View.VISIBLE);

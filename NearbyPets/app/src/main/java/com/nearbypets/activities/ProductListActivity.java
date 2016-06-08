@@ -1,25 +1,19 @@
 package com.nearbypets.activities;
 
-import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.nearbypets.R;
 import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
-import com.nearbypets.data.BaseDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.utils.EndlessScrollListener;
-
-import java.util.ArrayList;
 
 public class ProductListActivity extends BaseActivity implements
         ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener,
@@ -54,7 +48,7 @@ public class ProductListActivity extends BaseActivity implements
         spnSortBy.setAdapter(mSortAdapter);
         spnSortBy.setOnItemSelectedListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
-        mProductAdapter = new ProductListAdapter(this, mSessionManager.getUserRollId());
+        mProductAdapter = new ProductListAdapter(this, mSessionManager.getUserRoleId());
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
         mProductAdapter.setCustomHideListener(this);

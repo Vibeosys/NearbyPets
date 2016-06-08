@@ -192,8 +192,8 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);
                 createAlertDialog("Error", error.getMessage());
@@ -208,8 +208,8 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);
                 try {

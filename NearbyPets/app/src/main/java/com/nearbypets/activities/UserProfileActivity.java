@@ -19,8 +19,8 @@ public class UserProfileActivity extends BaseActivity {
         mTxtEmail = (RobotoMediumTextView) findViewById(R.id.txtEmail);
         mTxtMobNo = (RobotoMediumTextView) findViewById(R.id.txtMobNo);
 
-        mTxtName.setText(mSessionManager.getUserName());
-        mTxtEmail.setText(mSessionManager.getUserEmailId());
-        mTxtMobNo.setText(mSessionManager.getUserPhone());
+        mTxtName.setText("");
+        mTxtEmail.setText("");
+        mTxtMobNo.setText("");
     }
 }

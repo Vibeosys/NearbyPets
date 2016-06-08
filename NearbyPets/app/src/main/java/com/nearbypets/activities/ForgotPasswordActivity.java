@@ -104,8 +104,8 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan)
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken)
         {
             case REQ_TOKEN_FORGOTPASS:
                showProgress(true, formView, progressBar);
@@ -117,8 +117,8 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
-        switch(requestTokan)
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+        switch(requestToken)
         {
             case REQ_TOKEN_FORGOTPASS:
                 showProgress(true, formView, progressBar);

@@ -19,16 +19,7 @@ import com.nearbypets.interfaces.BackgroundTaskCallback;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by anand on 09-01-2016.
@@ -39,12 +30,12 @@ public class ServerSyncManager
     //private DbRepository mDbRepository;
     private SessionManager mSessionManager;
     private Context mContext;
-    private boolean mIsWorkInProgress;
-    private OnDownloadReceived mOnDownloadReceived;
+    //private boolean mIsWorkInProgress;
+    //private OnDownloadReceived mOnDownloadReceived;
     private OnStringResultReceived mOnStringResultReceived;
     private OnStringErrorReceived mErrorReceived;
     private String TAG = ServerSyncManager.class.getSimpleName();
-    private OnNotifyUser mNotifyUser;
+    //private OnNotifyUser mNotifyUser;
 
     public ServerSyncManager() {
 
@@ -53,20 +44,6 @@ public class ServerSyncManager
     public ServerSyncManager(@NonNull Context context, @NonNull SessionManager sessionManager) {
         mContext = context;
         mSessionManager = sessionManager;
-        // mDbRepository = new DbRepository(mContext, mSessionManager);
-    }
-
-    public void syncDataWithServer(final boolean aShowProgressDlg) {
-        Log.d("BaseActivity", "IN Base");
-        // String downloadUrl = mSessionManager.getDownloadUrl(mSessionManager.getUserId(), mSessionManager.getUserRestaurantId());
-        //String uploadJson = getUploadSyncJson();
-        /*SyncDataDTO syncData = new SyncDataDTO();
-        syncData.setDownloadUrl(downloadUrl);
-        syncData.setUploadUrl(mSessionManager.getUploadUrl());
-        syncData.setUploadJson(uploadJson);*/
-        mIsWorkInProgress = true;
-/*
-        new BackgroundTask(aShowProgressDlg).execute(syncData);*/
     }
 
     public void uploadDataToServer(int requestTokan, TableDataDTO... params) {
@@ -82,17 +59,9 @@ public class ServerSyncManager
             return;
         }*/
         String uploadJson = prepareUploadJsonFromData(params);
-        String uploadURL = mSessionManager.getUploadUrl();
+        String uploadURL = mSessionManager.getEndpointUrl();
         Log.i(TAG, "##" + uploadURL);
         uploadJsonToServer(uploadJson, uploadURL, progress, requestTokan);
-    }
-
-    public boolean isDownloadInProgress() {
-        return mIsWorkInProgress;
-    }
-
-    public void setOnDownloadReceived(OnDownloadReceived onDownloadReceived) {
-        mOnDownloadReceived = onDownloadReceived;
     }
 
     public void setOnStringResultReceived(OnStringResultReceived stringResultReceived) {
@@ -108,15 +77,16 @@ public class ServerSyncManager
         Upload uploadToServer = new Upload();
         uploadToServer.setUser(new UploadUser(mSessionManager.getUserId(),
                 mSessionManager.getUserEmailId(), mSessionManager.getUserName(),
-                mSessionManager.getUserRollId(), mSessionManager.getUserPassword(),
-                mSessionManager.getUserAccessTokan()));
+                mSessionManager.getUserRoleId(), mSessionManager.getUserPassword(),
+                mSessionManager.getUserAccessToken()));
         uploadToServer.setData(Arrays.asList(params));
         String uploadJson = uploadToServer.serializeString();
         Log.i(TAG, "## request json" + uploadJson);
         return uploadJson;
     }
 
-    private void uploadJsonToServer(String uploadJson, String uploadUrl, final ProgressDialog progress, final int requestTokan) {
+    private void uploadJsonToServer(String uploadJson, String uploadUrl, final ProgressDialog progress,
+                                    final int requestToken) {
         RequestQueue vollyRequest = Volley.newRequestQueue(mContext);
 
         JsonObjectRequest uploadRequest = new JsonObjectRequest(Request.Method.POST,
@@ -126,7 +96,7 @@ public class ServerSyncManager
             public void onResponse(JSONObject response) {
                 Log.d("Upload Response", "" + response.toString());
                 if (mOnStringResultReceived != null)
-                    mOnStringResultReceived.onStingResultReceived(response, requestTokan);
+                    mOnStringResultReceived.onStringResultReceived(response, requestToken);
                 if (progress != null)
                     progress.dismiss();
             }
@@ -137,7 +107,7 @@ public class ServerSyncManager
                 if (progress != null)
                     progress.dismiss();
                 if (mErrorReceived != null)
-                    mErrorReceived.onStingErrorReceived(error, requestTokan);
+                    mErrorReceived.onStringErrorReceived(error, requestToken);
                 // Log.i(TAG, "##" + error.toString());
             }
         });
@@ -174,24 +144,12 @@ public class ServerSyncManager
 
     }
 
-
-    public interface OnDownloadReceived {
-        void onDownloadResultReceived(@NonNull Map<String, Integer> results);
-    }
-
     public interface OnStringResultReceived {
-        void onStingResultReceived(@NonNull JSONObject data, int requestTokan);
+        void onStringResultReceived(@NonNull JSONObject data, int requestToken);
     }
 
     public interface OnStringErrorReceived {
-        void onStingErrorReceived(@NonNull VolleyError error, int requestTokan);
+        void onStringErrorReceived(@NonNull VolleyError error, int requestToken);
     }
 
-    public interface OnNotifyUser {
-        void onNotificationReceived(@NonNull String message);
-    }
-
-    public void setOnNotifyUser(OnNotifyUser notifyUser) {
-        mNotifyUser = notifyUser;
-    }
 }

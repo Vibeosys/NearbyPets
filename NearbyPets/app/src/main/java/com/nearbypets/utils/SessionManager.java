@@ -2,7 +2,6 @@ package com.nearbypets.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Class helps to retrive or set values from shared preferences.
@@ -59,33 +58,20 @@ public class SessionManager {
             mProjectSharedPref = mContext.getSharedPreferences(PROJECT_PREFERENCES, Context.MODE_PRIVATE);
         }
 
-        String versionNumber = mProjectSharedPref.getString(PropertyTypeConstants.VERSION_NUMBER, null);
-        Float versionNoValue = versionNumber == null ? 0 : Float.valueOf(versionNumber);
-
-        if (mPropertyFileReader.getVersion() > versionNoValue) {
-            boolean sharedPrefChange = addOrUdateSharedPreferences();
-            if (!sharedPrefChange)
-                Log.e("SharedPref", "No shared preferences are changed");
-        }
+        setValuesInSharedPrefs(PropertyTypeConstants.API_ENDPOINT_URI, mPropertyFileReader.getEndPointUri());
     }
-
-    /**
-     * Adds or updates entries into shared preferences.
-     *
-     * @return true or false based upon the update in shared preferences.
-     */
-    private static boolean addOrUdateSharedPreferences() {
-        SharedPreferences.Editor editor = mProjectSharedPref.edit();
-        //editor.putString(PropertyTypeConstants.API_UPLOAD_IMAGE_URL, mPropertyFileReader.getImageUploadUrl());
-        editor.putString(PropertyTypeConstants.API_UPLOAD_URL, mPropertyFileReader.getUploadUrl());
-        editor.putString(PropertyTypeConstants.VERSION_NUMBER, String.valueOf(mPropertyFileReader.getVersion()));
-        editor.apply();
-        return true;
-    }
-
 
     private SessionManager() {
     }
+
+    public String getEndpointUrl() {
+        return mProjectSharedPref.getString(PropertyTypeConstants.API_ENDPOINT_URI, null);
+    }
+
+    public void setEndpointUrl(String endpointUrl) {
+        setValuesInSharedPrefs(PropertyTypeConstants.API_ENDPOINT_URI, endpointUrl);
+    }
+
 
     public String getUserId() {
         return mProjectSharedPref.getString(PropertyTypeConstants.USER_ID, null);
@@ -95,16 +81,12 @@ public class SessionManager {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_ID, userId);
     }
 
-    public String getUploadUrl() {
-        return mProjectSharedPref.getString(PropertyTypeConstants.API_UPLOAD_URL, null);
-    }
-
     public String getUserName() {
         return mProjectSharedPref.getString(PropertyTypeConstants.USER_NAME, null);
     }
 
-    public void setUserName(String userName) {
-        setValuesInSharedPrefs(PropertyTypeConstants.USER_NAME, userName);
+    public void setUserName(String firstName, String lastName) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_NAME, firstName + " " + lastName);
     }
 
     public String getUserEmailId() {
@@ -115,12 +97,12 @@ public class SessionManager {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_EMAIL_ID, userEmailId);
     }
 
-    public String getUserAccessTokan() {
-        return mProjectSharedPref.getString(PropertyTypeConstants.USER_TOKAN, null);
+    public String getUserAccessToken() {
+        return mProjectSharedPref.getString(PropertyTypeConstants.USER_FB_ACCESS_TOKEN, null);
     }
 
-    public void setUserAccessTokan(String userAccessTokan) {
-        setValuesInSharedPrefs(PropertyTypeConstants.USER_TOKAN, userAccessTokan);
+    public void setUserAccessToken(String userAccessToken) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_FB_ACCESS_TOKEN, userAccessToken);
     }
 
     public String getUserPassword() {
@@ -131,48 +113,17 @@ public class SessionManager {
         setValuesInSharedPrefs(PropertyTypeConstants.USER_PASSWORD, userPassword);
     }
 
-    public void setUserActive(boolean active) {
-        setValuesInSharedPrefs(PropertyTypeConstants.USER_IS_ACTIVE, String.valueOf(active));
+    public void setUserRoleId(int roleId) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_ROLE_ID, String.valueOf(roleId));
     }
 
-    public boolean getUserActive() {
-        return mProjectSharedPref.getBoolean(PropertyTypeConstants.USER_IS_ACTIVE, false);
-    }
-
-    public void setUserRollId(int rollId) {
-        setValuesInSharedPrefs(PropertyTypeConstants.USER_ROLL_ID, rollId);
-    }
-
-    public int getUserRollId() {
-        return mProjectSharedPref.getInt(PropertyTypeConstants.USER_ROLL_ID, 0);
-    }
-
-
-    public void setUserPhotoUrl(String userPhotoUrl) {
-        setValuesInSharedPrefs(PropertyTypeConstants.USER_PHOTO_URL, userPhotoUrl);
-    }
-
-    public String getUserPhotoUrl() {
-        return mProjectSharedPref.getString(PropertyTypeConstants.USER_PHOTO_URL, null);
+    public int getUserRoleId() {
+        return mProjectSharedPref.getInt(PropertyTypeConstants.USER_ROLE_ID, 0);
     }
 
     private static void setValuesInSharedPrefs(String sharedPrefKey, String sharedPrefValue) {
         SharedPreferences.Editor editor = mProjectSharedPref.edit();
         editor.putString(sharedPrefKey, sharedPrefValue);
         editor.apply();
-    }
-
-    private static void setValuesInSharedPrefs(String sharedPrefKey, int sharedPrefValue) {
-        SharedPreferences.Editor editor = mProjectSharedPref.edit();
-        editor.putInt(sharedPrefKey, sharedPrefValue);
-        editor.apply();
-    }
-
-    public void setPhone(String phone) {
-        setValuesInSharedPrefs(PropertyTypeConstants.USER_PHONE, phone);
-    }
-
-    public String getUserPhone() {
-        return mProjectSharedPref.getString(PropertyTypeConstants.USER_PHONE, null);
     }
 }

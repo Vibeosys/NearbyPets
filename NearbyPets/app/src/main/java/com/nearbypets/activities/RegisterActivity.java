@@ -185,8 +185,8 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_REGISTER:
                 showProgress(true, formView, progressBar);
                 createAlertDialog("Server error!!!", "Try Again Later");
@@ -197,8 +197,8 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_REGISTER:
                 showProgress(true, formView, progressBar);
                 Log.d("RESULT", "##REQ" + data.toString());

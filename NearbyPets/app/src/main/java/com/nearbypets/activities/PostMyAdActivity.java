@@ -417,8 +417,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_POST_ADD_CATEGORY:
                 Log.d("Error", "##REQ" + error.toString());
                 break;
@@ -435,8 +435,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_POST_ADD_CATEGORY:
                 showProgress(false, formView, progressBar);
                 Log.d("Succes", "##REQ" + data.toString());

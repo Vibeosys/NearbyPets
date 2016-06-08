@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,11 +18,7 @@ import android.widget.Toast;
 ;
 
 ;
-import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -58,8 +52,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -170,7 +162,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                                     String lastName = object.getString("last_name");
                                     String accessTokan = loginResult.getAccessToken().toString();
                                     callToRegister(firstName, lastName, email, accessTokan);
-                                    mSessionManager.setUserAccessTokan(accessTokan);
+                                    mSessionManager.setUserAccessToken(accessTokan);
                                     Log.d(TAG, "## email" + email + " first Name" + firstName + " lastname " + lastName);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -256,8 +248,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     }
 
     @Override
-    public void onStingErrorReceived(@NonNull VolleyError error, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringErrorReceived(@NonNull VolleyError error, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_LOGIN: //error on Login
                 showProgress(false, formView, progressBar);
                 Log.d("TAG", "##" + error.toString());
@@ -272,8 +264,8 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     }
 
     @Override
-    public void onStingResultReceived(@NonNull JSONObject data, int requestTokan) {
-        switch (requestTokan) {
+    public void onStringResultReceived(@NonNull JSONObject data, int requestToken) {
+        switch (requestToken) {
             case REQ_TOKEN_LOGIN: //login authentication
                 showProgress(false, formView, progressBar);
                 Log.d("RESULT", "##REQ" + data.toString());
