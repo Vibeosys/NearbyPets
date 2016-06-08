@@ -17,13 +17,13 @@ public class DownloadProductDbDataDTO extends DownloadDataDbDTO {
     public DownloadProductDbDataDTO() {
     }
 
-    public ArrayList<ProductDbDTO> getData() {
+   /* public ArrayList<ProductDbDTO> getData() {
         return data;
     }
 
     public void setData(ArrayList<ProductDbDTO> data) {
         this.data = data;
-    }
+    }*/
 
     public static List<DownloadProductDbDataDTO> deserialize(List<String> serializedStringList) {
         Gson gson = new Gson();

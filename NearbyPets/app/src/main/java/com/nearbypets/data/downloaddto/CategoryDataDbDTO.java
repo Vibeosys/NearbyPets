@@ -14,11 +14,11 @@ public class CategoryDataDbDTO extends DownloadDataDbDTO {
     public CategoryDataDbDTO() {
     }
 
-    public ArrayList<CategoryDbDTO> getData() {
+    /*public ArrayList<CategoryDbDTO> getData() {
         return data;
     }
 
     public void setData(ArrayList<CategoryDbDTO> data) {
         this.data = data;
-    }
+    }*/
 }

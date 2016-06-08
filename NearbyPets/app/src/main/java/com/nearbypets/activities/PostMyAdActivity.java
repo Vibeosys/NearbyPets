@@ -33,10 +33,12 @@ import com.nearbypets.adapters.PostedAdBirdCategoryAdapter;
 import com.nearbypets.data.BirdCategoryDataDTO;
 import com.nearbypets.data.ImagesDbDTO;
 import com.nearbypets.data.PostMyAdDBDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.TypeDataDTO;
 import com.nearbypets.data.downloaddto.DownloadBirdCategoryDataDTO;
 import com.nearbypets.data.downloaddto.DownloadTypeDataDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
@@ -432,48 +434,41 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        updateSettings(settings);
         switch (requestToken) {
             case REQ_TOKEN_POST_ADD_CATEGORY:
                 showProgress(false, formView, progressBar);
                 Log.d("Succes", "##REQ" + data.toString());
-                try {
-                    DownloadTypeDataDTO downloadTypeDataDTO = new Gson().fromJson(data.toString(), DownloadTypeDataDTO.class);
-                    updateSettings(downloadTypeDataDTO.getSettings());
-                    getAdType(downloadTypeDataDTO.getData().get(0).getData());
-                    /*categoryDatas = downloadTypeDataDTO.getData();
-                    spAdapt.notifyDataSetChanged();*/
-
-                } catch (JsonSyntaxException e) {
-
-                }
+                ArrayList<TypeDataDTO> typeDataDTOs = TypeDataDTO.deserializeToArray(data);
+                getAdType(typeDataDTOs);
                 break;
             case REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER:
                 showProgress(false, formView, progressBar);
                 Log.d("Succes", "##REQ" + data.toString());
-                try {
-                    DownloadBirdCategoryDataDTO downloadBirdCategoryDataDTO = new Gson().fromJson(data.toString(), DownloadBirdCategoryDataDTO.class);
-                    updateSettings(downloadBirdCategoryDataDTO.getSettings());
-                    getAdFirstSpineer(downloadBirdCategoryDataDTO.getData().get(0).getData());
-                    /*categoryDatas = downloadTypeDataDTO.getData();
-                    spAdapt.notifyDataSetChanged();*/
-
-                } catch (JsonSyntaxException e) {
-
-                }
+                ArrayList<BirdCategoryDataDTO> birdCategoryDataDTOs = BirdCategoryDataDTO.deserializeToArray(data);
+                getAdFirstSpineer(birdCategoryDataDTOs);
                 break;
             case REQ_TOKEN_POSTMYAD:
                 showProgress(false, formView, progressBar);
-                // createAlertDialog("Post Ad", "Ad Posted success fully");
                 Toast toast = Toast.makeText(getApplicationContext(), "Ad Posted successfully", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
-
                 Log.d("Successs for post ad", "##REQ" + data.toString());
 
         }
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
+
 
     }
 
@@ -510,4 +505,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
+
+
 }

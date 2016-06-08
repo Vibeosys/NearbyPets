@@ -1,5 +1,9 @@
 package com.nearbypets.data.downloaddto;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.nearbypets.data.BaseDTO;
 
 import java.sql.Date;
@@ -165,5 +169,16 @@ public class ProductDescDbDTO extends BaseDTO {
 
     public void setPostedDt(Date postedDt) {
         this.postedDt = postedDt;
+    }
+
+    public static ProductDescDbDTO deserializeJson(String serializedString) {
+        Gson gson = new Gson();
+        ProductDescDbDTO productDescDbDTO = null;
+        try {
+            productDescDbDTO = gson.fromJson(serializedString, ProductDescDbDTO.class);
+        } catch (JsonParseException e) {
+            Log.d("Download User Db DTO", "Exception in deserialization" + e.toString());
+        }
+        return productDescDbDTO;
     }
 }

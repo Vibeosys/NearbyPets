@@ -11,9 +11,9 @@ public class NotificationDataDTO extends DownloadDataDbDTO {
     public NotificationDataDTO() {
     }
 
-    public ArrayList<NotificationDTO> getData() {
+   /* public ArrayList<NotificationDTO> getData() {
         return data;
-    }
+    }*/
 
     public void setData(ArrayList<NotificationDTO> data) {
         this.data = data;

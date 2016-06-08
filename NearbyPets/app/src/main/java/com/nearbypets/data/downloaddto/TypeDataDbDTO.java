@@ -13,11 +13,11 @@ public class TypeDataDbDTO extends DownloadDataDbDTO {
     public TypeDataDbDTO() {
     }
 
-    public ArrayList<TypeDataDTO> getData() {
+   /* public ArrayList<TypeDataDTO> getData() {
         return data;
     }
 
     public void setData(ArrayList<TypeDataDTO> data) {
         this.data = data;
-    }
+    }*/
 }

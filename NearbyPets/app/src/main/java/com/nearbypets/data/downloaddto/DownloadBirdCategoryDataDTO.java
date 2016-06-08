@@ -12,11 +12,11 @@ public class DownloadBirdCategoryDataDTO extends DownloadDataDbDTO {
     public DownloadBirdCategoryDataDTO() {
     }
 
-    public ArrayList<BirdDataDTO> getData() {
+  /*  public ArrayList<BirdDataDTO> getData() {
         return data;
     }
 
     public void setData(ArrayList<BirdDataDTO> data) {
         this.data = data;
-    }
+    }*/
 }

@@ -21,10 +21,12 @@ import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.adapters.ImageFragmentPagerAdapter;
 import com.nearbypets.data.GetProductDescDbDTO;
+import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SoldandDisableDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.DownloadProductDecs;
 import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
+import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.data.downloaddto.ProductDescDbDTO;
 import com.nearbypets.data.downloaddto.SaveAnAdDbDTO;
@@ -208,47 +210,52 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
+    public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        switch (requestToken) {
+            case REQ_TOKAN_DESC:
+                if (errorDbDTO.getErrorCode() != 0) {
+                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
+                    Log.i("TAG", "##" + errorDbDTO.getMessage());
+                }
+
+                break;
+            case REQ_TOKAN_SAVE_AD:
+                if (errorDbDTO.getErrorCode() == 0) {
+                    Log.i("TAG", "##" + errorDbDTO.getMessage());
+                    Toast.makeText(getApplicationContext(), "" + errorDbDTO.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
+                    Log.i("TAG", "##" + errorDbDTO.getMessage());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onResultReceived(@NonNull String data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);
                 try {
-                    DownloadProductDecs downloadData = new Gson().fromJson(data.toString(), DownloadProductDecs.class);
-                    updateSettings(downloadData.getSettings());
-                    updateUI(downloadData.getData().get(0).getData());
-                    Log.i(TAG, downloadData.toString());
+                    ProductDescDbDTO productDescDbDTO = ProductDescDbDTO.deserializeJson(data);
+                    updateUI(productDescDbDTO);
+                    Log.i(TAG, productDescDbDTO.toString());
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "## error on response" + e.toString());
                 }
                 Log.i("TAG", "data" + data);
                 break;
             case REQ_TOKAN_SAVE_AD:
-                showProgress(true, formView, progressBar);
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    DownloadRegisterDbDTO download = new Gson().fromJson(data.toString(), DownloadRegisterDbDTO.class);
-                    updateSettings(download.getSettings());
-                    Log.i(TAG, download.toString());
-                    checkStatus(download.getData().get(0).getData());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
                 break;
         }
     }
 
-    private void checkStatus(ArrayList<NotificationDTO> notificationDTOs) {
-
-        NotificationDTO notificationDTO = notificationDTOs.get(0);
-        if (notificationDTO.getErrorCode() == 0 || notificationDTO.getErrorCode() == 102) {
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-            Toast.makeText(getApplicationContext(), "" + notificationDTO.getMessage(), Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            createAlertDialog("Error", "" + notificationDTO.getMessage());
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-        }
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+        updateSettings(settings);
     }
+
 
     private void updateUI(ProductDescDbDTO product) {
 
@@ -316,4 +323,6 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
     }
+
+
 }

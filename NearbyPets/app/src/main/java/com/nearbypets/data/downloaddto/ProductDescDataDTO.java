@@ -9,11 +9,11 @@ public class ProductDescDataDTO extends DownloadDataDbDTO {
     public ProductDescDataDTO() {
     }
 
-    public ProductDescDbDTO getData() {
+   /* public ProductDescDbDTO getData() {
         return data;
     }
 
     public void setData(ProductDescDbDTO data) {
         this.data = data;
-    }
+    }*/
 }

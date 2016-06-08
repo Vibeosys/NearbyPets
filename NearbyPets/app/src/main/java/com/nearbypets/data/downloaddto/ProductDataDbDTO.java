@@ -14,9 +14,9 @@ public class ProductDataDbDTO extends DownloadDataDbDTO {
     public ProductDataDbDTO() {
     }
 
-    public ArrayList<ProductDbDTO> getData() {
+    /*public ArrayList<ProductDbDTO> getData() {
         return data;
-    }
+    }*/
 
     public void setData(ArrayList<ProductDbDTO> data) {
         this.data = data;
