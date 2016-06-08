@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by anand on 09-01-2016.
@@ -80,9 +81,8 @@ public class ServerSyncManager
     private String prepareUploadJsonFromData(TableDataDTO... params) {
 
         Upload uploadToServer = new Upload();
-        uploadToServer.setUser(new UploadUser(mSessionManager.getUserId(),
-                mSessionManager.getUserEmailId(), mSessionManager.getUserPassword(),
-                mSessionManager.getUserAccessToken()));
+        uploadToServer.setUser(new UploadUser(mSessionManager.getUserId(), mSessionManager.getUserEmailId(),
+                mSessionManager.getUserPassword(), mSessionManager.getUserAccessToken()));
         uploadToServer.setData(Arrays.asList(params));
         String uploadJson = uploadToServer.serializeString();
         Log.i(TAG, "## request json" + uploadJson);
@@ -103,6 +103,15 @@ public class ServerSyncManager
                 if (downloadDataDbDTO == null) {
                     if (mErrorReceived != null)
                         mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
+                    Log.e("Data Error", "Error to get the data");
+                    return;
+                }
+
+                if (downloadDataDbDTO.getError().getErrorCode() > 0) {
+                    if (mErrorReceived != null)
+                        mErrorReceived.onDataErrorReceived(downloadDataDbDTO.getError(), requestToken);
+                    Log.e("Data Error", "Error to get the data");
+                    return;
                 }
 
                 if (mOnSuccessResultReceived != null) {
@@ -159,7 +168,7 @@ public class ServerSyncManager
     public interface OnSuccessResultReceived {
         void onResultReceived(@NonNull String data, int requestToken);
 
-        void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken);
+        void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken);
     }
 
 

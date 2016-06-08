@@ -23,6 +23,7 @@ import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SavedAdListActivity extends ProductListActivity implements ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived {
@@ -108,7 +109,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
         Log.i("TAG", "data" + data);
         ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);

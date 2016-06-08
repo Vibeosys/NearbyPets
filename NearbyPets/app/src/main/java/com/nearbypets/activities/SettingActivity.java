@@ -20,6 +20,7 @@ import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SettingActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
@@ -92,7 +93,7 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         showProgress(false, formView, progressBar);
         Log.d("RESULT", "##REQ" + data.toString());
         updateSettings(settings);

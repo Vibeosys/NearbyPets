@@ -55,6 +55,7 @@ import org.json.JSONObject;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -84,6 +85,7 @@ public class MainActivity extends BaseActivity
         if (!UserAuth.isUserLoggedIn()) {
             // finish();
             callLogin();
+            return;
         }
         storedPageNO = 0;
         gpsTracker = new GPSTracker(getApplicationContext());
@@ -154,6 +156,8 @@ public class MainActivity extends BaseActivity
             case AppConstants.ROLL_ID_USER:
                 navigationView.getMenu().clear(); //clear old inflated items.
                 navigationView.inflateMenu(R.menu.activity_main_user_drawer);
+                break;
+            default:
                 break;
         }
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
@@ -391,7 +395,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
         ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
         updateList(productDbDTOs);

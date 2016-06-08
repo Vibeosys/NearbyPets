@@ -17,8 +17,8 @@ import com.nearbypets.utils.EditTextValidation;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.SessionManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Base Activity will give the basic implementation with async task support and other things
@@ -28,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ServerSyncManager mServerSyncManager = null;
     protected static SessionManager mSessionManager = null;
     protected final static String TAG = "com.nearbypets";
-   static EditTextValidation editTextValidation =null;
+    static EditTextValidation editTextValidation = null;
     //protected Tracker mTracker;
     protected static HashMap<String, String> settingMap = new HashMap<>();
 
@@ -41,14 +41,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         settingMap.put("AdSearchDistanceInKM", "10000");
         settingMap.put("ClassifiedAdPageSize", "10");
         settingMap.put("FacebookAdPageSize", "5");
-        editTextValidation= new EditTextValidation();
+        editTextValidation = new EditTextValidation();
     }
 
-    protected void updateSettings(ArrayList<SettingsDTO> settings) {
+    protected void updateSettings(List<SettingsDTO> settings) {
         //Add logic to update settings
         for (SettingsDTO setting : settings
                 ) {
-            settingMap.put(setting.getKey(), setting.getValue());
+            settingMap.put(setting.getConfigKey(), setting.getConfigValue());
         }
     }
 

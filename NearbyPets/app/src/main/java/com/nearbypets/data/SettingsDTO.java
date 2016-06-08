@@ -10,26 +10,27 @@ import java.util.List;
  */
 public class SettingsDTO extends BaseDTO {
 
-    private String key;
-    private String value;
+    private String configKey;
+    private String configValue;
+
 
     public SettingsDTO() {
     }
 
-    public String getKey() {
-        return key;
+    public String getConfigKey() {
+        return configKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey;
     }
 
-    public String getValue() {
-        return value;
+    public String getConfigValue() {
+        return configValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setConfigValue(String configValue) {
+        this.configValue = configValue;
     }
 
     public static List<SettingsDTO> deserialize(List<String> serializedStringList) {
@@ -46,8 +47,8 @@ public class SettingsDTO extends BaseDTO {
     @Override
     public String toString() {
         return "SettingsDTO{" +
-                "key='" + key + '\'' +
-                ", value='" + value + '\'' +
+                "configKey='" + configKey + '\'' +
+                ", value='" + configValue + '\'' +
                 '}';
     }
 }

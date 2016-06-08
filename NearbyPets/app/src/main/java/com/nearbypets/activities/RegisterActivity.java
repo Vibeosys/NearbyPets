@@ -30,6 +30,7 @@ import com.nearbypets.utils.ServerSyncManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +43,7 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     private View formView;
     private View progressBar;
     EditTextValidation editTextValidation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,24 +215,25 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
     @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
 
-                showProgress(true, formView, progressBar);
-                Log.d("RESULT", "##REQ" + data.toString());
-                try {
-                    UserDbDTO registerUser = UserDbDTO.deserializeJson(data);
+        showProgress(true, formView, progressBar);
+        Log.d("RESULT", "##REQ" + data.toString());
+        try {
+            UserDbDTO registerUser = UserDbDTO.deserializeJson(data);
 
-                    Log.i(TAG, registerUser.toString());
+            Log.i(TAG, registerUser.toString());
 
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, "## error on response" + e.toString());
+        }
 
 
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
     }
+
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
         if (errorDbDTO.getErrorCode() == 0) {

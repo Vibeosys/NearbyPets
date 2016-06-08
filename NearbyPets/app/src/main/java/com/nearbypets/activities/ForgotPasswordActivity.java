@@ -24,16 +24,18 @@ import com.nearbypets.utils.ServerSyncManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ForgotPasswordActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
-        ServerSyncManager.OnErrorResultReceived, View.OnClickListener  {
+        ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
     private EditText mEmailId;
     private Button resendPass;
     private final int REQ_TOKEN_FORGOTPASS = 3;
-   private View formView;
+    private View formView;
     private View progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
 
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error","Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
 
 
         }
@@ -62,18 +64,16 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
             @Override
             public void onClick(View v) {
                 final String emailId = mEmailId.getText().toString().trim();
-                if(!isValidEmail(emailId))
-                {
+                if (!isValidEmail(emailId)) {
                     mEmailId.requestFocus();
                     mEmailId.setError("Please provide  email Id");
 
-                }else
-                {
+                } else {
 
-                   callToForgotPassword();
+                    callToForgotPassword();
                     //add logic to send an email- Email will be sent to the customer with clear text password.
 
-                    Intent loginActivity = new Intent(getApplicationContext(),LoginActivity.class);
+                    Intent loginActivity = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(loginActivity);
                 }
 
@@ -106,10 +106,9 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
-        switch (requestToken)
-        {
+        switch (requestToken) {
             case REQ_TOKEN_FORGOTPASS:
-               showProgress(true, formView, progressBar);
+                showProgress(true, formView, progressBar);
                 createAlertDialog("Server error!!!", "Try Again Later");
                 Log.d("Error", "##REQ" + error.toString());
                 break;
@@ -141,9 +140,10 @@ public class ForgotPasswordActivity extends BaseActivity implements ServerSyncMa
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
 
     }
+
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
         showProgress(false, formView, progressBar);

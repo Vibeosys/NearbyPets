@@ -27,6 +27,7 @@ import com.nearbypets.utils.ServerSyncManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostedAdListActivity extends ProductListActivity implements
         ServerSyncManager.OnSuccessResultReceived,
@@ -111,7 +112,7 @@ public class PostedAdListActivity extends ProductListActivity implements
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
 
     }

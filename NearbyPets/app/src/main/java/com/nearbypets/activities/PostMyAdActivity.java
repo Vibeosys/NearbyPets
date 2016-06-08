@@ -439,7 +439,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
         switch (requestToken) {
             case REQ_TOKEN_POST_ADD_CATEGORY:

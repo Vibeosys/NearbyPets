@@ -27,6 +27,7 @@ import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryListActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener,
@@ -153,7 +154,7 @@ public class CategoryListActivity extends BaseActivity implements
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
 
     }
 }

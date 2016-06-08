@@ -42,6 +42,7 @@ import com.nearbypets.views.RobotoRegularTextView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDescActivity extends BaseActivity implements SwipeFragment.CustomCall,
         ServerSyncManager.OnSuccessResultReceived, ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
@@ -252,7 +253,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
     }
 

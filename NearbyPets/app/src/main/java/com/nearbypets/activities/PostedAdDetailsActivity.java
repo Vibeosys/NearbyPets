@@ -10,6 +10,7 @@ import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostedAdDetailsActivity extends ProductDescActivity {
 
@@ -32,7 +33,7 @@ public class PostedAdDetailsActivity extends ProductDescActivity {
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
 
     }
 }

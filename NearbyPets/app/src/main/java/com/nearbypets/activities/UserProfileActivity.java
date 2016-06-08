@@ -18,8 +18,9 @@ import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.views.RobotoMediumTextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class UserProfileActivity  extends BaseActivity implements ServerSyncManager.OnErrorResultReceived,
+public class UserProfileActivity extends BaseActivity implements ServerSyncManager.OnErrorResultReceived,
         ServerSyncManager.OnSuccessResultReceived {
 
     private static final int REQ_TOKEN_PROFILE = 1;
@@ -73,7 +74,7 @@ public class UserProfileActivity  extends BaseActivity implements ServerSyncMana
     }
 
     @Override
-    public void onResultReceived(@NonNull String data, @NonNull ArrayList<SettingsDTO> settings, int requestToken) {
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
 
     }
 }

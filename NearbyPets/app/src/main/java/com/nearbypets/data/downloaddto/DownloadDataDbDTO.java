@@ -16,7 +16,7 @@ import java.util.List;
 public class DownloadDataDbDTO extends BaseDTO {
 
     private ErrorDbDTO error;
-    private ArrayList<SettingsDTO> settings;
+    private List<SettingsDTO> settings;
     private String data;
 
     public DownloadDataDbDTO() {
@@ -30,11 +30,11 @@ public class DownloadDataDbDTO extends BaseDTO {
         this.error = error;
     }
 
-    public ArrayList<SettingsDTO> getSettings() {
+    public List<SettingsDTO> getSettings() {
         return settings;
     }
 
-    public void setSettings(ArrayList<SettingsDTO> settings) {
+    public void setSettings(List<SettingsDTO> settings) {
         this.settings = settings;
     }
 

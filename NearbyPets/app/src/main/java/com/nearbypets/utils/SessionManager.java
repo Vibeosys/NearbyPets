@@ -2,6 +2,7 @@ package com.nearbypets.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 /**
  * Class helps to retrive or set values from shared preferences.
@@ -118,7 +119,11 @@ public class SessionManager {
     }
 
     public int getUserRoleId() {
-        return mProjectSharedPref.getInt(PropertyTypeConstants.USER_ROLE_ID, 0);
+        String sRoleId = mProjectSharedPref.getString(PropertyTypeConstants.USER_ROLE_ID, null);
+        if (sRoleId == null || TextUtils.isEmpty(sRoleId))
+            return 0;
+        else
+            return Integer.parseInt(sRoleId);
     }
 
     private static void setValuesInSharedPrefs(String sharedPrefKey, String sharedPrefValue) {
