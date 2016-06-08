@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 ;
 import com.android.volley.VolleyError;
+import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -70,6 +71,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
     private View formView;
     private View progressBar;
     private LoginButton btnFbLogin;
+    private String FbCurrentToken;
 
 
     @Override
@@ -161,7 +163,15 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                                     String firstName = object.getString("first_name");
                                     String lastName = object.getString("last_name");
                                     String accessTokan = loginResult.getAccessToken().toString();
-                                    callToRegister(firstName, lastName, email, accessTokan);
+                                    AccessToken Fbtoken = AccessToken.getCurrentAccessToken();
+                                    if(Fbtoken!=null)
+                                    {
+                                        String FbAppId= Fbtoken.getApplicationId();
+                                        FbCurrentToken = Fbtoken.getToken();
+                                        Fbtoken.isExpired();
+                                    }
+
+                                    callToRegister(firstName, lastName, email, FbCurrentToken);
                                     mSessionManager.setUserAccessToken(accessTokan);
                                     Log.d(TAG, "## email" + email + " first Name" + firstName + " lastname " + lastName);
                                 } catch (JSONException e) {
