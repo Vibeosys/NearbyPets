@@ -22,6 +22,8 @@ public class PostedAdDetailsActivity extends ProductDescActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_posted_ad_details);
         btnAddToFav.setVisibility(View.GONE);
+
+
         try {
             String distance = getIntent().getStringExtra(AppConstants.PRODUCT_DISTANCE);
             if (distance == null || TextUtils.isEmpty(distance)) {

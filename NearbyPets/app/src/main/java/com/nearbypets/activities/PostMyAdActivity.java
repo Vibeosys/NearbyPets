@@ -114,27 +114,12 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
             mlat = String.valueOf(gpsTracker.getLatitude());
             mlongi = String.valueOf(gpsTracker.getLongitude());
-            //  Toast.makeText(getApplicationContext(), "Testing  "+mlat.toString(), Toast.LENGTH_LONG).show();
+
         } else {
             createAlertDialog("GPS ", "GPS location is disable");
         }
 
-       /* Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
 
-        try {
-            addresses = geocoder.getFromLocation(18.5487939, 73.7894986, 1);
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String featureName = addresses.get(0).getFeatureName();
-
-         //   Toast.makeText(getApplicationContext(),""+address+city+state+featureName,Toast.LENGTH_LONG).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         userId = mSessionManager.getUserId();
 

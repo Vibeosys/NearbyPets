@@ -19,7 +19,7 @@ public class ProductDbDTO extends BaseDTO {
     private String image;
     private String description;
     private double distance;
-    private String date;
+    private String postedDate;
     private double price;
    /* private boolean mFavouriteFlag;
     private String mDate;*/
@@ -76,11 +76,11 @@ public class ProductDbDTO extends BaseDTO {
     }
 
     public String getDate() {
-        return date;
+        return postedDate;
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this.postedDate = date;
     }
 
     public static ArrayList<ProductDbDTO> deserializeToArray(String serializedString) {

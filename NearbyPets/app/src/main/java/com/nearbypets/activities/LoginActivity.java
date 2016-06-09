@@ -264,7 +264,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                 Log.d("TAG", "##" + error.toString());
                 break;
             case REQ_TOKEN_REGISTER:
-                showProgress(true, formView, progressBar);
+                showProgress(false, formView, progressBar);
                 createAlertDialog("Server error!!!", "Try Again Later");
                 Log.d("Error", "##REQ" + error.toString());
                 break;
@@ -274,6 +274,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        showProgress(false, formView, progressBar);
         createAlertDialog("Login error", "" + errorDbDTO.getMessage());
         Log.i("TAG", "##" + errorDbDTO.getMessage());
 
@@ -291,7 +292,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
-
+        showProgress(false, formView, progressBar);
     }
 
 

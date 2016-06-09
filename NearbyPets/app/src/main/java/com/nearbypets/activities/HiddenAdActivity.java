@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
@@ -34,8 +36,11 @@ public class HiddenAdActivity extends ProductListActivity implements
         ServerSyncManager.OnErrorResultReceived {
 
     GPSTracker gpsTracker;
-    private final int REQ_TOKEN_LIST = 1;
+    private final int REQ_TOKEN_GET_HIDDEN_LIST = 33;
+    private final int REQ_TOKEN_POST_HIDDEN_AD=34;
     private static int storedPageNO = 0;
+    private View formView;
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class HiddenAdActivity extends ProductListActivity implements
 
         gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
+
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
         storedPageNO = 0;
@@ -65,14 +71,14 @@ public class HiddenAdActivity extends ProductListActivity implements
                                     }
                                 }
         );
-        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+        /*mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 fetchList(page);
             }
-        });
+        });*/
 
 
     }
@@ -84,18 +90,21 @@ public class HiddenAdActivity extends ProductListActivity implements
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
-            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
+
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.GET_HIDDEN_AD);
+            mServerSyncManager.uploadDataToServer(REQ_TOKEN_GET_HIDDEN_LIST, tableDataDTO);
+            /*PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POSTED_AD, serializedJsonString);
-            mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+            mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);*/
         }
     }
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
         switch (requestToken) {
-            case REQ_TOKEN_LIST:
+            case REQ_TOKEN_GET_HIDDEN_LIST:
                 Log.i("TAG", "Error " + error.toString());
                 swipeRefreshLayout.setRefreshing(false);
                 break;
@@ -147,9 +156,10 @@ public class HiddenAdActivity extends ProductListActivity implements
 
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
-        productData.setFavouriteFlag(!value);
+        Toast.makeText(getApplicationContext(),"Hidden button is clicked",Toast.LENGTH_LONG).show();
+        /*productData.setFavouriteFlag(!value);
         mProductAdapter.notifyDataSetChanged();
-        Log.i("TAG", "## imageClick" + value);
+        Log.i("TAG", "## imageClick" + value);*/
     }
 
     @Override
@@ -174,7 +184,7 @@ public class HiddenAdActivity extends ProductListActivity implements
     public void onResultReceived(@NonNull String data, int requestToken) {
 
         switch (requestToken) {
-            case REQ_TOKEN_LIST:
+            case REQ_TOKEN_GET_HIDDEN_LIST:
                 Log.i("TAG", "data" + data);
                 try {
                     ArrayList<ProductDbDTO> downloadProductDbDataDTO = ProductDbDTO.deserializeToArray(data);
@@ -191,6 +201,25 @@ public class HiddenAdActivity extends ProductListActivity implements
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
+        switch(requestToken)
+        {
+            case REQ_TOKEN_POST_HIDDEN_AD:
+                Log.i("TAG", "data" + data);
+                break;
+        }
         updateSettings(settings);
     }
+
+   /* @Override
+    public void onHideClickListener(int position, ProductDataDTO productData) {
+      //  Toast.makeText(getApplicationContext(),"Hidden button is clicked",Toast.LENGTH_LONG).show();
+//        showProgress(true, formView, progressBar);
+        ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
+        productData.getAdId();
+        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(),Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(hiddenAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
+    }*/
 }

@@ -23,4 +23,6 @@ public class ConstantOperations {
     public static final String DISABLE_POST_AD = "DisablePost";
     public static final String HIDDIN_AD = "HidePost";
     public static final String GET_PROFILE = "GetProfile";
+    public static final String GET_HIDDEN_AD="GetHiddenAds";
+
 }

@@ -10,10 +10,12 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.facebook.FacebookRequestError;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.ClassifiedDbDTO;
+import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SettingsDTO;
@@ -44,6 +46,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     private int mCategoryId;
     GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
+    private final int REQ_TOKEN_POST_HIDDEN_AD=34;
     private int adDisplay = 0;
 
     @Override
@@ -143,6 +146,11 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
             case REQ_TOKAN_HIDE_AD:
                 Toast.makeText(getApplicationContext(), "Hide ad successfully", Toast.LENGTH_SHORT).show();
                 break;
+            case REQ_TOKEN_POST_HIDDEN_AD:
+                Toast.makeText(getApplicationContext(), "Hide ad successfully", Toast.LENGTH_SHORT).show();
+                Intent categoryList = new Intent(getApplicationContext(),CategoryListActivity.class );
+                startActivity(categoryList);
+                break;
         }
     }
 
@@ -235,11 +243,16 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     @Override
     public void onHideClickListener(int position, ProductDataDTO productData) {
         // showProgress(true, formView, progressBar);
-        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(productData.getAdId(), AppConstants.HIDE_AD);
+        /*SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(productData.getAdId(), AppConstants.HIDE_AD);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKAN_HIDE_AD, tableDataDTO);
+        mServerSyncManager.uploadDataToServer(REQ_TOKAN_HIDE_AD, tableDataDTO);*/
+        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(),Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(hiddenAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
     }
 
 

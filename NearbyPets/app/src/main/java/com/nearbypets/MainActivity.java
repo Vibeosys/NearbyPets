@@ -137,9 +137,14 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+        ///here
+
         View headerView = navigationView.getHeaderView(0);
         TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
-        txtUserName.setText(mSessionManager.getUserName());
+        if(mSessionManager.getUserRoleId()==AppConstants.ROLL_ID_ADMIN)
+        txtUserName.setText("Admin: "+mSessionManager.getUserName());
+        else
+            txtUserName.setText(mSessionManager.getUserName());
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
         txtEmail.setText(mSessionManager.getUserEmailId());
         navigationView.setNavigationItemSelectedListener(this);
