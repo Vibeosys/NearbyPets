@@ -4,7 +4,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.nearbypets.data.BaseDTO;
+
+import java.util.ArrayList;
 
 /**
  * Created by akshay on 04-06-2016.
@@ -97,4 +100,5 @@ public class UserDbDTO extends BaseDTO {
         }
         return userDbDTO;
     }
+
 }

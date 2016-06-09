@@ -1,10 +1,16 @@
 package com.nearbypets.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -13,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.facebook.FacebookRequestError;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.ClassifiedDbDTO;
 import com.nearbypets.data.HiddenAdDbDTO;
@@ -48,12 +55,14 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     private final int REQ_TOKEN_LIST = 1;
     private final int REQ_TOKEN_POST_HIDDEN_AD=34;
     private int adDisplay = 0;
+    private String searchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_product_list);
         setTitle("Classified Ads");
+
         mCategoryId = getIntent().getIntExtra(AppConstants.CATEGORY_ID, 0);
         gpsTracker = new GPSTracker(getApplicationContext());
         //spnSortBy.setVisibility(View.GONE);
@@ -70,7 +79,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        fetchList(1, mSortOption, sort);
+                                        fetchList(1, mSortOption, sort,searchText);
                                     }
                                 }
         );
@@ -79,20 +88,20 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort);
+                fetchList(page, mSortOption, sort,searchText);
             }
         });
 
     }
 
-    private void fetchList(int pageNo, int sortOption, String sort) {
+    private void fetchList(int pageNo, int sortOption, String sort,String searchText) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
-            ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId);
+            ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId,searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.CLASSIFIED_AD, serializedJsonString);
@@ -188,13 +197,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         mProductAdapter.clear();
         storedPageNO = 0;
         adDisplay = 0;
-        fetchList(1, mSortOption, sort);
+        fetchList(1, mSortOption, sort,searchText);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort);
+                fetchList(page, mSortOption, sort,searchText);
             }
         });
     }
@@ -224,13 +233,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         sort = sortDTO.getSorting();
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
-        fetchList(1, mSortOption, sort);
+        fetchList(1, mSortOption, sort,searchText);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort);
+                fetchList(page, mSortOption, sort,searchText);
             }
         });
     }
@@ -242,18 +251,53 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
     @Override
     public void onHideClickListener(int position, ProductDataDTO productData) {
-        // showProgress(true, formView, progressBar);
-        /*SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(productData.getAdId(), AppConstants.HIDE_AD);
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKAN_HIDE_AD, tableDataDTO);*/
+
         HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(),Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(hiddenAdDbDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.classified_ad_search, menu);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.clasified_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+               // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
+                searchText =query;
+                sendSearchData(searchText);
+                fetchList(1, mSortOption, sort,searchText);
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchText="";
+                //sendSearchData("");
+               // onRefresh();
+                fetchList(1, mSortOption, sort,searchText);
+                //onRefresh();
+               // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        return true;
+    }
+    public void sendSearchData(String str)
+    {
+        fetchList(1, mSortOption, sort,searchText);
+        onRefresh();
 
+    }
 }

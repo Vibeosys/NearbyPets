@@ -7,10 +7,14 @@ public class ClassifiedDbDTO extends ProductListDbDTO {
 
     private int categoryId;
 
+    private String  search;
+
+
     public ClassifiedDbDTO(double latitude, double longitude, int sortOption,
-                           String sortChoice, int pageNumber, int categoryId) {
+                           String sortChoice, int pageNumber, int categoryId, String  search) {
         super(latitude, longitude, sortOption, sortChoice, pageNumber);
         this.categoryId = categoryId;
+        this.search=search;
     }
 
     public int getCategoryId() {
@@ -20,4 +24,12 @@ public class ClassifiedDbDTO extends ProductListDbDTO {
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
 }

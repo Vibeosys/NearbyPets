@@ -61,10 +61,10 @@
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:layout_marginLeft="15dp"
-                    android:gravity="center_vertical"
                     android:text="Name"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
+
 
                 <View
                     android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                     android:layout_marginLeft="5dp"
                     android:background="@color/colorPrimaryDark" />
 
-                <com.nearbypets.views.RobotoMediumTextView
+                <com.nearbypets.views.RobotoRegularTextView
                     android:id="@+id/txtName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -80,7 +80,9 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
                     android:text="Jack Reacher"
+                    android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -117,6 +119,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
+                    android:textColor="@color/colorPrimary"
                     android:text="jackreacher@nearbypets.com"
                     android:textSize="16sp" />
 
@@ -156,9 +159,11 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
-                    android:text="9999765490"
+
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+
 </LinearLayout>
