@@ -1,33 +1,36 @@
 package com.nearbypets;
 
-import android.app.SearchManager;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.activities.BaseActivity;
 import com.nearbypets.activities.CategoryListActivity;
 import com.nearbypets.activities.HiddenAdActivity;
@@ -42,23 +45,19 @@ import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.ProductDataDTO;
+import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.ProductListDbDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SortDTO;
-import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
-import com.nearbypets.data.ProductDataDTO;
-import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.UserAuth;
-
-import org.json.JSONObject;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -67,7 +66,10 @@ import java.util.List;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         SwipeRefreshLayout.OnRefreshListener, ServerSyncManager.OnSuccessResultReceived,
-        ServerSyncManager.OnErrorResultReceived, DashboardProductListAdapter.CustomButtonListener, DashboardProductListAdapter.CustomItemListener {
+        ServerSyncManager.OnErrorResultReceived, DashboardProductListAdapter.CustomButtonListener,
+        DashboardProductListAdapter.CustomItemListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
@@ -76,12 +78,15 @@ public class MainActivity extends BaseActivity
     //private SwipeRefreshLayout swipeRefreshLayout;
     DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
-    GPSTracker gpsTracker;
+    //GPSTracker gpsTracker;
     private static int mSortOption = 0;
     private static String sort = "DESC";
     private static ArrayList<Integer> storedPageNO = new ArrayList<>();
     private int adDisplay = 0;
     private Date dateToCompaire = null;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +99,22 @@ public class MainActivity extends BaseActivity
             callLogin();
             return;
         }
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+
+        getCurrentLocation(mLocationManager);
 //        /storedPageNO = 0;
-        gpsTracker = new GPSTracker(getApplicationContext());
+        //gpsTracker = new GPSTracker(getApplicationContext());
         //swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
 
-            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check network connection");
 
 
         }
@@ -144,8 +157,8 @@ public class MainActivity extends BaseActivity
 
         View headerView = navigationView.getHeaderView(0);
         TextView txtUserName = (TextView) headerView.findViewById(R.id.txtUserName);
-        if(mSessionManager.getUserRoleId()==AppConstants.ROLL_ID_ADMIN)
-        txtUserName.setText("Admin: "+mSessionManager.getUserName());
+        if (mSessionManager.getUserRoleId() == AppConstants.ROLL_ID_ADMIN)
+            txtUserName.setText("Admin: " + mSessionManager.getUserName());
         else
             txtUserName.setText(mSessionManager.getUserName());
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
@@ -221,12 +234,12 @@ public class MainActivity extends BaseActivity
     private void fetchList(int pageNo, int sortOption, String sort) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check network connection");
             //swipeRefreshLayout.setRefreshing(false);
         } else if (!storedPageNO.contains(pageNo)) {
             storedPageNO.add(pageNo);
             //Toast.makeText(getApplicationContext(), gpsTracker.getLatitude() + " " + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
-            ProductListDbDTO productListDbDTO = new ProductListDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo);
+            ProductListDbDTO productListDbDTO = new ProductListDbDTO(currentLat, currentLong, sortOption, sort, pageNo);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
@@ -296,9 +309,7 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
         return true;
-
     }
 
     @Override
@@ -447,4 +458,70 @@ public class MainActivity extends BaseActivity
         }
         //swipeRefreshLayout.setRefreshing(false);
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLocation == null) {
+            startLocationUpdates();
+        }
+        if (mLocation != null) {
+            currentLat = mLocation.getLatitude();
+            currentLong = mLocation.getLongitude();
+        } else {
+            // Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(5000)
+                .setFastestInterval(1000);
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+        Log.d("reque", "--->>>>");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
 }

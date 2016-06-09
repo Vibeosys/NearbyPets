@@ -1,30 +1,25 @@
 package com.nearbypets.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +27,7 @@ import java.util.List;
 public class PostedAdListActivity extends ProductListActivity implements
         ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived {
-    GPSTracker gpsTracker;
+    //GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
     private static int storedPageNO = 0;
 
@@ -42,7 +37,8 @@ public class PostedAdListActivity extends ProductListActivity implements
         //setContentView(R.layout.activity_posted_ad_list);
         setTitle("Posted Ad List");
 
-        gpsTracker = new GPSTracker(getApplicationContext());
+        getCurrentLocation(mLocationManager);
+        //gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
@@ -81,7 +77,7 @@ public class PostedAdListActivity extends ProductListActivity implements
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
-            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
+            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId());
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POSTED_AD, serializedJsonString);

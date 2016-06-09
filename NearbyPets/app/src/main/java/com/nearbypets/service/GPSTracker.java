@@ -23,6 +23,7 @@ import com.nearbypets.R;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 /**
  * Created by akshay on 06-06-2016.
@@ -69,6 +70,12 @@ public class GPSTracker extends Service implements LocationListener {
     public GPSTracker(Context context) {
         this.mContext = context;
         getLocation();
+    }
+
+    public GPSTracker(Context context, double latFromGoogle, double longFromGoogle) {
+        this.mContext = context;
+        this.latitude = latFromGoogle;
+        this.longitude = longFromGoogle;
     }
 
     /**
@@ -239,23 +246,23 @@ public class GPSTracker extends Service implements LocationListener {
      * @return null or List<Address>
      */
     public List<Address> getGeocoderAddress(Context context) {
-        if (location != null) {
+        //if (location != null) {
 
-            Geocoder geocoder = new Geocoder(context, Locale.ENGLISH);
+        Geocoder geocoder = new Geocoder(context, Locale.ENGLISH);
 
-            try {
-                /**
-                 * Geocoder.getFromLocation - Returns an array of Addresses
-                 * that are known to describe the area immediately surrounding the given latitude and longitude.
-                 */
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, this.geocoderMaxResults);
+        try {
+            /**
+             * Geocoder.getFromLocation - Returns an array of Addresses
+             * that are known to describe the area immediately surrounding the given latitude and longitude.
+             */
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, this.geocoderMaxResults);
 
-                return addresses;
-            } catch (IOException e) {
-                //e.printStackTrace();
-                Log.e(TAG, "Impossible to connect to Geocoder", e);
-            }
+            return addresses;
+        } catch (IOException e) {
+            //e.printStackTrace();
+            Log.e(TAG, "Impossible to connect to Geocoder", e);
         }
+//        }
 
         return null;
     }
@@ -329,6 +336,22 @@ public class GPSTracker extends Service implements LocationListener {
         } else {
             return null;
         }
+    }
+
+    public String getCompleteAddress(Context context) {
+        List<Address> addresses = getGeocoderAddress(context);
+        StringBuilder completeAddressBuilder = new StringBuilder();
+        if (addresses != null && addresses.size() > 0) {
+            Address address = addresses.get(0);
+            int maxIndex = address.getMaxAddressLineIndex();
+            for (int iLoop = 0; iLoop <= address.getMaxAddressLineIndex(); iLoop++) {
+                completeAddressBuilder.append(address.getAddressLine(iLoop));
+                if (iLoop == maxIndex)
+                    break;
+                completeAddressBuilder.append(" ,");
+            }
+        }
+        return completeAddressBuilder.toString();
     }
 
     @Override

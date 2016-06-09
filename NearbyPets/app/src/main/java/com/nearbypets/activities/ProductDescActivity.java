@@ -2,10 +2,9 @@ package com.nearbypets.activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,10 +24,7 @@ import com.nearbypets.data.GetProductDescDbDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SoldandDisableDbDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadProductDecs;
-import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.data.downloaddto.ProductDescDbDTO;
 import com.nearbypets.data.downloaddto.SaveAnAdDbDTO;
 import com.nearbypets.fragments.SwipeFragment;
@@ -39,8 +35,6 @@ import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +112,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         btnAddToFav = (Button) findViewById(R.id.btnAddToFav);
         btnSoldOut = (Button) findViewById(R.id.btnSoldOut);
         btnDisable = (Button) findViewById(R.id.btnDisable);
-
+        btnAddToFav.setVisibility(View.VISIBLE);
         btnAddToFav.setOnClickListener(this);
         btnSoldOut.setOnClickListener(this);
         btnDisable.setOnClickListener(this);
@@ -243,6 +237,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
     @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
+        showProgress(false, formView, progressBar);
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);
@@ -262,7 +257,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
-        updateSettings(settings);
+        //updateSettings(settings);
     }
 
 

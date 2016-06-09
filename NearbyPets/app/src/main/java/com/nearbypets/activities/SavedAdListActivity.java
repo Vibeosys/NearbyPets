@@ -15,7 +15,6 @@ import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
@@ -28,7 +27,7 @@ import java.util.List;
 public class SavedAdListActivity extends ProductListActivity implements ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived {
 
-    GPSTracker gpsTracker;
+    //GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
     private static int storedPageNO = 0;
 
@@ -37,7 +36,8 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_saved_ad_list);
         setTitle("Saved Ads");
-        gpsTracker = new GPSTracker(getApplicationContext());
+        getCurrentLocation(mLocationManager);
+        //gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
         mServerSyncManager.setOnStringErrorReceived(this);
         storedPageNO = 0;
@@ -76,10 +76,10 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
-            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
+            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId());
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
-            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POSTED_AD, serializedJsonString);
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVED_AD, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
         }
     }

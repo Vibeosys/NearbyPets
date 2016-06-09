@@ -1,12 +1,17 @@
 package com.nearbypets.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -21,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -49,15 +55,16 @@ import java.util.Date;
 import java.util.List;
 
 public class PostMyAdActivity extends BaseActivity implements View.OnClickListener,
-        ServerSyncManager.OnErrorResultReceived, ServerSyncManager.OnSuccessResultReceived {
+        ServerSyncManager.OnErrorResultReceived, ServerSyncManager.OnSuccessResultReceived,
+        RadioGroup.OnCheckedChangeListener {
 
     private ArrayAdapter<String> mCategoryAdapter;
     private ArrayAdapter<String> mTypeAdapter;
     private Spinner spnCategory;
     private Spinner spnType;
-    private Spinner addSpinner;
+    private TextView addSpinner;
     private Button postMyAdBtn;
-    private RadioGroup radioGroup;
+    private RadioGroup addressSelectionRadioGroup;
     private RadioButton radioFullAddress, radioCity, checkBtn;
     private EditText petTitle, petDecsription, petPrice;
     private ImageView firstimg, secondimg, thirdimg;
@@ -66,22 +73,24 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     public static final int MEDIA_TYPE_THIRD_IMAGE = 3;
     private final int REQ_TOKEN_POST_ADD_CATEGORY = 15;
     private final int REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER = 16;
-    ArrayList<ImagesDbDTO> images = new ArrayList<>();
+    private ArrayList<ImagesDbDTO> images = new ArrayList<>();
     private Bitmap bitmap;
-    String mlongi;
-    String mlat;
-    ArrayList<TypeDataDTO> categoryDatas = new ArrayList<>();
-    PostAdSpinnerAdapter spAdapt;
-    PostedAdBirdCategoryAdapter firstAdapt;
+    //String mlongi;
+    //String mlat;
+    //ArrayList<TypeDataDTO> categoryDatas = new ArrayList<>();
+    private PostAdSpinnerAdapter spAdapt;
+    private PostedAdBirdCategoryAdapter firstAdapt;
     private View formView;
     private View progressBar;
     private final int REQ_TOKEN_POSTMYAD = 20;
-    GPSTracker gpsTracker;
-    List<String> gpsAddressList = new ArrayList<String>();
-    String userId, display_city, display_full_address = null;
-    int bird_categoryId, bird_Type;
-    String Full_Address_To_send, City_TO_send;
+    private GPSTracker gpsTracker;
+    //List<String> gpsAddressList = new ArrayList<String>();
+    private String userId, display_city, display_full_address = null;
+    private int bird_categoryId, bird_Type;
+    private String completeAddress, cityToDisplay;
     boolean setFlag = false;
+    private double currentLat;
+    private double currentLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,39 +106,29 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         firstimg = (ImageView) findViewById(R.id.firstImg);
         secondimg = (ImageView) findViewById(R.id.secondImg);
         thirdimg = (ImageView) findViewById(R.id.thirdImg);
-        addSpinner = (Spinner) findViewById(R.id.address_spinner);
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        addSpinner = (TextView) findViewById(R.id.address_spinner);
+        addressSelectionRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         radioFullAddress = (RadioButton) findViewById(R.id.fullAddress);
         radioCity = (RadioButton) findViewById(R.id.cityName);
         radioFullAddress.setChecked(true);
         formView = findViewById(R.id.formViewPostAd);
         progressBar = findViewById(R.id.progressBar);
-        gpsTracker = new GPSTracker(getApplicationContext());
-        if (gpsTracker.getIsGPSTrackingEnabled()) {
 
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        getCurrentLocation(locationManager);
+        gpsTracker = new GPSTracker(getApplicationContext(), currentLat, currentLong);
 
-            Full_Address_To_send = gpsTracker.getAddressLine(getApplicationContext()) + " " + gpsTracker.getLocality(getApplicationContext());
-            City_TO_send = gpsTracker.getLocality(getApplicationContext());
-            gpsAddressList.add(gpsTracker.getAddressLine(getApplicationContext()) + " " + gpsTracker.getLocality(getApplicationContext()));
-
-            mlat = String.valueOf(gpsTracker.getLatitude());
-            mlongi = String.valueOf(gpsTracker.getLongitude());
-
-        } else {
-            createAlertDialog("GPS ", "GPS location is disable");
-        }
-
-
+        completeAddress = gpsTracker.getCompleteAddress(getApplicationContext());
+        cityToDisplay = gpsTracker.getLocality(getApplicationContext());
+        addSpinner.setText(completeAddress);
+        //gpsAddressList.add(completeAddress);
 
         userId = mSessionManager.getUserId();
 
-        display_city = gpsTracker.getLocality(getApplicationContext());
-        display_full_address = gpsTracker.getLocality(getApplicationContext()) + " " + gpsTracker.getCountryName(getApplicationContext());
+        display_city = cityToDisplay;
+        display_full_address = completeAddress;
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-
-            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
-
-
+            createAlertNetWorkDialog("Network Error", "Please check network connection");
         }
 
         getPostAddCategory();
@@ -145,11 +144,13 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spnType.setAdapter(spAdapt);
 
 
-        if (gpsAddressList.size() >= 1) {
+        /*if (gpsAddressList.size() >= 1) {
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, gpsAddressList);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             addSpinner.setAdapter(dataAdapter);
-        }
+        }*/
+
+        addressSelectionRadioGroup.setOnCheckedChangeListener(this);
 
 
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -160,7 +161,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 mCategories.getCategoryTitle();
                 Log.d("TAG", "## " + mCategories.getCategoryId());
                 Log.d("TAG", "## " + mCategories.getCategoryTitle());
-
             }
 
             @Override
@@ -205,6 +205,17 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         postMyAdBtn.setOnClickListener(this);
 
 
+    }
+
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
+        checkBtn = (RadioButton) findViewById(selectedId);
+
+        if (checkBtn.getText().equals("Display City Only")) {
+            addSpinner.setText(cityToDisplay);
+        } else {
+            addSpinner.setText(completeAddress);
+        }
     }
 
     private void getPostAdCategoryFirstSpineer() {
@@ -332,12 +343,12 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petTitle.requestFocus();
                     petTitle.setError("Please Provide pet title");
                     cancelFlag = true;
-                } else if (petTitleStr.toString().trim().length() < 3) {
+                } else if (petTitleStr.length() < 3) {
                     focusView = petTitle;
                     petTitle.requestFocus();
                     petTitle.setError("pet name should have atleast 3 character");
                     cancelFlag = true;
-                } else if (petTitleStr.toString().trim().length() > 30) {
+                } else if (petTitleStr.length() > 30) {
                     focusView = petTitle;
                     petTitle.requestFocus();
                     petTitle.setError("pet name should not be grater than 30 character");
@@ -348,12 +359,12 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.requestFocus();
                     petPrice.setError("please enter pet price");
                     cancelFlag = true;
-                } else if (petPriceStr.toString().trim().length() > 4) {
+                } else if (petPriceStr.length() > 4) {
                     focusView = petPrice;
                     petPrice.requestFocus();
                     petPrice.setError("pet prices should have 4 digit ");
                     cancelFlag = true;
-                } else if (setFlag == false) {
+                } else if (!setFlag) {
 
                     Toast toast = Toast.makeText(getApplicationContext(), "Please upload atleast one image", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -365,13 +376,13 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     focusView.requestFocus();
                 }*/
                 else {
-                    int selectedId = radioGroup.getCheckedRadioButtonId();
+                    int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
                     checkBtn = (RadioButton) findViewById(selectedId);
                     if (checkBtn.getText().equals("Display Full Address")) {
                         // Toast.makeText(getApplicationContext(), "Display full address is clicked", Toast.LENGTH_LONG).show();
-                        callToUploadMyAd(Full_Address_To_send);
+                        callToUploadMyAd(completeAddress);
                     } else if (checkBtn.getText().equals("Display City Only")) {
-                        callToUploadMyAd(City_TO_send);
+                        callToUploadMyAd(cityToDisplay);
                         // Toast.makeText(getApplicationContext(), "Display city is clicked", Toast.LENGTH_LONG).show();
                     }
                     // callToUploadMyAd();
@@ -448,7 +459,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 toast.show();
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
-           //     Log.d("Successs for post ad", "##REQ" + data.toString());
+                //     Log.d("Successs for post ad", "##REQ" + data.toString());
 
         }
     }
@@ -493,5 +504,40 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         return encodedImage;
     }
 
+    public void getCurrentLocation(LocationManager locationManager) {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            createAlertDialog("Allow Location Tracking", "Please allow the app to track your location");
+            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            //GPS is not enabled !!
+            return;
+        }
+        Location lastKnownLocation = null;
+        List<String> providers = null;
+        if (locationManager != null) providers = locationManager.getAllProviders();
 
+        if (providers != null) {
+            for (int i = 0; i < providers.size(); i++) {
+                if (locationManager != null)
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                lastKnownLocation = locationManager.getLastKnownLocation(providers.get(i));
+                if (lastKnownLocation != null) {
+                    currentLat = lastKnownLocation.getLatitude();
+                    currentLong = lastKnownLocation.getLongitude();
+                    break;
+                }
+            }
+        }
+    }
 }

@@ -2,12 +2,11 @@ package com.nearbypets.activities;
 
 import android.app.SearchManager;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,9 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.facebook.FacebookRequestError;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.ClassifiedDbDTO;
@@ -26,21 +23,15 @@ import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SettingsDTO;
-import com.nearbypets.data.SoldandDisableDbDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadProductDbDataDTO;
-import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.data.downloaddto.NotificationDTO;
-import com.nearbypets.service.GPSTracker;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +42,9 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     private static final int REQ_TOKAN_HIDE_AD = 2;
     private static int storedPageNO = 0;
     private int mCategoryId;
-    GPSTracker gpsTracker;
+    //GPSTracker gpsTracker;
     private final int REQ_TOKEN_LIST = 1;
-    private final int REQ_TOKEN_POST_HIDDEN_AD=34;
+    private final int REQ_TOKEN_POST_HIDDEN_AD = 34;
     private int adDisplay = 0;
     private String searchText;
 
@@ -62,9 +53,9 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_product_list);
         setTitle("Classified Ads");
-
+        getCurrentLocation(mLocationManager);
         mCategoryId = getIntent().getIntExtra(AppConstants.CATEGORY_ID, 0);
-        gpsTracker = new GPSTracker(getApplicationContext());
+        //gpsTracker = new GPSTracker(getApplicationContext());
         //spnSortBy.setVisibility(View.GONE);
         storedPageNO = 0;
         mServerSyncManager.setOnStringErrorReceived(this);
@@ -79,7 +70,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        fetchList(1, mSortOption, sort,searchText);
+                                        fetchList(1, mSortOption, sort, searchText);
                                     }
                                 }
         );
@@ -88,20 +79,20 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort,searchText);
+                fetchList(page, mSortOption, sort, searchText);
             }
         });
 
     }
 
-    private void fetchList(int pageNo, int sortOption, String sort,String searchText) {
+    private void fetchList(int pageNo, int sortOption, String sort, String searchText) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
-            ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), sortOption, sort, pageNo, mCategoryId,searchText);
+            ClassifiedDbDTO productListDbDTO = new ClassifiedDbDTO(currentLat, currentLong, sortOption, sort, pageNo, mCategoryId, searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.CLASSIFIED_AD, serializedJsonString);
@@ -157,7 +148,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 break;
             case REQ_TOKEN_POST_HIDDEN_AD:
                 Toast.makeText(getApplicationContext(), "Hide ad successfully", Toast.LENGTH_SHORT).show();
-                Intent categoryList = new Intent(getApplicationContext(),CategoryListActivity.class );
+                Intent categoryList = new Intent(getApplicationContext(), CategoryListActivity.class);
                 startActivity(categoryList);
                 break;
         }
@@ -197,13 +188,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         mProductAdapter.clear();
         storedPageNO = 0;
         adDisplay = 0;
-        fetchList(1, mSortOption, sort,searchText);
+        fetchList(1, mSortOption, sort, searchText);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort,searchText);
+                fetchList(page, mSortOption, sort, searchText);
             }
         });
     }
@@ -211,6 +202,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
+        createAlertDialog("Not yet implemented","N/A");
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }
@@ -233,13 +225,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         sort = sortDTO.getSorting();
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
-        fetchList(1, mSortOption, sort,searchText);
+        fetchList(1, mSortOption, sort, searchText);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort,searchText);
+                fetchList(page, mSortOption, sort, searchText);
             }
         });
     }
@@ -252,12 +244,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     @Override
     public void onHideClickListener(int position, ProductDataDTO productData) {
 
-        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(),Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
+        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(), Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(hiddenAdDbDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -268,10 +261,10 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-               // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
-                searchText =query;
+                // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
+                searchText = query;
                 sendSearchData(searchText);
-                fetchList(1, mSortOption, sort,searchText);
+                fetchList(1, mSortOption, sort, searchText);
                 return true;
             }
 
@@ -283,20 +276,20 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                searchText="";
+                searchText = "";
                 //sendSearchData("");
-               // onRefresh();
-                fetchList(1, mSortOption, sort,searchText);
+                // onRefresh();
+                fetchList(1, mSortOption, sort, searchText);
                 //onRefresh();
-               // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
+                // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
                 return false;
             }
         });
         return true;
     }
-    public void sendSearchData(String str)
-    {
-        fetchList(1, mSortOption, sort,searchText);
+
+    public void sendSearchData(String str) {
+        fetchList(1, mSortOption, sort, searchText);
         onRefresh();
 
     }
