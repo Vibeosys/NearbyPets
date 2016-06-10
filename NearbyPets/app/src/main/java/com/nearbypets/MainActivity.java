@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.facebook.login.LoginManager;
@@ -52,6 +53,7 @@ import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
+import com.nearbypets.data.downloaddto.SaveAnAdDbDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
@@ -76,8 +78,9 @@ public class MainActivity extends BaseActivity
     private SortAdapter mSortAdapter;
     private Spinner spnSortBy;
     //private SwipeRefreshLayout swipeRefreshLayout;
-    DrawerLayout drawer;
+    private DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
+    private final int REQ_TOKEN_SAVE_AD = 3;
     //GPSTracker gpsTracker;
     private static int mSortOption = 0;
     private static String sort = "DESC";
@@ -409,7 +412,18 @@ public class MainActivity extends BaseActivity
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
+        String adId = productData.getAdId();
+        callToSaveAd(adId);
         mProductAdapter.notifyDataSetChanged();
+    }
+
+    private void callToSaveAd(String adId) {
+        //showProgress(true, formView, progressBar);
+        SaveAnAdDbDTO saveAnAdDbDTO = new SaveAnAdDbDTO(adId, mSessionManager.getUserId());
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(saveAnAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_SAVE_AD, tableDataDTO);
     }
 
     @Override
@@ -437,18 +451,12 @@ public class MainActivity extends BaseActivity
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         updateSettings(settings);
-        ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
-        updateList(productDbDTOs);
-       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener
-                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
-
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                customLoadMoreDataFromApi(page);
-            }
-        });*/
-        //swipeRefreshLayout.setRefreshing(false);
-
+        if (requestToken == REQ_TOKEN_LIST) {
+            ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
+            updateList(productDbDTOs);
+        } else if (requestToken == REQ_TOKEN_SAVE_AD) {
+            Toast.makeText(getApplicationContext(), "Ad is added to your favorites", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

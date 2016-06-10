@@ -8,15 +8,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.nearbypets.R;
 import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SortDTO;
+import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
+import com.nearbypets.data.downloaddto.SaveAnAdDbDTO;
+import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.ServerSyncManager;
 
@@ -25,7 +30,8 @@ import java.util.List;
 public class ProductListActivity extends BaseActivity implements
         ProductListAdapter.CustomButtonListener, ProductListAdapter.CustomItemListener,
         SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener,
-        ProductListAdapter.CustomHideListener, ServerSyncManager.OnErrorResultReceived, ServerSyncManager.OnSuccessResultReceived {
+        ProductListAdapter.CustomHideListener, ServerSyncManager.OnErrorResultReceived,
+        ServerSyncManager.OnSuccessResultReceived {
 
     protected ListView mListViewProduct;
     protected ProductListAdapter mProductAdapter;
@@ -34,6 +40,14 @@ public class ProductListActivity extends BaseActivity implements
     protected Spinner spnSortBy;
     protected static int mSortOption = 0;
     protected static String sort = "DESC";
+    protected View formView;
+    protected View progressBar;
+
+    protected final int REQ_TOKEN_LIST = 1;
+    protected final int REQ_TOKEN_HIDE_AD = 2;
+    protected final int REQ_TOKEN_SAVE_AD = 3;
+    protected final int REQ_TOKEN_GET_HIDDEN_LIST = 33;
+    protected final int REQ_TOKEN_POST_HIDDEN_AD=34;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +98,20 @@ public class ProductListActivity extends BaseActivity implements
         });
     }
 
+    private void callToSaveAd(String adId) {
+        showProgress(true, formView, progressBar);
+        SaveAnAdDbDTO saveAnAdDbDTO = new SaveAnAdDbDTO(adId, mSessionManager.getUserId());
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(saveAnAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_SAVE_AD, tableDataDTO);
+    }
+
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
+        String adId= productData.getAdId();
+        callToSaveAd(adId);
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }
@@ -119,12 +144,17 @@ public class ProductListActivity extends BaseActivity implements
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
+        showProgress(false, formView, progressBar);
 
     }
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
-
+        showProgress(false, formView, progressBar);
+        if (requestToken == REQ_TOKEN_SAVE_AD && errorDbDTO.getErrorCode() != 0) {
+            createAlertDialog("Error", errorDbDTO.getMessage());
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     @Override
@@ -134,6 +164,10 @@ public class ProductListActivity extends BaseActivity implements
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
-
+        showProgress(false, formView, progressBar);
+        if(requestToken == REQ_TOKEN_SAVE_AD)
+        {
+            Toast.makeText(getApplicationContext(), "Ad saved sucessfully", Toast.LENGTH_SHORT).show();
+        }
     }
 }

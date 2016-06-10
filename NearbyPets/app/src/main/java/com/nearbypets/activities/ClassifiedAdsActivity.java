@@ -26,7 +26,6 @@ import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EndlessScrollListener;
@@ -39,12 +38,10 @@ import java.util.List;
 public class ClassifiedAdsActivity extends ProductListActivity implements
         ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived {
-    private static final int REQ_TOKAN_HIDE_AD = 2;
     private static int storedPageNO = 0;
     private int mCategoryId;
     //GPSTracker gpsTracker;
-    private final int REQ_TOKEN_LIST = 1;
-    private final int REQ_TOKEN_POST_HIDDEN_AD = 34;
+
     private int adDisplay = 0;
     private String searchText;
 
@@ -107,6 +104,10 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 Log.i("TAG", "Error " + error.toString());
                 swipeRefreshLayout.setRefreshing(false);
                 break;
+            case REQ_TOKEN_HIDE_AD:
+                Log.i("TAG", "Error " + error.toString());
+                swipeRefreshLayout.setRefreshing(false);
+                break;
         }
     }
 
@@ -118,7 +119,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                     Snackbar.make(getCurrentFocus(), "No more ads found", Snackbar.LENGTH_SHORT).show();
                 }
                 break;
-            case REQ_TOKAN_HIDE_AD:
+            case REQ_TOKEN_HIDE_AD:
                 if (errorDbDTO.getErrorCode() == 0) {
                     Toast.makeText(getApplicationContext(), errorDbDTO.getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
@@ -135,6 +136,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
+        //super.onResultReceived(data, settings, requestToken);
         updateSettings(settings);
         switch (requestToken) {
             case REQ_TOKEN_LIST:
@@ -143,27 +145,14 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 updateList(productDbDTOs);
                 swipeRefreshLayout.setRefreshing(false);
                 break;
-            case REQ_TOKAN_HIDE_AD:
-                Toast.makeText(getApplicationContext(), "Hide ad successfully", Toast.LENGTH_SHORT).show();
+            case REQ_TOKEN_HIDE_AD:
+                Toast.makeText(getApplicationContext(), "Ad is now hidden from clients", Toast.LENGTH_SHORT).show();
                 break;
             case REQ_TOKEN_POST_HIDDEN_AD:
-                Toast.makeText(getApplicationContext(), "Hide ad successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Ad is now hidden from clients", Toast.LENGTH_SHORT).show();
                 Intent categoryList = new Intent(getApplicationContext(), CategoryListActivity.class);
                 startActivity(categoryList);
                 break;
-        }
-    }
-
-    private void checkStatus(ArrayList<NotificationDTO> notificationDTOs) {
-
-        NotificationDTO notificationDTO = notificationDTOs.get(0);
-        if (notificationDTO.getErrorCode() == 0 || notificationDTO.getErrorCode() == 102) {
-            Log.i("TAG", "##" + notificationDTO.getMessage());
-            Toast.makeText(getApplicationContext(), "" + notificationDTO.getMessage(), Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            createAlertDialog("Error", "" + notificationDTO.getMessage());
-            Log.i("TAG", "##" + notificationDTO.getMessage());
         }
     }
 
@@ -202,7 +191,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
-        createAlertDialog("Not yet implemented","N/A");
+        createAlertDialog("Not yet implemented", "N/A");
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }

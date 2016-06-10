@@ -104,23 +104,26 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            hideFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            hideFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    hideFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            showProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            showProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    showProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+            if (hideFormView != null) {
+                hideFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                hideFormView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        hideFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
+            }
+            if (showProgressView != null) {
+                showProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                showProgressView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        showProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            }
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
@@ -132,7 +135,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void getCurrentLocation(LocationManager locationManager) {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             createAlertDialog("Allow Location Tracking", "Please allow the app to track your location");
-            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS) );
+            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             //GPS is not enabled !!
             return;
         }

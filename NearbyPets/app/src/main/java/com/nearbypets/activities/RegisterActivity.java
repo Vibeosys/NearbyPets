@@ -2,8 +2,8 @@ package com.nearbypets.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,18 +20,13 @@ import com.nearbypets.R;
 import com.nearbypets.data.RegisterDBDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.data.downloaddto.UserDbDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.EditTextValidation;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,14 +80,6 @@ public class RegisterActivity extends BaseActivity implements ServerSyncManager.
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
-    private boolean isValidateNumber(String email) {
-        String EMAIL_PATTERN = "[A-Za-z]";
-        // str.matches(".*\\d+.*");
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();

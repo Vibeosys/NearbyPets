@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
+import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
@@ -28,15 +29,13 @@ public class PostedAdListActivity extends ProductListActivity implements
         ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived {
     //GPSTracker gpsTracker;
-    private final int REQ_TOKEN_LIST = 1;
     private static int storedPageNO = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_posted_ad_list);
-        setTitle("Posted Ad List");
-
+        setTitle(getResources().getString(R.string.nav_opt_my_posted_ads));
         getCurrentLocation(mLocationManager);
         //gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
@@ -97,21 +96,29 @@ public class PostedAdListActivity extends ProductListActivity implements
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
-
+        super.onDataErrorReceived(errorDbDTO, requestToken);
+        switch (requestToken) {
+            case REQ_TOKEN_LIST:
+                Log.i("TAG", "Error " + errorDbDTO.toString());
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+        }
     }
 
     @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
-        Log.i("TAG", "data" + data);
-        ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
-        updateList(productDbDTOs);
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
-        updateSettings(settings);
-
+        super.onResultReceived(data, settings, requestToken);
+        if (requestToken == REQ_TOKEN_LIST) {
+            Log.i("TAG", "data" + data);
+            updateSettings(settings);
+            ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
+            updateList(productDbDTOs);
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
 
@@ -140,6 +147,8 @@ public class PostedAdListActivity extends ProductListActivity implements
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
+        //String adId= productData.getAdId();
+        //callToSaveAd(adId);
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }
@@ -151,7 +160,6 @@ public class PostedAdListActivity extends ProductListActivity implements
         ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
         Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
         intent.putExtra(AppConstants.PRODUCT_DISTANCE, "" + productDataDTO.getDistance());
-        intent.putExtra(AppConstants.PRODUCT_AD_ID, "48E3B44B-801A-B129-B5A4-BE8387956F63");
         startActivity(intent);
     }
 

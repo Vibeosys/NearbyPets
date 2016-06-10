@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
+import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
@@ -24,18 +25,18 @@ import com.nearbypets.utils.ServerSyncManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SavedAdListActivity extends ProductListActivity implements ServerSyncManager.OnSuccessResultReceived,
+public class SavedAdListActivity extends ProductListActivity
+        implements ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived {
 
     //GPSTracker gpsTracker;
-    private final int REQ_TOKEN_LIST = 1;
     private static int storedPageNO = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_saved_ad_list);
-        setTitle("Saved Ads");
+        setTitle(getResources().getString(R.string.nav_opt_my_saved_ads));
         getCurrentLocation(mLocationManager);
         //gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
@@ -66,7 +67,6 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
                 fetchList(page);
             }
         });
-
     }
 
     private void fetchList(int pageNo) {
@@ -96,8 +96,9 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
+        //super.onDataErrorReceived(errorDbDTO, requestToken);
         if (errorDbDTO.getErrorCode() != 0) {
-            createAlertDialog("Error", errorDbDTO.getMessage());
+            //createAlertDialog("Error", errorDbDTO.getMessage());
             swipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -105,17 +106,21 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
 
     @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
-
-
     }
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
+        //super.onResultReceived(data, settings, requestToken);
+
         updateSettings(settings);
-        Log.i("TAG", "data" + data);
-        ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
-        updateList(productDbDTOs);
-        swipeRefreshLayout.setRefreshing(false);
+        switch (requestToken) {
+            case REQ_TOKEN_LIST:
+                Log.i("TAG", "data" + data);
+                ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
+                updateList(productDbDTOs);
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+        }
     }
 
     private void updateList(ArrayList<ProductDbDTO> data) {
@@ -154,7 +159,7 @@ public class SavedAdListActivity extends ProductListActivity implements ServerSy
         ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
         Intent intent = new Intent(getApplicationContext(), SavedAdDetailsActivity.class);
         intent.putExtra(AppConstants.PRODUCT_DISTANCE, "" + productDataDTO.getDistance());
-        intent.putExtra(AppConstants.PRODUCT_AD_ID, productData.getAdId());
+        //intent.putExtra(AppConstants.PRODUCT_AD_ID, productData.getAdId());
         startActivity(intent);
     }
 }

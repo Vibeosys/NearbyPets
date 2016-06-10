@@ -28,17 +28,14 @@ public class HiddenAdActivity extends ProductListActivity implements
         ServerSyncManager.OnErrorResultReceived {
 
     //GPSTracker gpsTracker;
-    private final int REQ_TOKEN_GET_HIDDEN_LIST = 33;
-    private final int REQ_TOKEN_POST_HIDDEN_AD=34;
+
     private static int storedPageNO = 0;
-    private View formView;
-    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_hidden_ad);
-        setTitle("Hidden Ad List");
+        setTitle("Hidden Ads");
 
 
         getCurrentLocation(mLocationManager);
@@ -80,7 +77,7 @@ public class HiddenAdActivity extends ProductListActivity implements
     private void fetchList(int pageNo) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check network connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
 
@@ -104,27 +101,6 @@ public class HiddenAdActivity extends ProductListActivity implements
         }
     }
 
-
-   /* @Override
-    public void onResultReceived(@NonNull JSONObject data, int requestToken) {
-
-        switch (requestToken) {
-            case REQ_TOKEN_LIST:
-                Log.i("TAG", "data" + data);
-                try {
-                    DownloadProductDbDataDTO downloadProductDbDataDTO = new Gson().fromJson(data.toString(), DownloadProductDbDataDTO.class);
-                    updateSettings(downloadProductDbDataDTO.getSettings());
-                    updateList(downloadProductDbDataDTO.getData().get(0).getData());
-                    Log.i(TAG, downloadProductDbDataDTO.toString());
-                } catch (JsonSyntaxException e) {
-                    Log.e(TAG, "## error on response" + e.toString());
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                break;
-        }
-
-    }*/
-
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
         int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
@@ -136,8 +112,6 @@ public class HiddenAdActivity extends ProductListActivity implements
                 mProductAdapter.addSectionHeaderItem(productDataDTOs.get(i));
             }
         }
-        //
-        //mProductAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -149,10 +123,7 @@ public class HiddenAdActivity extends ProductListActivity implements
 
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
-        Toast.makeText(getApplicationContext(),"Hidden button is clicked",Toast.LENGTH_LONG).show();
-        /*productData.setFavouriteFlag(!value);
-        mProductAdapter.notifyDataSetChanged();
-        Log.i("TAG", "## imageClick" + value);*/
+        Toast.makeText(getApplicationContext(), "Ad is now hidden from clients", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -162,20 +133,24 @@ public class HiddenAdActivity extends ProductListActivity implements
         ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
         Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
         intent.putExtra(AppConstants.PRODUCT_DISTANCE, "" + productDataDTO.getDistance());
-        intent.putExtra(AppConstants.PRODUCT_AD_ID, "48E3B44B-801A-B129-B5A4-BE8387956F63");
+        intent.putExtra(AppConstants.PRODUCT_AD_ID, productData.getAdId());
         startActivity(intent);
     }
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
-        createAlertDialog("Login error", "" + errorDbDTO.getMessage());
+        //createAlertDialog("Login error", "" + errorDbDTO.getMessage());
         Log.i("TAG", "##" + errorDbDTO.getMessage());
     }
 
 
     @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
+    }
 
+    @Override
+    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
+        //super.onResultReceived(data,settings, requestToken);
         switch (requestToken) {
             case REQ_TOKEN_GET_HIDDEN_LIST:
                 Log.i("TAG", "data" + data);
@@ -189,13 +164,6 @@ public class HiddenAdActivity extends ProductListActivity implements
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 break;
-        }
-    }
-
-    @Override
-    public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
-        switch(requestToken)
-        {
             case REQ_TOKEN_POST_HIDDEN_AD:
                 Log.i("TAG", "data" + data);
                 break;
@@ -203,16 +171,4 @@ public class HiddenAdActivity extends ProductListActivity implements
         updateSettings(settings);
     }
 
-   /* @Override
-    public void onHideClickListener(int position, ProductDataDTO productData) {
-      //  Toast.makeText(getApplicationContext(),"Hidden button is clicked",Toast.LENGTH_LONG).show();
-//        showProgress(true, formView, progressBar);
-        ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
-        productData.getAdId();
-        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(),Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(hiddenAdDbDTO);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
-    }*/
 }

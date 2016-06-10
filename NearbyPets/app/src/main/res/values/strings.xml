@@ -10,7 +10,7 @@
     <string name="activity_category">Categories</string>
     <string name="activity_forgot_pass">Forgot Password</string>
     <string name="activity_login">Login</string>
-    <string name="activity_post_ad">Post Ad</string>
+    <string name="activity_post_ad">Post an Ad</string>
     <string name="activity_product_desc">Product Description</string>
     <string name="activity_product_list">Product List</string>
     <string name="activity_register">Register</string>

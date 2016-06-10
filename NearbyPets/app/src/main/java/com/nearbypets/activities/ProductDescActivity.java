@@ -41,7 +41,7 @@ import java.util.List;
 
 public class ProductDescActivity extends BaseActivity implements SwipeFragment.CustomCall,
         ServerSyncManager.OnSuccessResultReceived, ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
-    static final int NUM_ITEMS = 6;
+    //static final int NUM_ITEMS = 6;
     protected ImageFragmentPagerAdapter imageFragmentPagerAdapter;
     protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice;
     protected RobotoRegularTextView mTxtProductDesc, mTxtSellerName, mTxtSellerPh, mTxtSellerEmail,
@@ -50,6 +50,8 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     protected static ArrayList<String> mImageArray = new ArrayList<>();
     protected final int REQ_TOKAN_DESC = 1;
     protected final int REQ_TOKAN_SAVE_AD = 2;
+    protected final int REQ_TOKEN_DISABLE = 3;
+    protected final int REQ_TOKEN_SOLD_OUT = 4;
     protected View formView;
     protected View progressBar;
     //private int mScreenFlag;
@@ -66,7 +68,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         mServerSyncManager.setOnStringResultReceived(this);
         mServerSyncManager.setOnStringErrorReceived(this);
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check network connection");
 
         } else {
 
@@ -200,14 +202,26 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 showProgress(false, formView, progressBar);
-                createAlertDialog("Error", error.getMessage());
+                //Toast.makeText("No more ads", "There are no more ads t")
+                //createAlertDialog("Error", error.getMessage());
+                Log.i(TAG, "##" + error.toString());
+                break;
+            case REQ_TOKEN_DISABLE:
+                showProgress(false, formView, progressBar);
+                //createAlertDialog("Error", error.getMessage());
+                Log.i(TAG, "##" + error.toString());
+                break;
+            case REQ_TOKEN_SOLD_OUT:
+                showProgress(false, formView, progressBar);
+                //createAlertDialog("Error", error.getMessage());
                 Log.i(TAG, "##" + error.toString());
                 break;
             case REQ_TOKAN_SAVE_AD:
                 showProgress(false, formView, progressBar);
-                createAlertDialog("Error", error.getMessage());
+                //createAlertDialog("Error", error.getMessage());
                 Log.i(TAG, "##" + error.toString());
                 break;
+
         }
     }
 
@@ -217,7 +231,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         switch (requestToken) {
             case REQ_TOKAN_DESC:
                 if (errorDbDTO.getErrorCode() != 0) {
-                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
+                    //createAlertDialog("Error", "" + errorDbDTO.getMessage());
                     Log.i("TAG", "##" + errorDbDTO.getMessage());
                 }
 
@@ -228,7 +242,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                     Toast.makeText(getApplicationContext(), "" + errorDbDTO.getMessage(), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    createAlertDialog("Error", "" + errorDbDTO.getMessage());
+                    //createAlertDialog("Error", "" + errorDbDTO.getMessage());
                     Log.i("TAG", "##" + errorDbDTO.getMessage());
                 }
                 break;
@@ -251,7 +265,15 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 Log.i("TAG", "data" + data);
                 break;
             case REQ_TOKAN_SAVE_AD:
+                Toast.makeText(getApplicationContext(), "Ad is added to your favorites", Toast.LENGTH_SHORT).show();
                 break;
+            case REQ_TOKEN_DISABLE:
+                Toast.makeText(getApplicationContext(), "Ad is now Disabled", Toast.LENGTH_SHORT).show();
+                break;
+            case REQ_TOKEN_SOLD_OUT:
+                Toast.makeText(getApplicationContext(), "Ad is now set to SOLD OUT", Toast.LENGTH_SHORT).show();
+                break;
+
         }
     }
 
@@ -309,28 +331,27 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
     private void callToSoldOutAd() {
         showProgress(true, formView, progressBar);
-        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(mAdID, AppConstants.SOLD_AD);
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
+        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(mAdID);
+        //Gson gson = new Gson();
+        String serializedJsonString = soldAndDisableDbDTO.serializeString();
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SOLD_OUT_POST_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_SOLD_OUT, tableDataDTO);
     }
 
     private void callToDisableAd() {
         showProgress(true, formView, progressBar);
-        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(mAdID, AppConstants.DISEABLE_AD);
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(soldAndDisableDbDTO);
+        SoldandDisableDbDTO soldAndDisableDbDTO = new SoldandDisableDbDTO(mAdID);
+        //Gson gson = new Gson();
+        String serializedJsonString = soldAndDisableDbDTO.serializeString();
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.DISABLE_POST_AD, serializedJsonString);
-        mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
-
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_DISABLE, tableDataDTO);
     }
 
     private void callToSaveAd() {
         showProgress(true, formView, progressBar);
         SaveAnAdDbDTO saveAnAdDbDTO = new SaveAnAdDbDTO(mAdID, mSessionManager.getUserId());
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(saveAnAdDbDTO);
+        //Gson gson = new Gson();
+        String serializedJsonString = saveAnAdDbDTO.serializeString();
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
     }
