@@ -39,7 +39,8 @@
         <activity
             android:name=".activities.CategoryListActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".activities.SplashScreen">
+        <activity android:name=".activities.SplashScreen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -93,6 +94,8 @@
             android:name=".activities.SavedAdDetailsActivity"
             android:parentActivityName=".activities.SavedAdListActivity" />
         <activity android:name=".activities.HiddenAdActivity"></activity>
+        <activity android:name=".activities.GridViewPhotos"></activity>
+        <activity android:name=".activities.PreviewImage"></activity>
     </application>
 
 </manifest>

@@ -1,10 +1,12 @@
 package com.nearbypets.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -47,7 +50,10 @@ import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,6 +79,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     public static final int MEDIA_TYPE_THIRD_IMAGE = 3;
     private final int REQ_TOKEN_POST_ADD_CATEGORY = 15;
     private final int REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER = 16;
+    private final int REQ_SELECT_IMAGE_REQUEST_CODE = 22;
     private ArrayList<ImagesDbDTO> images = new ArrayList<>();
     private Bitmap bitmap;
     //String mlongi;
@@ -144,12 +151,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spnType.setAdapter(spAdapt);
 
 
-        /*if (gpsAddressList.size() >= 1) {
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, gpsAddressList);
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            addSpinner.setAdapter(dataAdapter);
-        }*/
-
         addressSelectionRadioGroup.setOnCheckedChangeListener(this);
 
 
@@ -185,14 +186,17 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         firstimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(),"first Image view is clicked",Toast.LENGTH_LONG).show();
+
                 captureImage();
+
+
             }
         });
+
         secondimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(),"first Image view is clicked",Toast.LENGTH_LONG).show();
+
                 captureSecondImage();
             }
         });
@@ -206,6 +210,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
 
     }
+
 
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
@@ -232,92 +237,91 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void captureThirdImage() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, MEDIA_TYPE_THIRD_IMAGE);
+
+        startGridViewActivity(MEDIA_TYPE_THIRD_IMAGE);
     }
 
     private void captureSecondImage() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, MEDIA_TYPE_SECOND_IMAGE);
+
+        startGridViewActivity(MEDIA_TYPE_SECOND_IMAGE);
     }
 
     private void captureImage() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, MEDIA_TYPE_IMAGE);
+        startGridViewActivity(MEDIA_TYPE_IMAGE);
 
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
+    private void startGridViewActivity(int requestCode) {
+        Intent theIntent = new Intent(PostMyAdActivity.this, GridViewPhotos.class);
+        startActivityForResult(theIntent, requestCode);
     }
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MEDIA_TYPE_IMAGE && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri filePath = getImageUri(getApplicationContext(), photo);
-            try {
-                //Getting the Bitmap from Gallery
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                //Setting the Bitmap to ImageView
-                // imageView.setImageBitmap(bitmap);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                String currentDateandTime = sdf.format(new Date());
-                String test = currentDateandTime + ".JPG";
 
-                String strIMG = getStringImage(bitmap);
-                ImagesDbDTO images1 = new ImagesDbDTO(1, test, strIMG);
-                images.add(images1);
-                firstimg.setImageBitmap(photo);
-                setFlag = true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        } else if (requestCode == MEDIA_TYPE_SECOND_IMAGE && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri filePath1 = getImageUri(getApplicationContext(), photo);
-
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath1);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                String currentDateandTime = sdf.format(new Date());
-                String test = currentDateandTime + ".JPG";
-
-                String strIMG = getStringImage(bitmap);
-                ImagesDbDTO images2 = new ImagesDbDTO(2, test, strIMG);
-                images.add(images2);
-                secondimg.setImageBitmap(photo);
-                setFlag = true;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } else if (requestCode == MEDIA_TYPE_THIRD_IMAGE && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri filePath2 = getImageUri(getApplicationContext(), photo);
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath2);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                String currentDateandTime = sdf.format(new Date());
-                String test = currentDateandTime + ".JPG";
-
-                String strIMG = getStringImage(bitmap);
-                ImagesDbDTO images3 = new ImagesDbDTO(3, test, strIMG);
-                images.add(images3);
-                thirdimg.setImageBitmap(photo);
-                setFlag = true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
+            return;
         }
+        int imageNumber = 0;
+        String imagePath = data.getExtras().getString("imagePath");
+        Bitmap convertedImg = convertPathToBitmap(imagePath);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        String currentDateandTime = sdf.format(new Date());
+        String imageWithExtension = currentDateandTime + ".JPG";
+
+        String imageInBase64Format = getStringImage(convertedImg);
+        if (requestCode == MEDIA_TYPE_IMAGE) {
+            imageNumber = 1;
+
+            firstimg.setImageBitmap(convertedImg);
+        }
+        if (requestCode == MEDIA_TYPE_SECOND_IMAGE) {
+            imageNumber = 2;
+            secondimg.setImageBitmap(convertedImg);
+        }
+        if (requestCode == MEDIA_TYPE_THIRD_IMAGE) {
+            imageNumber = 3;
+            thirdimg.setImageBitmap(convertedImg);
+        }
+
+
+
+
+        ImagesDbDTO imagesDbDTO = new ImagesDbDTO(imageNumber, imageWithExtension, imageInBase64Format);
+        images.add(imagesDbDTO);
     }
 
+    private Bitmap convertPathToBitmap(String imagePath) {
+        FileInputStream fileInputStream = null;
+        BufferedInputStream bufferedInputStream = null;
+        Bitmap resultBitmapImage = null;
+
+        try {
+            System.gc();
+            fileInputStream = new FileInputStream(imagePath);
+            bufferedInputStream = new BufferedInputStream(fileInputStream);
+            resultBitmapImage = BitmapFactory.decodeStream(bufferedInputStream);
+        } catch (FileNotFoundException e) {
+            Log.e("FileNotfound", e.toString());
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    Log.e("BitmapConversion", e.toString());
+                }
+            }
+            if (bufferedInputStream != null) {
+                try {
+                    bufferedInputStream.close();
+                } catch (IOException e) {
+                    Log.e("BitmapConversion", e.toString());
+                }
+            }
+        }
+        return resultBitmapImage;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -364,37 +368,21 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.requestFocus();
                     petPrice.setError("pet prices should have 4 digit ");
                     cancelFlag = true;
-                } else if (!setFlag) {
-
-                    Toast toast = Toast.makeText(getApplicationContext(), "Please upload atleast one image", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    cancelFlag = true;
-                }
-                /*if(cancelFlag)
-                {
-                    focusView.requestFocus();
-                }*/
-                else {
+                } else {
                     int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
                     checkBtn = (RadioButton) findViewById(selectedId);
                     if (checkBtn.getText().equals("Display Full Address")) {
-                        // Toast.makeText(getApplicationContext(), "Display full address is clicked", Toast.LENGTH_LONG).show();
+
                         callToUploadMyAd(completeAddress);
                     } else if (checkBtn.getText().equals("Display City Only")) {
                         callToUploadMyAd(cityToDisplay);
-                        // Toast.makeText(getApplicationContext(), "Display city is clicked", Toast.LENGTH_LONG).show();
-                    }
-                    // callToUploadMyAd();
-                   /* createAlertDialog("Post Ad", "Ad Posted sucess fully");
 
-                    Toast.makeText(getApplicationContext(), "All validations are done", Toast.LENGTH_LONG).show();*/
+                    }
+
                 }
         }
 
     }
-    // public PostMyAdDBDTO(int categoryId, String title, String description, String address,
-    // String displayAddress, String latitude, String longitude, double price, int typeId, String userId, ArrayList<ImagesDbDTO> images)
 
 
     public void callToUploadMyAd(String displayAddress) {
@@ -490,18 +478,24 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
     public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] imageBytes = null;
         try {
             System.gc();
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
+            imageBytes = baos.toByteArray();
 
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             Log.d("TAG", "## ");
         }
-        byte[] imageBytes = baos.toByteArray();
+
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
+        /*ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;*/
     }
 
     public void getCurrentLocation(LocationManager locationManager) {

@@ -41,19 +41,17 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         /*mTxtName = (RobotoMediumTextView) findViewById(R.id.txtName);
         mTxtEmail = (RobotoMediumTextView) findViewById(R.id.txtEmail);
         mTxtMobNo = (RobotoMediumTextView) findViewById(R.id.txtMobNo);*/
-        mTxtName =(TextView) findViewById(R.id.heightTv);
-        mTxtEmail=(TextView) findViewById(R.id.weightTv);
-        mTxtMobNo=(TextView) findViewById(R.id.chestTv);
-        formView = findViewById(R.id.scrollView);
+        mTxtName =(TextView) findViewById(R.id.FirstNameTitle);
+        mTxtEmail=(TextView) findViewById(R.id.emailIdTitle);
+        mTxtMobNo=(TextView) findViewById(R.id.phoneNumber);
+        formView = findViewById(R.id.profileLinear);
         progressBar = findViewById(R.id.progressBar);
-       /* mTxtName.setText("");
-        mTxtEmail.setText("");
-        mTxtMobNo.setText("");*/
+
         callToProfile();
     }
 
     private void callToProfile() {
-//        showProgress(true, formView, progressBar);
+        showProgress(true, formView, progressBar);
         ProfileDbDTO profileDbDTO = new ProfileDbDTO(mSessionManager.getUserEmailId());
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(profileDbDTO);
@@ -63,13 +61,13 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
-      //  showProgress(false, formView, progressBar);
+       showProgress(false, formView, progressBar);
         createAlertDialog("Server error!!!", "Try Again Later");
     }
 
     @Override
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
-       // showProgress(false, formView, progressBar);
+        showProgress(false, formView, progressBar);
         createAlertDialog("Login error", "" + errorDbDTO.getMessage());
         Log.i("TAG", "##" + errorDbDTO.getMessage());
     }
@@ -78,8 +76,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
     public void onResultReceived(@NonNull String data, int requestToken) {
         switch (requestToken) {
             case REQ_TOKEN_PROFILE:
-            //    showProgress(false, formView, progressBar);
-               // showProgress(false, formView, progressBar);
+                showProgress(false, formView, progressBar);
                 UserDbDTO userDbDTO = UserDbDTO.deserializeJson(data);
 
                 mTxtName.setText(userDbDTO.getFname().toString() + " " + userDbDTO.getLname().toString());
