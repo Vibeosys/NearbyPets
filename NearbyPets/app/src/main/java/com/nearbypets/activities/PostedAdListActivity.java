@@ -160,6 +160,7 @@ public class PostedAdListActivity extends ProductListActivity implements
         ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
         Intent intent = new Intent(getApplicationContext(), PostedAdDetailsActivity.class);
         intent.putExtra(AppConstants.PRODUCT_DISTANCE, "" + productDataDTO.getDistance());
+        intent.putExtra(AppConstants.PRODUCT_AD_ID, "" + productDataDTO.getAdId());
         startActivity(intent);
     }
 

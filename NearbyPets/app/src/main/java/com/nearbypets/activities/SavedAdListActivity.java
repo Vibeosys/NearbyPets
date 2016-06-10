@@ -159,7 +159,7 @@ public class SavedAdListActivity extends ProductListActivity
         ProductDataDTO productDataDTO = mProductAdapter.getItem(position);
         Intent intent = new Intent(getApplicationContext(), SavedAdDetailsActivity.class);
         intent.putExtra(AppConstants.PRODUCT_DISTANCE, "" + productDataDTO.getDistance());
-        //intent.putExtra(AppConstants.PRODUCT_AD_ID, productData.getAdId());
+        intent.putExtra(AppConstants.PRODUCT_AD_ID, productData.getAdId());
         startActivity(intent);
     }
 }

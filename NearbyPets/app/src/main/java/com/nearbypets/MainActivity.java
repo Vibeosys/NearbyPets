@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -310,8 +311,12 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (mSessionManager.getUserRoleId() == AppConstants.ROLL_ID_ADMIN)
+            getMenuInflater().inflate(R.menu.main_admin, menu);
+        else
+            getMenuInflater().inflate(R.menu.main, menu);
+
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -361,6 +366,7 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_log_out) {
             try {
+                FacebookSdk.sdkInitialize(this.getApplicationContext());
                 LoginManager.getInstance().logOut();
             } catch (Exception e) {
 

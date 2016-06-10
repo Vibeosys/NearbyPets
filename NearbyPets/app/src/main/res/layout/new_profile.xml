@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
@@ -11,6 +12,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/profileLinear"
         android:layout_width="match_parent"
@@ -18,109 +20,117 @@
         android:orientation="vertical">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="My Profile"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primaryText"
-        android:textSize="52sp"/>
-
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".MainActivity">
-
-
         <TextView
-
-            android:id="@+id/FirstNameTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="44dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_gravity="center"
+            android:text="My Profile"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/primaryText"
+            android:textSize="52sp" />
 
-        <TextView
-            android:id="@+id/firstNameTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/FirstNameTitle"
-            android:text="Name"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <View
-            android:id="@+id/SplitLine_hor1"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/firstNameTv"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context=".MainActivity">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_alignParentStart="true"
-            android:text=""
-            android:id="@+id/emailIdTitle"
-            android:layout_below="@+id/SplitLine_hor1"
-            android:layout_toEndOf="@+id/FirstNameTitle" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Email Id"
-            android:id="@+id/emailIdHeading"
-            android:layout_below="@+id/emailIdTitle"
-            android:layout_alignParentStart="true" />
-        <View
-            android:id="@+id/SplitLine_hor3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/emailIdHeading"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/darker_gray" />
+            <TextView
+                android:id="@+id/FirstNameTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="44dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text=" "
-            android:id="@+id/phoneNumber"
-            android:layout_alignTop="@+id/SplitLine_hor3"
-            android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/firstNameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/FirstNameTitle"
+                android:textSize="12sp"
+                android:text="Name"
+                android:textColor="#ABB2B9"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Phone"
-            android:id="@+id/phoneTitle"
-            android:layout_below="@+id/phoneNumber"
-            android:layout_alignParentStart="true" />
+            <View
+                android:id="@+id/SplitLine_hor1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/firstNameTv"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/darker_gray" />
 
-        <View
-            android:id="@+id/SplitLine_hor4"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/phoneTitle"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="@android:color/darker_gray" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/emailIdTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/SplitLine_hor1"
+                android:layout_toEndOf="@+id/FirstNameTitle"
+                android:paddingTop="7dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/emailIdHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/emailIdTitle"
+                android:textSize="12sp"
+                android:textColor="#ABB2B9"
+                android:text="Email Id"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <View
+                android:id="@+id/SplitLine_hor3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/emailIdHeading"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/SplitLine_hor3"
+                android:paddingTop="7dp"
+                android:text=" "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/phoneTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/phoneNumber"
+                android:textColor="#ABB2B9"
+                android:textSize="12sp"
+                android:text="Phone"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <View
+                android:id="@+id/SplitLine_hor4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/phoneTitle"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/darker_gray" />
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
 

@@ -153,6 +153,9 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 Intent categoryList = new Intent(getApplicationContext(), CategoryListActivity.class);
                 startActivity(categoryList);
                 break;
+            case REQ_TOKEN_SAVE_AD:
+                Toast.makeText(getApplicationContext(), "Ad is added to your favorites", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -191,7 +194,9 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
-        createAlertDialog("Not yet implemented", "N/A");
+        //createAlertDialog("Not yet implemented", "N/A");
+        String adId= productData.getAdId();
+        callToSaveAd(adId);
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }

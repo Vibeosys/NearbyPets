@@ -1,8 +1,8 @@
 package com.nearbypets.activities;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,7 +11,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.nearbypets.R;
 import com.nearbypets.adapters.ProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
@@ -47,7 +46,7 @@ public class ProductListActivity extends BaseActivity implements
     protected final int REQ_TOKEN_HIDE_AD = 2;
     protected final int REQ_TOKEN_SAVE_AD = 3;
     protected final int REQ_TOKEN_GET_HIDDEN_LIST = 33;
-    protected final int REQ_TOKEN_POST_HIDDEN_AD=34;
+    protected final int REQ_TOKEN_POST_HIDDEN_AD = 34;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +80,6 @@ public class ProductListActivity extends BaseActivity implements
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-
-                                        //fetchList(1);
-
-                                        //logic to refersh list
                                     }
                                 }
         );
@@ -98,11 +93,10 @@ public class ProductListActivity extends BaseActivity implements
         });
     }
 
-    private void callToSaveAd(String adId) {
+    protected void callToSaveAd(String adId) {
         showProgress(true, formView, progressBar);
         SaveAnAdDbDTO saveAnAdDbDTO = new SaveAnAdDbDTO(adId, mSessionManager.getUserId());
-        Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(saveAnAdDbDTO);
+        String serializedJsonString = saveAnAdDbDTO.serializeString();
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_SAVE_AD, tableDataDTO);
     }
@@ -110,8 +104,6 @@ public class ProductListActivity extends BaseActivity implements
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
-        String adId= productData.getAdId();
-        callToSaveAd(adId);
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }
@@ -165,8 +157,7 @@ public class ProductListActivity extends BaseActivity implements
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         showProgress(false, formView, progressBar);
-        if(requestToken == REQ_TOKEN_SAVE_AD)
-        {
+        if (requestToken == REQ_TOKEN_SAVE_AD) {
             Toast.makeText(getApplicationContext(), "Ad saved sucessfully", Toast.LENGTH_SHORT).show();
         }
     }
