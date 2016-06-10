@@ -265,24 +265,34 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         }
         int imageNumber = 0;
         String imagePath = data.getExtras().getString("imagePath");
-        Bitmap convertedImg = convertPathToBitmap(imagePath);
+        BitmapFactory.Options options= new BitmapFactory.Options();
+        Bitmap convertedImg = BitmapFactory.decodeFile(imagePath,options);
+        int scaledHeight=50;
+        int scaledWidth=50;
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(convertedImg,scaledHeight,scaledWidth,true);
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         String currentDateandTime = sdf.format(new Date());
         String imageWithExtension = currentDateandTime + ".JPG";
 
         String imageInBase64Format = getStringImage(convertedImg);
+        if(scaledBitmap!=convertedImg)
+            convertedImg.recycle();
+        convertedImg=null;
+
         if (requestCode == MEDIA_TYPE_IMAGE) {
             imageNumber = 1;
 
-            firstimg.setImageBitmap(convertedImg);
+            firstimg.setImageBitmap(scaledBitmap);
         }
         if (requestCode == MEDIA_TYPE_SECOND_IMAGE) {
             imageNumber = 2;
-            secondimg.setImageBitmap(convertedImg);
+            secondimg.setImageBitmap(scaledBitmap);
         }
         if (requestCode == MEDIA_TYPE_THIRD_IMAGE) {
             imageNumber = 3;
-            thirdimg.setImageBitmap(convertedImg);
+            thirdimg.setImageBitmap(scaledBitmap);
         }
 
 
