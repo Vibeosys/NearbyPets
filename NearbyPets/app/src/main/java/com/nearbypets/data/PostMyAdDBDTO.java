@@ -23,7 +23,8 @@ public class PostMyAdDBDTO {
     }
 
     public PostMyAdDBDTO(int categoryId, String title, String description, String address,
-                         String displayAddress, String latitude, String longitude, double price, int typeId, String userId, ArrayList<ImagesDbDTO> images) {
+                         String displayAddress, String latitude, String longitude, double price,
+                         int typeId, String userId, ArrayList<ImagesDbDTO> images) {
         this.categoryId = categoryId;
         this.title = title;
         this.description = description;

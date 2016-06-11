@@ -1,28 +1,19 @@
 package com.nearbypets.activities;
 
-import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,14 +55,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         ServerSyncManager.OnErrorResultReceived, ServerSyncManager.OnSuccessResultReceived,
         RadioGroup.OnCheckedChangeListener {
 
-    private ArrayAdapter<String> mCategoryAdapter;
-    private ArrayAdapter<String> mTypeAdapter;
-    private Spinner spnCategory;
-    private Spinner spnType;
     private TextView addSpinner;
-    private Button postMyAdBtn;
     private RadioGroup addressSelectionRadioGroup;
-    private RadioButton radioFullAddress, radioCity, checkBtn;
     private EditText petTitle, petDecsription, petPrice;
     private ImageView firstimg, secondimg, thirdimg;
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -79,34 +64,24 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     public static final int MEDIA_TYPE_THIRD_IMAGE = 3;
     private final int REQ_TOKEN_POST_ADD_CATEGORY = 15;
     private final int REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER = 16;
-    private final int REQ_SELECT_IMAGE_REQUEST_CODE = 22;
+    private final int REQ_TOKEN_POSTMYAD = 20;
     private ArrayList<ImagesDbDTO> images = new ArrayList<>();
-    private Bitmap bitmap;
-    //String mlongi;
-    //String mlat;
-    //ArrayList<TypeDataDTO> categoryDatas = new ArrayList<>();
     private PostAdSpinnerAdapter spAdapt;
     private PostedAdBirdCategoryAdapter firstAdapt;
     private View formView;
     private View progressBar;
-    private final int REQ_TOKEN_POSTMYAD = 20;
-    private GPSTracker gpsTracker;
-    //List<String> gpsAddressList = new ArrayList<String>();
-    private String userId, display_city, display_full_address = null;
+    private String userId, display_full_address = null;
     private int bird_categoryId, bird_Type;
     private String completeAddress, cityToDisplay;
-    boolean setFlag = false;
-    private double currentLat;
-    private double currentLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_my_add);
         setTitle(getResources().getString(R.string.activity_post_ad));
-        spnCategory = (Spinner) findViewById(R.id.spnCategory);
-        spnType = (Spinner) findViewById(R.id.spnType);
-        postMyAdBtn = (Button) findViewById(R.id.postMyAdd);
+        Spinner spnCategory = (Spinner) findViewById(R.id.spnCategory);
+        Spinner spnType = (Spinner) findViewById(R.id.spnType);
+        Button postMyAdBtn = (Button) findViewById(R.id.postMyAdd);
         petTitle = (EditText) findViewById(R.id.pet_title);
         petDecsription = (EditText) findViewById(R.id.pet_description);
         petPrice = (EditText) findViewById(R.id.pet_price);
@@ -115,15 +90,15 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         thirdimg = (ImageView) findViewById(R.id.thirdImg);
         addSpinner = (TextView) findViewById(R.id.address_spinner);
         addressSelectionRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioFullAddress = (RadioButton) findViewById(R.id.fullAddress);
-        radioCity = (RadioButton) findViewById(R.id.cityName);
+        RadioButton radioFullAddress = (RadioButton) findViewById(R.id.fullAddress);
+        //radioCity = (RadioButton) findViewById(R.id.cityName);
         radioFullAddress.setChecked(true);
         formView = findViewById(R.id.formViewPostAd);
         progressBar = findViewById(R.id.progressBar);
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getCurrentLocation(locationManager);
-        gpsTracker = new GPSTracker(getApplicationContext(), currentLat, currentLong);
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext(), currentLat, currentLong);
 
         completeAddress = gpsTracker.getCompleteAddress(getApplicationContext());
         cityToDisplay = gpsTracker.getLocality(getApplicationContext());
@@ -132,7 +107,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
         userId = mSessionManager.getUserId();
 
-        display_city = cityToDisplay;
+        //display_city = cityToDisplay;
         display_full_address = completeAddress;
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check network connection");
@@ -186,17 +161,13 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         firstimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 captureImage();
-
-
             }
         });
 
         secondimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 captureSecondImage();
             }
         });
@@ -214,7 +185,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
-        checkBtn = (RadioButton) findViewById(selectedId);
+        RadioButton checkBtn = (RadioButton) findViewById(selectedId);
 
         if (checkBtn.getText().equals("Display City Only")) {
             addSpinner.setText(cityToDisplay);
@@ -265,21 +236,21 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         }
         int imageNumber = 0;
         String imagePath = data.getExtras().getString("imagePath");
-        BitmapFactory.Options options= new BitmapFactory.Options();
-        Bitmap convertedImg = BitmapFactory.decodeFile(imagePath,options);
-        int scaledHeight=50;
-        int scaledWidth=50;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap convertedImg = BitmapFactory.decodeFile(imagePath, options);
+        int scaledHeight = 50;
+        int scaledWidth = 50;
 
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(convertedImg,scaledHeight,scaledWidth,true);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(convertedImg, scaledHeight, scaledWidth, true);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         String currentDateandTime = sdf.format(new Date());
         String imageWithExtension = currentDateandTime + ".JPG";
 
         String imageInBase64Format = getStringImage(convertedImg);
-        if(scaledBitmap!=convertedImg)
+        if (scaledBitmap != convertedImg)
             convertedImg.recycle();
-        convertedImg=null;
+        convertedImg = null;
 
         if (requestCode == MEDIA_TYPE_IMAGE) {
             imageNumber = 1;
@@ -294,8 +265,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
             imageNumber = 3;
             thirdimg.setImageBitmap(scaledBitmap);
         }
-
-
 
 
         ImagesDbDTO imagesDbDTO = new ImagesDbDTO(imageNumber, imageWithExtension, imageInBase64Format);
@@ -379,15 +348,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.setError("pet prices should have 4 digit ");
                     cancelFlag = true;
                 } else {
-                    int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
-                    checkBtn = (RadioButton) findViewById(selectedId);
-                    if (checkBtn.getText().equals("Display Full Address")) {
-
-                        callToUploadMyAd(completeAddress);
-                    } else if (checkBtn.getText().equals("Display City Only")) {
-                        callToUploadMyAd(cityToDisplay);
-
-                    }
+                    callToUploadMyAd(display_full_address, addSpinner.getText().toString());
 
                 }
         }
@@ -395,9 +356,19 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public void callToUploadMyAd(String displayAddress) {
+    public void callToUploadMyAd(String originalAddress, String addressToDisplay) {
         showProgress(true, formView, progressBar);
-        PostMyAdDBDTO postMyAdDBDTO = new PostMyAdDBDTO(bird_categoryId, petTitle.getText().toString(), "" + petDecsription.getText().toString(), display_city, displayAddress, "" + gpsTracker.getLatitude(), "" + gpsTracker.getLongitude(), Double.parseDouble(petPrice.getText().toString()), bird_Type, userId, images);
+        PostMyAdDBDTO postMyAdDBDTO = new PostMyAdDBDTO(
+                bird_categoryId,
+                petTitle.getText().toString(), "" + petDecsription.getText().toString(),
+                originalAddress,
+                addressToDisplay,
+                "" + currentLat,
+                "" + currentLong,
+                Double.parseDouble(petPrice.getText().toString()),
+                bird_Type,
+                userId,
+                images);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(postMyAdDBDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POST_MY_AD, serializedJsonString);
@@ -508,40 +479,4 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         return encodedImage;*/
     }
 
-    public void getCurrentLocation(LocationManager locationManager) {
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            createAlertDialog("Allow Location Tracking", "Please allow the app to track your location");
-            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            //GPS is not enabled !!
-            return;
-        }
-        Location lastKnownLocation = null;
-        List<String> providers = null;
-        if (locationManager != null) providers = locationManager.getAllProviders();
-
-        if (providers != null) {
-            for (int i = 0; i < providers.size(); i++) {
-                if (locationManager != null)
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED &&
-                            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                lastKnownLocation = locationManager.getLastKnownLocation(providers.get(i));
-                if (lastKnownLocation != null) {
-                    currentLat = lastKnownLocation.getLatitude();
-                    currentLong = lastKnownLocation.getLongitude();
-                    break;
-                }
-            }
-        }
-    }
 }

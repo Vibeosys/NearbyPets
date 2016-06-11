@@ -14,12 +14,20 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.nearbypets.data.SettingsDTO;
-import com.nearbypets.utils.EditTextValidation;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.SessionManager;
 
@@ -29,17 +37,23 @@ import java.util.List;
 /**
  * Base Activity will give the basic implementation with async task support and other things
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity
+        extends AppCompatActivity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
 
     protected ServerSyncManager mServerSyncManager = null;
     protected static SessionManager mSessionManager = null;
     protected final static String TAG = "com.nearbypets";
-    static EditTextValidation editTextValidation = null;
     protected LocationManager mLocationManager = null;
+    protected GoogleApiClient mGoogleApiClient = null;
+    protected Location mLocation = null;
+    protected LocationRequest mLocationRequest = null;
     protected double currentLat;
     protected double currentLong;
     //protected Tracker mTracker;
     protected static HashMap<String, String> settingMap = new HashMap<>();
+    protected static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +64,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         settingMap.put("AdSearchDistanceInKM", "10000");
         settingMap.put("ClassifiedAdPageSize", "10");
         settingMap.put("FacebookAdPageSize", "5");
-        editTextValidation = new EditTextValidation();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -139,34 +159,129 @@ public abstract class BaseActivity extends AppCompatActivity {
             //GPS is not enabled !!
             return;
         }
-        Location lastKnownLocation = null;
+        //Location lastKnownLocation = null;
         List<String> providers = null;
-        if (locationManager != null) providers = locationManager.getAllProviders();
+        //if (locationManager != null)
+        providers = locationManager.getAllProviders();
 
         if (providers != null) {
-            for (int i = 0; i < providers.size(); i++) {
-                if (locationManager != null)
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED &&
-                            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                lastKnownLocation = locationManager.getLastKnownLocation(providers.get(i));
+            //for (int i = 0; i < providers.size(); i++) {
+            //if (locationManager != null)
+
+            if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    && checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                Log.d("Permissions", "Permission has been granted");
+                fetchLocationData();
+            } else {
+                requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
+                requestPermission(Manifest.permission.ACCESS_COARSE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
+            }
+                /*lastKnownLocation = locationManager.getLastKnownLocation(providers.get(i));
                 if (lastKnownLocation != null) {
                     currentLat = lastKnownLocation.getLatitude();
                     currentLong = lastKnownLocation.getLongitude();
                     break;
+                }*/
+        }
+        //}
+    }
+
+    protected boolean checkPermission(String strPermission) {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), strPermission);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    protected void requestPermission(String strPermission, int perCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, strPermission)) {
+            Toast.makeText(getApplicationContext(), "GPS permission allows us to access location data. " +
+                    "Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
+        } else {
+
+            ActivityCompat.requestPermissions(this, new String[]{strPermission}, perCode);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fetchLocationData();
+                    break;
                 }
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                && checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            Log.d("Permissions", "Permission has been granted");
+            //fetchLocationData();
+
+            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLocation == null) {
+                startLocationUpdates();
+            }
+            if (mLocation != null) {
+                currentLat = mLocation.getLatitude();
+                currentLong = mLocation.getLongitude();
+            } else {
+                Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
+            requestPermission(Manifest.permission.ACCESS_COARSE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
+        }
+    }
+
+    protected void fetchLocationData() {
+        Location lastKnownLocation = null;
+        List<String> providers = mLocationManager.getAllProviders();
+        for (int i = 0; i < providers.size(); i++) {
+            String provider = providers.get(i);
+            lastKnownLocation = mLocationManager.getLastKnownLocation(provider);
+            if (lastKnownLocation != null) {
+                currentLat = lastKnownLocation.getLatitude();
+                currentLong = lastKnownLocation.getLongitude();
             }
         }
     }
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10 * 1000)
+                .setFastestInterval(1000);
+        // Request location updates
+        if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                && checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, this);
+            Log.d("reque", "--->>>>");
+        }
+        else {
+            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
+            requestPermission(Manifest.permission.ACCESS_COARSE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 
 }

@@ -348,7 +348,7 @@ public class GPSTracker extends Service implements LocationListener {
                 completeAddressBuilder.append(address.getAddressLine(iLoop));
                 if (iLoop == maxIndex)
                     break;
-                completeAddressBuilder.append(" ,");
+                completeAddressBuilder.append(", ");
             }
         }
         return completeAddressBuilder.toString();
