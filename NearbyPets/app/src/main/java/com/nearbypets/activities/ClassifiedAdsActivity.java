@@ -259,6 +259,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 searchText = query;
                 sendSearchData(searchText);
                 fetchList(1, mSortOption, sort, searchText);
+                searchText="";
                 return true;
             }
 
@@ -273,8 +274,8 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 searchText = "";
                 //sendSearchData("");
                 // onRefresh();
-                fetchList(1, mSortOption, sort, searchText);
-                //onRefresh();
+                //fetchList(1, mSortOption, sort, searchText);
+                onRefresh();
                 // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
                 return false;
             }
