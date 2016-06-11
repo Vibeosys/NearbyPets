@@ -12,216 +12,219 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone" />
-        <LinearLayout
-            android:id="@+id/formViewPostAd"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
-            <com.nearbypets.views.RobotoMediumTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Photos(Max 3)"
-                android:textColor="@color/tirnaryText" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone" />
 
             <LinearLayout
+                android:id="@+id/formViewPostAd"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/firstImg"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginTop="4dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/default_pet_image" />
-
-                <ImageView
-                    android:id="@+id/secondImg"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_margin="4dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/default_pet_image" />
-
-                <ImageView
-                    android:id="@+id/thirdImg"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_margin="4dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/default_pet_image" />
-            </LinearLayout>
-
-            <com.nearbypets.views.RobotoMediumTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="14dp"
-                android:text="Category"
-                android:textColor="@color/tirnaryText" />
-
-            <Spinner
-                android:id="@+id/spnCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp" />
-
-            <com.nearbypets.views.RobotoMediumTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="14dp"
-                android:text="Title"
-                android:textColor="@color/tirnaryText" />
-
-            <EditText
-                android:id="@+id/pet_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:hint="Placeholder Text" />
-
-            <com.nearbypets.views.RobotoMediumTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="14dp"
-                android:text="Description"
-                android:textColor="@color/tirnaryText" />
-
-            <EditText
-                android:id="@+id/pet_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:hint="some Text" />
-
-            <com.nearbypets.views.RobotoMediumTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="14dp"
-                android:text="Address"
-                android:textColor="@color/tirnaryText" />
-
-            <com.nearbypets.views.RobotoMediumTextView
-                android:id="@+id/address_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="3dp" />
-
-
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:id="@+id/radioGroup"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/fullAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginRight="8dp"
-                    android:text="Display Full Address" />
-
-                <RadioButton
-                    android:id="@+id/cityName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginLeft="8dp"
-                    android:text="Display City Only" />
-            </RadioGroup>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:orientation="horizontal">
+                <com.nearbypets.views.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Photos(Max 3)"
+                    android:textColor="@color/tirnaryText" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/firstImg"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginTop="4dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/default_pet_image" />
+
+                    <ImageView
+                        android:id="@+id/secondImg"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:layout_margin="4dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/default_pet_image" />
+
+                    <ImageView
+                        android:id="@+id/thirdImg"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:layout_margin="4dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/default_pet_image" />
+                </LinearLayout>
+
+                <com.nearbypets.views.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="14dp"
+                    android:text="Category"
+                    android:textColor="@color/tirnaryText" />
+
+                <Spinner
+                    android:id="@+id/spnCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp" />
+
+                <com.nearbypets.views.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="14dp"
+                    android:text="Title"
+                    android:textColor="@color/tirnaryText" />
+
+                <EditText
+                    android:id="@+id/pet_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:hint="Placeholder Text" />
+
+                <com.nearbypets.views.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="14dp"
+                    android:text="Description"
+                    android:textColor="@color/tirnaryText" />
+
+                <EditText
+                    android:id="@+id/pet_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:hint="some Text" />
+
+                <com.nearbypets.views.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="14dp"
+                    android:text="Address"
+                    android:textColor="@color/tirnaryText" />
+
+                <com.nearbypets.views.RobotoMediumTextView
+                    android:id="@+id/address_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="3dp" />
+
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/fullAddress"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price" />
+                        android:layout_gravity="left"
+                        android:layout_marginRight="8dp"
+                        android:text="Display Full Address" />
+
+                    <RadioButton
+                        android:id="@+id/cityName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="8dp"
+                        android:text="Display City Only" />
+                </RadioGroup>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Price" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/str_euro_price_symbol"
+                                android:textSize="20sp" />
+
+                            <EditText
+                                android:id="@+id/pet_price"
+                                android:layout_width="180px"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="3dp"
+                                android:layout_marginTop="3dp"
+                                android:hint="Price"
+                                android:inputType="numberDecimal|numberSigned" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/str_euro_price_symbol"
-                            android:textSize="20sp" />
+                            android:text="Type" />
 
-                        <EditText
-                            android:id="@+id/pet_price"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="3dp"
-                            android:layout_marginTop="3dp"
-                            android:hint="Price"
-                            android:inputType="numberDecimal|numberSigned" />
+                        <Spinner
+                            android:id="@+id/spnType"
+                            android:layout_width="400px"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="3dp">
+
+                        </Spinner>
                     </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/postMyAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Type" />
-
-                    <Spinner
-                        android:id="@+id/spnType"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="3dp">
-
-                    </Spinner>
-                </LinearLayout>
+                    android:layout_gravity="center"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/button_custom"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:text="Post my Ad"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/postMyAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/button_custom"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="Post my Ad"
-                android:textColor="@android:color/white" />
         </LinearLayout>
-       </LinearLayout>
     </ScrollView>
 </RelativeLayout>

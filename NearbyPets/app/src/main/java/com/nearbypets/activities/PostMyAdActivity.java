@@ -59,9 +59,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private RadioGroup addressSelectionRadioGroup;
     private EditText petTitle, petDecsription, petPrice;
     private ImageView firstimg, secondimg, thirdimg;
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_SECOND_IMAGE = 2;
-    public static final int MEDIA_TYPE_THIRD_IMAGE = 3;
     private final int REQ_TOKEN_POST_ADD_CATEGORY = 15;
     private final int REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER = 16;
     private final int REQ_TOKEN_POSTMYAD = 20;
@@ -73,6 +70,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private String userId, display_full_address = null;
     private int bird_categoryId, bird_Type;
     private String completeAddress, cityToDisplay;
+    private Spinner spnType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +78,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_post_my_add);
         setTitle(getResources().getString(R.string.activity_post_ad));
         Spinner spnCategory = (Spinner) findViewById(R.id.spnCategory);
-        Spinner spnType = (Spinner) findViewById(R.id.spnType);
+        spnType = (Spinner) findViewById(R.id.spnType);
         Button postMyAdBtn = (Button) findViewById(R.id.postMyAdd);
         petTitle = (EditText) findViewById(R.id.pet_title);
         petDecsription = (EditText) findViewById(R.id.pet_description);
@@ -125,7 +123,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spnCategory.setAdapter(firstAdapt);
         spnType.setAdapter(spAdapt);
 
-
         addressSelectionRadioGroup.setOnCheckedChangeListener(this);
 
 
@@ -161,7 +158,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         firstimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                captureImage();
+                captureFirstImage();
             }
         });
 
@@ -181,7 +178,6 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
 
     }
-
 
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int selectedId = addressSelectionRadioGroup.getCheckedRadioButtonId();
@@ -208,21 +204,19 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void captureThirdImage() {
-
-        startGridViewActivity(MEDIA_TYPE_THIRD_IMAGE);
+        getPermissionsForReadWriteStorage(PERMISSION_REQUEST_MEDIA_TYPE_THIRD_IMAGE);
     }
 
     private void captureSecondImage() {
-
-        startGridViewActivity(MEDIA_TYPE_SECOND_IMAGE);
+        getPermissionsForReadWriteStorage(PERMISSION_REQUEST_MEDIA_TYPE_SECOND_IMAGE);
     }
 
-    private void captureImage() {
-        startGridViewActivity(MEDIA_TYPE_IMAGE);
-
+    private void captureFirstImage() {
+        getPermissionsForReadWriteStorage(PERMISSION_REQUEST_MEDIA_TYPE_IMAGE);
     }
 
-    private void startGridViewActivity(int requestCode) {
+    @Override
+    protected void performReadWriteStorageAction(int requestCode) {
         Intent theIntent = new Intent(PostMyAdActivity.this, GridViewPhotos.class);
         startActivityForResult(theIntent, requestCode);
     }
@@ -252,16 +246,16 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
             convertedImg.recycle();
         convertedImg = null;
 
-        if (requestCode == MEDIA_TYPE_IMAGE) {
+        if (requestCode == PERMISSION_REQUEST_MEDIA_TYPE_IMAGE) {
             imageNumber = 1;
 
             firstimg.setImageBitmap(scaledBitmap);
         }
-        if (requestCode == MEDIA_TYPE_SECOND_IMAGE) {
+        if (requestCode == PERMISSION_REQUEST_MEDIA_TYPE_SECOND_IMAGE) {
             imageNumber = 2;
             secondimg.setImageBitmap(scaledBitmap);
         }
-        if (requestCode == MEDIA_TYPE_THIRD_IMAGE) {
+        if (requestCode == PERMISSION_REQUEST_MEDIA_TYPE_THIRD_IMAGE) {
             imageNumber = 3;
             thirdimg.setImageBitmap(scaledBitmap);
         }
@@ -315,41 +309,40 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         int id = v.getId();
         switch (id) {
             case R.id.postMyAdd:
-                boolean cancelFlag = false;
-                View focusView = null;
+                //boolean cancelFlag = false;
+                //View focusView = null;
                 String petTitleStr = petTitle.getText().toString().trim();
                 String petPriceStr = petPrice.getText().toString().trim();
                 petTitle.setError(null);
                 petPrice.setError(null);
                 if (TextUtils.isEmpty(petTitleStr)) {
-                    focusView = petTitle;
+                    //focusView = petTitle;
                     petTitle.requestFocus();
                     petTitle.setError("Please Provide pet title");
-                    cancelFlag = true;
+                    //cancelFlag = true;
                 } else if (petTitleStr.length() < 3) {
-                    focusView = petTitle;
+                    //focusView = petTitle;
                     petTitle.requestFocus();
                     petTitle.setError("pet name should have atleast 3 character");
-                    cancelFlag = true;
+                    //cancelFlag = true;
                 } else if (petTitleStr.length() > 30) {
-                    focusView = petTitle;
+                    //focusView = petTitle;
                     petTitle.requestFocus();
                     petTitle.setError("pet name should not be grater than 30 character");
-                    cancelFlag = true;
+                    //cancelFlag = true;
                 }
                 if (TextUtils.isEmpty(petPriceStr)) {
-                    focusView = petPrice;
+                    //focusView = petPrice;
                     petPrice.requestFocus();
                     petPrice.setError("please enter pet price");
-                    cancelFlag = true;
+                    //cancelFlag = true;
                 } else if (petPriceStr.length() > 4) {
-                    focusView = petPrice;
+                    //focusView = petPrice;
                     petPrice.requestFocus();
                     petPrice.setError("pet prices should have 4 digit ");
-                    cancelFlag = true;
+                    //cancelFlag = true;
                 } else {
                     callToUploadMyAd(display_full_address, addSpinner.getText().toString());
-
                 }
         }
 
@@ -414,6 +407,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 Log.d("Succes", "##REQ" + data.toString());
                 ArrayList<TypeDataDTO> typeDataDTOs = TypeDataDTO.deserializeToArray(data);
                 getAdType(typeDataDTOs);
+                if (!typeDataDTOs.isEmpty() && typeDataDTOs.size() > 2)
+                    spnType.setSelection(1);
                 break;
             case REQ_TOKEN_POST_ADD_CATEGORY_FIRST_SPINEER:
                 showProgress(false, formView, progressBar);

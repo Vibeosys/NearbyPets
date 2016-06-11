@@ -32,7 +32,6 @@ import java.util.Locale;
  * Created by shrinivas on 10-06-2016.
  */
 public class GridViewPhotos extends BaseActivity {
-    private GridView mGridViewPhotos;
 
     private Cursor cc = null;
     private ProgressDialog ProgressDialog = null;
@@ -52,7 +51,7 @@ public class GridViewPhotos extends BaseActivity {
         setContentView(R.layout.gridviewphotos);
         setTitle("Choose Photos");
         mSessionManager = SessionManager.getInstance(getApplicationContext());
-        mGridViewPhotos = (GridView) findViewById(R.id.showgridphotos);
+        GridView mGridViewPhotos = (GridView) findViewById(R.id.showgridphotos);
 
         String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";
         cc = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -161,14 +160,15 @@ public class GridViewPhotos extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.get_photo) {
-            captureImage();
+            //captureImage();
+            getPermissionsForCamera(PERMISSION_REQUEST_CAMERA);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void captureImage() {
-
+    @Override
+    protected void captureImage() {
         Intent takephoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         imageUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
         takephoto.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -208,8 +208,7 @@ public class GridViewPhotos extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(CAMERA_CAPTURE_IMAGE_REQUEST_CODE==requestCode && requestCode== RESULT_OK)
-        {
+        if (CAMERA_CAPTURE_IMAGE_REQUEST_CODE == requestCode) {
             startPostMyAdIntent(imageUri.getPath());
         }
     }

@@ -183,6 +183,11 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     protected void callToDialer(View v) {
+        getPermissionsForPhoneCall();
+    }
+
+    @Override
+    protected void callToPhone(){
         String posted_by = mTxtSellerPh.getText().toString();
         String uri = "tel:" + posted_by.trim();
         Intent intent = new Intent(Intent.ACTION_DIAL);

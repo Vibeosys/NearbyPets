@@ -54,6 +54,12 @@ public abstract class BaseActivity
     //protected Tracker mTracker;
     protected static HashMap<String, String> settingMap = new HashMap<>();
     protected static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
+    protected static final int PERMISSION_REQUEST_CAMERA = 2;
+    protected static final int PERMISSION_REQUEST_READ_WRITE_STORAGE = 3;
+    protected static final int PERMISSION_REQUEST_MEDIA_TYPE_IMAGE = 11;
+    protected static final int PERMISSION_REQUEST_MEDIA_TYPE_SECOND_IMAGE = 21;
+    protected static final int PERMISSION_REQUEST_MEDIA_TYPE_THIRD_IMAGE = 31;
+    protected static final int PERMISSION_REQUEST_CALL_PHONE = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,6 +207,45 @@ public abstract class BaseActivity
         }
     }
 
+    protected void getPermissionsForReadWriteStorage(int requestCode) {
+        if (checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Log.d("Permissions", "Permission has been granted");
+            performReadWriteStorageAction(requestCode);
+        } else {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, requestCode);
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, requestCode);
+        }
+    }
+
+    protected void getPermissionsForCamera(int requestCode) {
+        if (checkPermission(Manifest.permission.CAMERA)
+                && checkPermission(Manifest.permission.MEDIA_CONTENT_CONTROL)) {
+            Log.d("Permissions", "Permission has been granted");
+            captureImage();
+            //fetchLocationData();
+        } else {
+            requestPermission(Manifest.permission.CAMERA, requestCode);
+            requestPermission(Manifest.permission.MEDIA_CONTENT_CONTROL, requestCode);
+        }
+    }
+
+    protected void captureImage() {
+    }
+
+    protected void getPermissionsForPhoneCall() {
+        if (checkPermission(Manifest.permission.CALL_PHONE)) {
+            Log.d("Permissions", "Permission has been granted");
+            callToPhone();
+            //captureImage();
+            //fetchLocationData();
+        } else {
+            requestPermission(Manifest.permission.CALL_PHONE, PERMISSION_REQUEST_CALL_PHONE);
+        }
+    }
+
+    protected void callToPhone() {
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -210,7 +255,27 @@ public abstract class BaseActivity
                     fetchLocationData();
                     break;
                 }
+            case PERMISSION_REQUEST_MEDIA_TYPE_IMAGE:
+            case PERMISSION_REQUEST_MEDIA_TYPE_SECOND_IMAGE:
+            case PERMISSION_REQUEST_MEDIA_TYPE_THIRD_IMAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    performReadWriteStorageAction(requestCode);
+                }
+                break;
+            case PERMISSION_REQUEST_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    captureImage();
+                }
+                break;
+            case PERMISSION_REQUEST_CALL_PHONE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    callToPhone();
+                }
+                break;
         }
+    }
+
+    protected void performReadWriteStorageAction(int requestCode) {
     }
 
     @Override
@@ -261,8 +326,7 @@ public abstract class BaseActivity
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                     mLocationRequest, this);
             Log.d("reque", "--->>>>");
-        }
-        else {
+        } else {
             requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
             requestPermission(Manifest.permission.ACCESS_COARSE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION);
         }
