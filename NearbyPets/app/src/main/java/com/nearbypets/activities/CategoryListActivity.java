@@ -95,8 +95,8 @@ public class CategoryListActivity extends BaseActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
         if (mSessionManager.getUserRoleId() == AppConstants.ROLL_ID_ADMIN){}
            /* getMenuInflater().inflate(R.menu.main_admin, menu);*/
-        else
-            getMenuInflater().inflate(R.menu.main, menu);
+        else{}
+          /*  getMenuInflater().inflate(R.menu.main, menu);*/
         return true;
     }
 

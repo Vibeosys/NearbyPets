@@ -252,6 +252,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.clasified_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconified(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

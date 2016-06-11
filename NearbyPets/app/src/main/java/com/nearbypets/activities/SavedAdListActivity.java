@@ -1,9 +1,14 @@
 package com.nearbypets.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -13,6 +18,7 @@ import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
+import com.nearbypets.data.SavedAdListDbDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
@@ -31,7 +37,7 @@ public class SavedAdListActivity extends ProductListActivity
 
     //GPSTracker gpsTracker;
     private static int storedPageNO = 0;
-
+    private String searchText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +60,7 @@ public class SavedAdListActivity extends ProductListActivity
                                         swipeRefreshLayout.setRefreshing(true);
 
                                         //fetchList(1);
-                                        fetchList(1);
+                                        fetchList(1,"");
                                         //logic to refersh list
                                     }
                                 }
@@ -64,23 +70,25 @@ public class SavedAdListActivity extends ProductListActivity
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page);
+                fetchList(page,"");
             }
         });
     }
 
-    private void fetchList(int pageNo) {
+    private void fetchList(int pageNo,String searchText) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
-            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId());
+            //PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(),searchText);
+            SavedAdListDbDTO  productListDbDTO = new SavedAdListDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(),searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVED_AD, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
+            mProductAdapter.notifyDataSetChanged();
         }
     }
 
@@ -142,7 +150,16 @@ public class SavedAdListActivity extends ProductListActivity
     public void onRefresh() {
         storedPageNO = 0;
         mProductAdapter.clear();
-        fetchList(1);
+        fetchList(1,"");
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchList(1, "");
+            }
+        });
+        mProductAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -161,5 +178,50 @@ public class SavedAdListActivity extends ProductListActivity
         intent.putExtra(AppConstants.PRODUCT_DISTANCE, "" + productDataDTO.getDistance());
         intent.putExtra(AppConstants.PRODUCT_AD_ID, productData.getAdId());
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.classified_ad_search, menu);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.clasified_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconified(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
+                searchText = query;
+                sendSearchData(searchText);
+                fetchList(1, searchText);
+                mProductAdapter.clear();
+                searchText="";
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchText = "";
+                //sendSearchData("");
+                // onRefresh();
+                //fetchList(1, mSortOption, sort, searchText);
+                onRefresh();
+                // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        return true;
+    }
+    public void sendSearchData(String str) {
+        fetchList(1,searchText);
+        //onRefresh();
+
     }
 }

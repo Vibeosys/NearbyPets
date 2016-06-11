@@ -67,7 +67,7 @@
 
     <!--product list activity -->
     <string name="str_product_list_desc">Lorem ipsum dolor sit amet,consectetur adipiscing elit.</string>
-    <string name="str_product_list_dist">10 kilometers away from you</string>
+    <string name="str_product_list_dist">10 km away from you</string>
     <string name="str_product_date">Posted On 14/05/2016</string>
     <string name="str_view_all">VIEW ALL</string>
     <string name="str_euro_price_symbol">\u20ac</string>

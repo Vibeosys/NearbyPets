@@ -146,7 +146,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
                 case TYPE_ITEM:
                     holder.txtProductTitle.setText(product.getProductName());
                     holder.txtDesc.setText(product.getProductDesc());
-                    holder.txtDistance.setText(String.format("%.2f", product.getDistance()) + " kilometers away from you");
+                    holder.txtDistance.setText(String.format("%.2f", product.getDistance()) + " km away from you");
                 /*int imgResId = mContext.getResources().getIdentifier(product.getProductImage(), "drawable", "com.nearbypets");
                 holder.imgProductImage.setImageResource(imgResId);*/
                     holder.imgProductImage.setImageResource(R.drawable.default_pet_image);
