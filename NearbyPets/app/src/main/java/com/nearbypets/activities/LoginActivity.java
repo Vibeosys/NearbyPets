@@ -1,51 +1,37 @@
 package com.nearbypets.activities;
 
 
-import android.content.Context;
 import android.content.Intent;
-
-import android.support.annotation.NonNull;
 import android.os.Bundle;
-
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-;
 
-;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.nearbypets.MainActivity;
 import com.nearbypets.R;
 import com.nearbypets.data.LoginDBDTO;
 import com.nearbypets.data.RegisterDBDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
-import com.nearbypets.data.downloaddto.DownloadRegisterDbDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
-import com.nearbypets.data.downloaddto.NotificationDTO;
 import com.nearbypets.data.downloaddto.UserDbDTO;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.EditTextValidation;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 import com.nearbypets.utils.UserAuth;
@@ -54,27 +40,19 @@ import com.nearbypets.views.MyriadProRegularTextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class LoginActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
+
     private EditText mEmailId, mPassword;
-    private MyriadProRegularTextView forgot_password;
-    private MyriadProRegularTextView create_account;
-    private Button loginBtn, signIn;
-    private AccessTokenTracker accessTokenTracker;
     private CallbackManager callbackManager;
-    private ProfileTracker profileTracker;
-    private static Context context;
     private final int REQ_TOKEN_LOGIN = 1;
     private final int REQ_TOKEN_REGISTER = 2;
     private View formView;
     private View progressBar;
-    private LoginButton btnFbLogin;
 
 
     @Override
@@ -82,46 +60,28 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().hide();
 
-        signIn = (Button) findViewById(R.id.login_user);
+        //Button signIn = (Button) findViewById(R.id.login_user);
         mEmailId = (EditText) findViewById(R.id.user_email_id_editText);
         mPassword = (EditText) findViewById(R.id.user_password_editText);
-        create_account = (MyriadProRegularTextView) findViewById(R.id.create_account_text);
-        loginBtn = (Button) findViewById(R.id.login_user);
+        MyriadProRegularTextView create_account = (MyriadProRegularTextView) findViewById(R.id.create_account_text);
+        Button loginBtn = (Button) findViewById(R.id.login_user);
         formView = findViewById(R.id.formLogin);
         progressBar = findViewById(R.id.progressBar);
-        btnFbLogin = (LoginButton) findViewById(R.id.connectWithFbButton);
-        //btnFbLogin.setReadPermissions("email");
-        context = this.getApplicationContext();
-        forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
+        LoginButton btnFbLogin = (LoginButton) findViewById(R.id.connectWithFbButton);
+        //Context context = this.getApplicationContext();
+        MyriadProRegularTextView forgot_password = (MyriadProRegularTextView) findViewById(R.id.forgot_password_textview);
 
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
-            createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
+            createAlertNetWorkDialog("Network Error", "Please check network connection");
         }
-       /* accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
 
-            }
-        };
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                displayMessage(currentProfile);
-            }
-        };
-        accessTokenTracker.startTracking();
-        profileTracker.startTracking();*/
         mEmailId.setFocusable(false);
         mEmailId.setFocusableInTouchMode(true);
 
-
-       /* mEmailId.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
-        mPassword.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
-        signIn.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/MyriadPro-Regular.otf"));
-*/
         loginBtn.setOnClickListener(this);
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
@@ -162,12 +122,12 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                                     String email = object.getString("email");
                                     String firstName = object.getString("first_name");
                                     String lastName = object.getString("last_name");
-                                    AccessToken Fbtoken = AccessToken.getCurrentAccessToken();
+                                    AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
                                     String FbCurrentToken = null;
-                                    if (Fbtoken != null) {
-                                        String FbAppId = Fbtoken.getApplicationId();
-                                        FbCurrentToken = Fbtoken.getToken();
-                                        Fbtoken.isExpired();
+                                    if (fbAccessToken != null) {
+                                        //String FbAppId = Fbtoken.getApplicationId();
+                                        FbCurrentToken = fbAccessToken.getToken();
+                                        fbAccessToken.isExpired();
                                     }
 
                                     callToRegister(firstName, lastName, email, FbCurrentToken);
@@ -205,23 +165,6 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void displayMessage(Profile profile) {
-        if (profile != null) {
-            Toast.makeText(getApplicationContext(), "FB login", Toast.LENGTH_LONG).show();
-            Log.d("FBLOGIN", profile.toString());
-        }
-
-    }
-
-    private void LogOutDisplay() {
-
-        {
-            Toast.makeText(getApplicationContext(), "FB LOGOUT", Toast.LENGTH_LONG).show();
-            Log.d("FBLOGIN", "Logout");
-        }
-
-    }
-
     public void callToRegister(String fname, String lname, String email, String accessTokan) {
         showProgress(true, formView, progressBar);
         RegisterDBDTO register = new RegisterDBDTO(fname, lname, email, accessTokan, 2);
@@ -229,22 +172,6 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
         String serializedJsonString = gson.toJson(register);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.USER_REGISTER, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_REGISTER, tableDataDTO);
-    }
-
-    public static void LogoutFacebook() {
-        LoginManager.getInstance().logOut();
-        Log.d("FBLOGIN", "Log out");
-        /*Intent logout = new Intent(context, MainActivity.class);
-        context.startActivity(logout);*/
-    }
-
-    private boolean isValidEmail(String email) {
-        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
     }
 
     private void callToLogin() {
@@ -315,9 +242,9 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
                 String password = mPassword.getText().toString().trim();
                 mEmailId.setError(null);
                 mPassword.setError(null);
-                if (!isValidEmail(emailStr) || TextUtils.isEmpty(emailStr)) {
+                if (TextUtils.isEmpty(emailStr) || !EditTextValidation.isValidEmail(emailStr)) {
                     focusView = mEmailId;
-                    mEmailId.setError("Please provide email Id");
+                    mEmailId.setError("Please provide a valid email Id");
                     cancelFlag = true;
                 }
                 if (TextUtils.isEmpty(password)) {
