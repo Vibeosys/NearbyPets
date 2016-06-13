@@ -75,25 +75,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
+
                     <Button
                         android:id="@+id/removeImage1"
                         android:layout_width="46dp"
                         android:layout_height="46dp"
                         android:layout_marginBottom="4dp"
                         android:layout_marginRight="4dp"
-                        android:layout_marginTop="4dp"/>
+                        android:layout_marginTop="4dp" />
+
                     <Button
                         android:id="@+id/removeImage2"
                         android:layout_width="46dp"
                         android:layout_height="46dp"
 
-                        android:layout_margin="4dp"/>
+                        android:layout_margin="4dp" />
+
                     <Button
                         android:id="@+id/removeImage3"
                         android:layout_width="46dp"
                         android:layout_height="46dp"
-                        android:layout_margin="4dp"/>
+                        android:layout_margin="4dp" />
                 </LinearLayout>
+
                 <com.nearbypets.views.RobotoMediumTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -228,7 +232,7 @@
 
                         <Spinner
                             android:id="@+id/spnType"
-                            android:layout_width="400px"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginTop="3dp">
 
