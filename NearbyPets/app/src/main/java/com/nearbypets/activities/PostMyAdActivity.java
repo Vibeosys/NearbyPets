@@ -71,13 +71,15 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private int bird_categoryId, bird_Type;
     private String completeAddress, cityToDisplay;
     private Spinner spnType;
+    private Spinner spnCategory;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_my_add);
         setTitle(getResources().getString(R.string.activity_post_ad));
-        Spinner spnCategory = (Spinner) findViewById(R.id.spnCategory);
+        spnCategory = (Spinner) findViewById(R.id.spnCategory);
         spnType = (Spinner) findViewById(R.id.spnType);
         Button postMyAdBtn = (Button) findViewById(R.id.postMyAdd);
         petTitle = (EditText) findViewById(R.id.pet_title);
@@ -129,11 +131,16 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                CategoryDataDTO mCategories = (CategoryDataDTO) firstAdapt.getItem(position);
-                bird_categoryId = mCategories.getCategoryId();
-                mCategories.getCategoryTitle();
-                Log.d("TAG", "## " + mCategories.getCategoryId());
-                Log.d("TAG", "## " + mCategories.getCategoryTitle());
+
+
+
+                    CategoryDataDTO mCategories = (CategoryDataDTO) firstAdapt.getItem(position);
+                    bird_categoryId = mCategories.getCategoryId();
+                    mCategories.getCategoryTitle();
+                    Log.d("TAG", "## " + mCategories.getCategoryId());
+                    Log.d("TAG", "## " + mCategories.getCategoryTitle());
+
+
             }
 
             @Override
@@ -364,6 +371,12 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.setError("pet prices should have 4 digit ");
                     //cancelFlag = true;
                 } else {
+                    if(spnCategory.getSelectedItemPosition()==0)
+                    {
+                        createAlertDialog("Post My Ad","Please Select Category");
+                        return;
+                    }
+                    else
                     callToUploadMyAd(display_full_address, addSpinner.getText().toString());
                 }
         }
@@ -436,7 +449,9 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 showProgress(false, formView, progressBar);
                 Log.d("Succes", "##REQ" + data.toString());
                 ArrayList<CategoryDataDTO> birdCategoryDataDTOs = CategoryDataDTO.deserializeToArray(data);
+                birdCategoryDataDTOs.add(0,new CategoryDataDTO(0,"None"));
                 getAdFirstSpineer(birdCategoryDataDTOs);
+
                 break;
             case REQ_TOKEN_POSTMYAD:
                 showProgress(false, formView, progressBar);

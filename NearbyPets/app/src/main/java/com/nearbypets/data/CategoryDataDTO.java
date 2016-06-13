@@ -18,6 +18,11 @@ public class CategoryDataDTO extends BaseDTO {
     public CategoryDataDTO() {
     }
 
+    public CategoryDataDTO(int categoryId, String categoryTitle) {
+        this.categoryId = categoryId;
+        this.categoryTitle = categoryTitle;
+    }
+
     public String getCategoryTitle() {
         return categoryTitle;
     }

@@ -263,7 +263,7 @@ public abstract class BaseActivity
                 }
                 break;
             case PERMISSION_REQUEST_CAMERA:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0) {
                     captureImage();
                 }
                 break;
