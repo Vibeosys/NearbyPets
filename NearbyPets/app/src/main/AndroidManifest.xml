@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nearbypets">
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -11,13 +12,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication">
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -39,8 +40,8 @@
         <activity
             android:name=".activities.CategoryListActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".activities.SplashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <activity
+            android:name=".activities.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -80,20 +81,25 @@
             android:parentActivityName=".activities.CategoryListActivity" />
         <activity
             android:name=".activities.ClassfiedProductDescActivity"
-            android:parentActivityName=".activities.CategoryListActivity" />
+            android:parentActivityName=".activities.CategoryListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.PostedAdListActivity"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.PostedAdDetailsActivity"
-            android:parentActivityName=".activities.PostedAdListActivity" />
+            android:parentActivityName=".activities.PostedAdListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SavedAdListActivity"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.SavedAdDetailsActivity"
-            android:parentActivityName=".activities.SavedAdListActivity" />
-        <activity android:name=".activities.HiddenAdActivity"></activity>
+            android:parentActivityName=".activities.SavedAdListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HiddenAdActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".activities.GridViewPhotos"></activity>
         <activity android:name=".activities.PreviewImage"></activity>
     </application>

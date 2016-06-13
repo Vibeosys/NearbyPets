@@ -38,6 +38,7 @@ import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.ProductListDbDTO;
@@ -61,17 +62,17 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         SwipeRefreshLayout.OnRefreshListener, ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived, DashboardProductListAdapter.CustomButtonListener,
-        DashboardProductListAdapter.CustomItemListener
-         {
+        DashboardProductListAdapter.CustomItemListener, DashboardProductListAdapter.CustomHideListener {
     private ListView mListViewProduct;
     private DashboardProductListAdapter mProductAdapter;
     private CategoryAdapter mCategoryAdapter;
     private SortAdapter mSortAdapter;
     private Spinner spnSortBy;
-    //private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private DrawerLayout drawer;
     private final int REQ_TOKEN_LIST = 1;
     private final int REQ_TOKEN_SAVE_AD = 3;
+    protected final int REQ_TOKEN_POST_HIDDEN_AD = 34;
     //GPSTracker gpsTracker;
     private static int mSortOption = 0;
     private static String sort = "DESC";
@@ -95,7 +96,7 @@ public class MainActivity extends BaseActivity
         getCurrentLocation(mLocationManager);
 //        /storedPageNO = 0;
         //gpsTracker = new GPSTracker(getApplicationContext());
-        //swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mListViewProduct = (ListView) findViewById(R.id.listCateogry);
         spnSortBy = (Spinner) findViewById(R.id.spnSortByMain);
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity
         }
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
+
         dateToCompaire = null;
         adDisplay = 0;
         mSortAdapter = new SortAdapter(getApplicationContext());
@@ -136,7 +138,7 @@ public class MainActivity extends BaseActivity
 
         mProductAdapter.setCustomItemListner(this);
         mProductAdapter.setCustomButtonListner(this);
-
+        mProductAdapter.setCustomHideListener(this);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         ///here
@@ -150,21 +152,21 @@ public class MainActivity extends BaseActivity
         TextView txtEmail = (TextView) headerView.findViewById(R.id.txtEmail);
         txtEmail.setText(mSessionManager.getUserEmailId());
         navigationView.setNavigationItemSelectedListener(this);
-        // swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         /**
          * Showing Swipe Refresh animation on activity create
          * As animation won't start on onCreate, post runnable is F*/
-        fetchList(1, mSortOption, sort);
-        /*swipeRefreshLayout.post(new Runnable() {
+
+        swipeRefreshLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-
+                                        fetchList(1, mSortOption, sort);
                                         //logic to refersh list
                                     }
                                 }
-        );*/
+        );
         switch (mSessionManager.getUserRoleId()) {
             case AppConstants.ROLL_ID_ADMIN:
                 navigationView.getMenu().clear(); //clear old inflated items.
@@ -193,7 +195,7 @@ public class MainActivity extends BaseActivity
                 dateToCompaire = null;
                 mSortOption = sortDTO.getValue();
                 sort = sortDTO.getSorting();
-                //swipeRefreshLayout.setRefreshing(true);
+                swipeRefreshLayout.setRefreshing(true);
                 mProductAdapter.clear();
                 storedPageNO = new ArrayList<>();
                 adDisplay = 0;
@@ -221,7 +223,7 @@ public class MainActivity extends BaseActivity
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check network connection");
-            //swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setRefreshing(false);
         } else if (!storedPageNO.contains(pageNo)) {
             storedPageNO.add(pageNo);
             //Toast.makeText(getApplicationContext(), gpsTracker.getLatitude() + " " + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
@@ -385,7 +387,7 @@ public class MainActivity extends BaseActivity
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 Log.i("TAG", "Error " + error.toString());
-                //swipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -438,13 +440,17 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
+        swipeRefreshLayout.setRefreshing(false);
         updateSettings(settings);
         if (requestToken == REQ_TOKEN_LIST) {
             ArrayList<ProductDbDTO> productDbDTOs = ProductDbDTO.deserializeToArray(data);
             updateList(productDbDTOs);
         } else if (requestToken == REQ_TOKEN_SAVE_AD) {
             Toast.makeText(getApplicationContext(), "Ad is added to your favorites", Toast.LENGTH_SHORT).show();
+        } else if (requestToken == REQ_TOKEN_POST_HIDDEN_AD) {
+            Toast.makeText(getApplicationContext(), "Ad is now hidden from clients", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -452,8 +458,16 @@ public class MainActivity extends BaseActivity
         if (errorDbDTO.getErrorCode() != 0) {
             Snackbar.make(getCurrentFocus(), "No more ads found", Snackbar.LENGTH_SHORT).show();
         }
-        //swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 
+    @Override
+    public void onHideClickListener(int position, ProductDataDTO productData) {
+        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId(), Integer.parseInt(AppConstants.HIDE_AD_ADMIN));
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(hiddenAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.HIDDIN_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
+    }
 }

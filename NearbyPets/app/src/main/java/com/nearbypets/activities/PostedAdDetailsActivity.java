@@ -3,6 +3,7 @@ package com.nearbypets.activities;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.nearbypets.utils.AppConstants;
 
@@ -12,7 +13,10 @@ public class PostedAdDetailsActivity extends ProductDescActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_posted_ad_details);
-        //btnAddToFav.setVisibility(View.GONE);
+        if (mSessionManager.getUserRoleId() == AppConstants.ROLL_ID_ADMIN)
+            btnAddToFav.setVisibility(View.GONE);
+        else
+            btnAddToFav.setVisibility(View.VISIBLE);
 
 
         try {

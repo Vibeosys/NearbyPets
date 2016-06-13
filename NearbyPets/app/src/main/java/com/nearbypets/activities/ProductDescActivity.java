@@ -3,6 +3,7 @@ package com.nearbypets.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -176,10 +177,16 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     protected void callToMap(View v) {
-        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mAddress);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        startActivity(mapIntent);
+        try {
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mAddress);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            startActivity(mapIntent);
+            finish();
+        } catch (Exception e) {
+            createAlertDialog("Call to map", "" + e.toString());
+        }
+
     }
 
     protected void callToDialer(View v) {
@@ -187,12 +194,30 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
-    protected void callToPhone(){
-        String posted_by = mTxtSellerPh.getText().toString();
-        String uri = "tel:" + posted_by.trim();
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse(uri));
-        startActivity(intent);
+    protected void callToPhone() {
+
+        try {
+            String posted_by = mTxtSellerPh.getText().toString();
+            String uri = "tel:" + posted_by.trim();
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse(uri));
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            createAlertDialog("Call to phone", "" + e.toString());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("savedAdId", mAdID);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mAdID = savedInstanceState.getString("savedAdId");
     }
 
     @Override
@@ -255,10 +280,17 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onResultReceived(@NonNull String data, int requestToken) {
+        Log.e(TAG, "## error on response" + data);
         showProgress(false, formView, progressBar);
         switch (requestToken) {
             case REQ_TOKAN_DESC:
+
                 showProgress(false, formView, progressBar);
                 try {
                     ProductDescDbDTO productDescDbDTO = ProductDescDbDTO.deserializeJson(data);

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -44,6 +45,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
     private int roleId;
     CustomButtonListener customButtonListener;
     CustomItemListener customItemListener;
+    CustomHideListener customHideListener;
 
     public void clear() {
         mProductList.clear();
@@ -124,7 +126,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
                     holder.txtDesc = (RobotoRegularTextView) convertView.findViewById(R.id.txtDesc);
                     holder.txtDistance = (RobotoItalicTextView) convertView.findViewById(R.id.txtDistance);
                     holder.imgFavourite = (ImageView) convertView.findViewById(R.id.imgFavourite);
-
+                    holder.btnHide = (TextView) convertView.findViewById(R.id.btnHideAd);
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.row_dashboard_product_list_header, null);
@@ -208,6 +210,18 @@ public class DashboardProductListAdapter extends BaseAdapter {
                     if (roleId == AppConstants.ROLL_ID_ADMIN) {
                         holder.imgFavourite.setVisibility(View.GONE);
                     }
+                    if (roleId == AppConstants.ROLL_ID_USER) {
+                        holder.btnHide.setVisibility(View.GONE);
+                    } else {
+                        holder.btnHide.setVisibility(View.VISIBLE);
+                    }
+                    holder.btnHide.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (customHideListener != null)
+                                customHideListener.onHideClickListener(position, product);
+                        }
+                    });
                     break;
                 case TYPE_SEPARATOR:
                     DateUtils date = new DateUtils();
@@ -240,6 +254,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
         NetworkImageView imgProductImage;
         RobotoMediumTextView txtDate;
         RelativeLayout adViewContainer;
+        TextView btnHide;
     }
 
     public void setCustomButtonListner(CustomButtonListener listener) {
@@ -256,5 +271,13 @@ public class DashboardProductListAdapter extends BaseAdapter {
 
     public interface CustomItemListener {
         public void onItemClickListener(int position, ProductDataDTO productData);
+    }
+
+    public void setCustomHideListener(CustomHideListener listener) {
+        this.customHideListener = listener;
+    }
+
+    public interface CustomHideListener {
+        public void onHideClickListener(int position, ProductDataDTO productData);
     }
 }
