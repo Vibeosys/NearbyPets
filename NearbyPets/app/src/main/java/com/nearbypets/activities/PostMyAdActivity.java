@@ -72,7 +72,8 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private String completeAddress, cityToDisplay;
     private Spinner spnType;
     private Spinner spnCategory;
-
+    private Button removeImage1, removeImage2, removeImage3;
+    private ImagesDbDTO imagesDbDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +90,20 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         secondimg = (ImageView) findViewById(R.id.secondImg);
         thirdimg = (ImageView) findViewById(R.id.thirdImg);
         addSpinner = (TextView) findViewById(R.id.address_spinner);
+        removeImage1 = (Button) findViewById(R.id.removeImage1);
+        removeImage2 = (Button) findViewById(R.id.removeImage2);
+        removeImage3 = (Button) findViewById(R.id.removeImage3);
         addressSelectionRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         RadioButton radioFullAddress = (RadioButton) findViewById(R.id.fullAddress);
         //radioCity = (RadioButton) findViewById(R.id.cityName);
         radioFullAddress.setChecked(true);
         formView = findViewById(R.id.formViewPostAd);
         progressBar = findViewById(R.id.progressBar);
+
+        removeImage1.setVisibility(View.INVISIBLE);
+        removeImage2.setVisibility(View.INVISIBLE);
+        removeImage3.setVisibility(View.INVISIBLE);
+
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getCurrentLocation(locationManager);
@@ -111,27 +120,25 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         display_full_address = completeAddress;
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check network connection");
-        }
-
-        getPostAddCategory();
-        getPostAdCategoryFirstSpineer();
-        mServerSyncManager.setOnStringErrorReceived(this);
-        mServerSyncManager.setOnStringResultReceived(this);
-
-
-        spAdapt = new PostAdSpinnerAdapter(getApplicationContext());
-        firstAdapt = new PostedAdBirdCategoryAdapter(getApplicationContext());
-
-        spnCategory.setAdapter(firstAdapt);
-        spnType.setAdapter(spAdapt);
-
-        addressSelectionRadioGroup.setOnCheckedChangeListener(this);
+        } else {
+            getPostAddCategory();
+            getPostAdCategoryFirstSpineer();
+            mServerSyncManager.setOnStringErrorReceived(this);
+            mServerSyncManager.setOnStringResultReceived(this);
 
 
-        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            spAdapt = new PostAdSpinnerAdapter(getApplicationContext());
+            firstAdapt = new PostedAdBirdCategoryAdapter(getApplicationContext());
 
+            spnCategory.setAdapter(firstAdapt);
+            spnType.setAdapter(spAdapt);
+
+            addressSelectionRadioGroup.setOnCheckedChangeListener(this);
+
+
+            spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
 
                     CategoryDataDTO mCategories = (CategoryDataDTO) firstAdapt.getItem(position);
@@ -141,48 +148,87 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     Log.d("TAG", "## " + mCategories.getCategoryTitle());
 
 
-            }
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
-        spnType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TypeDataDTO typeDataDTO = (TypeDataDTO) spAdapt.getItem(position);
-                bird_Type = typeDataDTO.getTypeId();
-                typeDataDTO.getTypeTitle();
-            }
+                }
+            });
+            spnType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TypeDataDTO typeDataDTO = (TypeDataDTO) spAdapt.getItem(position);
+                    bird_Type = typeDataDTO.getTypeId();
+                    typeDataDTO.getTypeTitle();
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
+                }
+            });
 
-        firstimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                captureFirstImage();
-            }
-        });
+            firstimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    captureFirstImage();
+                }
+            });
 
-        secondimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                captureSecondImage();
-            }
-        });
-        thirdimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                captureThirdImage();
-            }
-        });
-        postMyAdBtn.setOnClickListener(this);
+            secondimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    captureSecondImage();
+                }
+            });
+            thirdimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    captureThirdImage();
+                }
+            });
+            postMyAdBtn.setOnClickListener(this);
 
+            removeImage1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    firstimg.setImageResource(R.drawable.default_pet_image);
+                    removeImage1.setVisibility(View.INVISIBLE);
+
+                    removeImage(1);
+
+                }
+            });
+            removeImage2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    secondimg.setImageResource(R.drawable.default_pet_image);
+                    removeImage2.setVisibility(View.INVISIBLE);
+                    removeImage(2);
+                }
+            });
+            removeImage3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    thirdimg.setImageResource(R.drawable.default_pet_image);
+                    removeImage3.setVisibility(View.INVISIBLE);
+                    removeImage(3);
+                }
+            });
+        }
+
+
+    }
+
+    private void removeImage(int id) {
+        for (int i = 0; i < images.size(); i++) {
+            ImagesDbDTO imagesDbDTO = images.get(i);
+            if (imagesDbDTO.getImageId() == id) {
+                images.remove(i);
+                return;
+            }
+        }
 
     }
 
@@ -236,30 +282,34 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         int imageNumber = 0;
+        int scaledHeight = 480;
+        int scaledWidth = 320;
         String imagePath = data.getExtras().getString("imagePath");
         BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap convertedImg=null;
-        try{
+
+        Bitmap convertedImg = null;
+        try {
+            options.inJustDecodeBounds = true;
+            convertedImg = BitmapFactory.decodeFile(imagePath, options);
+            options.inSampleSize = calculateInSampleSize(options, 480, 320);
+            options.inJustDecodeBounds = false;
             convertedImg = BitmapFactory.decodeFile(imagePath, options);
             System.gc();
-        }catch (Exception e){
-            createAlertDialog("Post My Ad","Image cannot be uploaded");
-            Log.d("TAG","##"+e.toString());
+        } catch (Exception e) {
+            createAlertDialog("Post My Ad", "Image cannot be uploaded");
+            Log.d("TAG", "##" + e.toString());
             System.gc();
             return;
         }
 
-        int scaledHeight = 480;
-        int scaledWidth = 320;
 
-        Bitmap scaledBitmap =null;
-        try{
+        Bitmap scaledBitmap = null;
+        try {
             scaledBitmap = Bitmap.createScaledBitmap(convertedImg, scaledHeight, scaledWidth, true);
             System.gc();
-        }catch (Exception e)
-        {
-            createAlertDialog("Post My Ad","Image cannot be uploaded");
-            Log.d("TAG","##"+e.toString());
+        } catch (Exception e) {
+            createAlertDialog("Post My Ad", "Image cannot be uploaded");
+            Log.d("TAG", "##" + e.toString());
             System.gc();
             return;
         }
@@ -279,19 +329,42 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
             imageNumber = 1;
 
             firstimg.setImageBitmap(scaledBitmap);
+            removeImage1.setVisibility(View.VISIBLE);
         }
         if (requestCode == PERMISSION_REQUEST_MEDIA_TYPE_SECOND_IMAGE) {
             imageNumber = 2;
             secondimg.setImageBitmap(scaledBitmap);
+            removeImage2.setVisibility(View.VISIBLE);
+
         }
         if (requestCode == PERMISSION_REQUEST_MEDIA_TYPE_THIRD_IMAGE) {
             imageNumber = 3;
             thirdimg.setImageBitmap(scaledBitmap);
+            removeImage3.setVisibility(View.VISIBLE);
         }
 
 
-        ImagesDbDTO imagesDbDTO = new ImagesDbDTO(imageNumber, imageWithExtension, imageInBase64Format);
+        imagesDbDTO = new ImagesDbDTO(imageNumber, imageWithExtension, imageInBase64Format);
         images.add(imagesDbDTO);
+    }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            // Calculate ratios of height and width to requested height and width
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
     }
 
     private Bitmap convertPathToBitmap(String imagePath) {
@@ -371,13 +444,11 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.setError("pet prices should have 4 digit ");
                     //cancelFlag = true;
                 } else {
-                    if(spnCategory.getSelectedItemPosition()==0)
-                    {
-                        createAlertDialog("Post My Ad","Please Select Category");
+                    if (spnCategory.getSelectedItemPosition() == 0) {
+                        createAlertDialog("Post My Ad", "Please Select Category");
                         return;
-                    }
-                    else
-                    callToUploadMyAd(display_full_address, addSpinner.getText().toString());
+                    } else
+                        callToUploadMyAd(display_full_address, addSpinner.getText().toString());
                 }
         }
 
@@ -449,7 +520,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 showProgress(false, formView, progressBar);
                 Log.d("Succes", "##REQ" + data.toString());
                 ArrayList<CategoryDataDTO> birdCategoryDataDTOs = CategoryDataDTO.deserializeToArray(data);
-                birdCategoryDataDTOs.add(0,new CategoryDataDTO(0,"None"));
+                birdCategoryDataDTOs.add(0, new CategoryDataDTO(0, "None"));
                 getAdFirstSpineer(birdCategoryDataDTOs);
 
                 break;

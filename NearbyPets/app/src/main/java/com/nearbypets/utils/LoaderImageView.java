@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -185,19 +186,33 @@ public class LoaderImageView extends LinearLayout {
 
         options.outHeight = 200;
         options.outWidth = 200;
-        BitmapFactory.decodeFile(filePath, options);
+        Bitmap convertedImg=null;
+        try {
+            convertedImg = BitmapFactory.decodeFile(filePath, options);
+            options.inSampleSize = calculateInSampleSize(options, 200, 200);
+            options.inJustDecodeBounds = false;
+            convertedImg = BitmapFactory.decodeFile(filePath,options);
+            System.gc();
+        }catch (Exception e)
+        {
+            //createAlertDialog("Post My Ad","Image cannot be uploaded");
+            Log.d("TAG","##"+e.toString());
+            System.gc();
+            return null;
+        }
+        /*BitmapFactory.decodeFile(filePath, options);
         // Do the actual decoding
         options.inJustDecodeBounds = false;
         options.inSampleSize = calculateInSampleSize(options, 200, 200);
         //options.inTempStorage = new byte[512];
-        Bitmap output = BitmapFactory.decodeFile(filePath, options);
-        return output;
+        Bitmap output = BitmapFactory.decodeFile(filePath, options);*/
+        return convertedImg;
     }
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
-        final int height = options.outHeight;
+       /* final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
 
@@ -215,6 +230,21 @@ public class LoaderImageView extends LinearLayout {
         }
 
         return inSampleSize;
-    }
+    }*/
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
 
+        if (height > reqHeight || width > reqWidth) {
+            // Calculate ratios of height and width to requested height and width
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
+    }
 }
