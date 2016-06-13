@@ -38,6 +38,7 @@ import com.nearbypets.activities.PostedAdListActivity;
 import com.nearbypets.activities.SavedAdListActivity;
 import com.nearbypets.activities.SettingActivity;
 import com.nearbypets.activities.UserProfileActivity;
+import com.nearbypets.activities.UserSettingActivity;
 import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
@@ -398,6 +399,8 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_hidden_ad) {
             startActivity(new Intent(getApplicationContext(), HiddenAdActivity.class));
+        } else if (id == R.id.nav_settings_user) {
+            startActivity(new Intent(getApplicationContext(), UserSettingActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

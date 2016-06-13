@@ -100,9 +100,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.HiddenAdActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".activities.GridViewPhotos" />
+        <activity android:name=".activities.PreviewImage" />
+        <activity
+            android:name=".activities.UserSettingActivity"
             android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".activities.GridViewPhotos"></activity>
-        <activity android:name=".activities.PreviewImage"></activity>
     </application>
 
 </manifest>

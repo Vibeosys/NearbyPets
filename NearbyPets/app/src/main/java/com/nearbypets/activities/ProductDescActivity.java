@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice;
     protected RobotoRegularTextView mTxtProductDesc, mTxtSellerName, mTxtSellerPh, mTxtSellerEmail,
             mTxtAdded, mTxtViews, mTxtDistance;
+    RadioButton radioButton, radioButton1, radioButton2;
     ViewPager viewPager;
     protected static ArrayList<String> mImageArray = new ArrayList<>();
     protected final int REQ_TOKAN_DESC = 1;
@@ -115,6 +117,9 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         btnAddToFav = (Button) findViewById(R.id.btnAddToFav);
         btnSoldOut = (Button) findViewById(R.id.btnSoldOut);
         btnDisable = (Button) findViewById(R.id.btnDisable);
+        radioButton = (RadioButton) findViewById(R.id.radioButton);
+        radioButton1 = (RadioButton) findViewById(R.id.radioButton2);
+        radioButton2 = (RadioButton) findViewById(R.id.radioButton3);
         btnAddToFav.setVisibility(View.VISIBLE);
         btnAddToFav.setOnClickListener(this);
         btnSoldOut.setOnClickListener(this);
@@ -339,6 +344,27 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         mImageArray.clear();
         for (int j = 0; j < images.size(); j++) {
             mImageArray.add(images.get(j));
+        }
+        switch (images.size()) {
+            case 0:
+                radioButton.setVisibility(View.GONE);
+                radioButton1.setVisibility(View.GONE);
+                radioButton2.setVisibility(View.GONE);
+            case 1:
+                radioButton.setVisibility(View.VISIBLE);
+                radioButton1.setVisibility(View.GONE);
+                radioButton2.setVisibility(View.GONE);
+                break;
+            case 2:
+                radioButton.setVisibility(View.VISIBLE);
+                radioButton1.setVisibility(View.VISIBLE);
+                radioButton2.setVisibility(View.GONE);
+                break;
+            case 3:
+                radioButton.setVisibility(View.VISIBLE);
+                radioButton1.setVisibility(View.VISIBLE);
+                radioButton2.setVisibility(View.VISIBLE);
+                break;
         }
         imageFragmentPagerAdapter.notifyDataSetChanged();
         if (product.getEmail().equals(mSessionManager.getUserEmailId())) {

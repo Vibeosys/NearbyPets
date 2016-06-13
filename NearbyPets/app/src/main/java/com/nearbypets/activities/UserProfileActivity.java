@@ -25,14 +25,14 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         ServerSyncManager.OnSuccessResultReceived {
 
     private static final int REQ_TOKEN_PROFILE = 1;
-   // private RobotoMediumTextView  mTxtName,  mTxtEmail, mTxtMobNo;
+    // private RobotoMediumTextView  mTxtName,  mTxtEmail, mTxtMobNo;
     private View formView, progressBar;
-    TextView mTxtName,mTxtEmail,mTxtMobNo;
+    TextView mTxtName, mTxtEmail, mTxtMobNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_user_profile);
+        // setContentView(R.layout.activity_user_profile);
         setContentView(R.layout.new_profile);
         setTitle(getResources().getString(R.string.activity_profile));
         mServerSyncManager.setOnStringErrorReceived(this);
@@ -41,9 +41,9 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         /*mTxtName = (RobotoMediumTextView) findViewById(R.id.txtName);
         mTxtEmail = (RobotoMediumTextView) findViewById(R.id.txtEmail);
         mTxtMobNo = (RobotoMediumTextView) findViewById(R.id.txtMobNo);*/
-        mTxtName =(TextView) findViewById(R.id.FirstNameTitle);
-        mTxtEmail=(TextView) findViewById(R.id.emailIdTitle);
-        mTxtMobNo=(TextView) findViewById(R.id.phoneNumber);
+        mTxtName = (TextView) findViewById(R.id.FirstNameTitle);
+        mTxtEmail = (TextView) findViewById(R.id.emailIdTitle);
+        mTxtMobNo = (TextView) findViewById(R.id.phoneNumber);
         formView = findViewById(R.id.profileLinear);
         progressBar = findViewById(R.id.progressBar);
 
@@ -61,7 +61,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
 
     @Override
     public void onVolleyErrorReceived(@NonNull VolleyError error, int requestToken) {
-       showProgress(false, formView, progressBar);
+        showProgress(false, formView, progressBar);
         createAlertDialog("Server error!!!", "Try Again Later");
     }
 
@@ -81,7 +81,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
 
                 mTxtName.setText(userDbDTO.getFname().toString() + " " + userDbDTO.getLname().toString());
                 mTxtEmail.setText(userDbDTO.getEmail());
-                mTxtMobNo.setText(userDbDTO.getPwd());
+                mTxtMobNo.setText(userDbDTO.getPhone());
         }
 
     }

@@ -63,7 +63,7 @@ public class LoginActivity extends BaseActivity implements ServerSyncManager.OnS
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().hide();
-
+        getCurrentLocation(mLocationManager);
         //Button signIn = (Button) findViewById(R.id.login_user);
         mEmailId = (EditText) findViewById(R.id.user_email_id_editText);
         mPassword = (EditText) findViewById(R.id.user_password_editText);

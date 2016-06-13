@@ -23,6 +23,10 @@
             android:icon="@drawable/ic_menu_send"
             android:title="@string/nav_opt_post_new_ad" />
         <item
+            android:id="@+id/nav_settings_user"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Setting" />
+        <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_action_io"
             android:title="@string/nav_opt_logout" />

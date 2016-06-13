@@ -1,7 +1,8 @@
 package com.nearbypets.activities;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import com.nearbypets.R;
 import com.nearbypets.data.SettingsDBDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.TableDataDTO;
+import com.nearbypets.data.UserSettingDbDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.NetworkUtils;
@@ -22,10 +24,9 @@ import com.nearbypets.utils.ServerSyncManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
+public class UserSettingActivity extends BaseActivity implements ServerSyncManager.OnSuccessResultReceived,
         ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
-
-    EditText txtPageSize, txtFbAd;
+    EditText txtRadius;
     Button btnSave;
     private final int REQ_TOKEN_SETTINGS = 1;
     private View formView;
@@ -34,10 +35,9 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_user_setting);
         setTitle(getResources().getString(R.string.activity_setting));
-        txtPageSize = (EditText) findViewById(R.id.txtPageSize);
-        txtFbAd = (EditText) findViewById(R.id.txtFbAd);
+        txtRadius = (EditText) findViewById(R.id.txtRadius);
         btnSave = (Button) findViewById(R.id.btnSave);
         formView = findViewById(R.id.formSettings);
         progressBar = findViewById(R.id.progressBar);
@@ -49,7 +49,6 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
             mServerSyncManager.setOnStringErrorReceived(this);
             mServerSyncManager.setOnStringResultReceived(this);
         }
-
     }
 
     @Override
@@ -78,12 +77,16 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
 
     private void saveSettings() {
         showProgress(true, formView, progressBar);
-        ArrayList<SettingsDBDTO> settingsDBDTOs = new ArrayList<>();
-        settingsDBDTOs.add(new SettingsDBDTO("ClassifiedAdPageSize", txtPageSize.getText().toString()));
-        settingsDBDTOs.add(new SettingsDBDTO("FacebookAdPageSize", txtFbAd.getText().toString()));
+        int radius = 10000;
+        try {
+            radius = Integer.parseInt(txtRadius.getText().toString());
+        } catch (Exception e) {
+            radius = 10000;
+        }
+        UserSettingDbDTO userSettingDbDTO = new UserSettingDbDTO(mSessionManager.getUserId(), radius);
         Gson gson = new Gson();
-        String serializedJsonString = gson.toJson(settingsDBDTOs);
-        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SETTINGS, serializedJsonString);
+        String serializedJsonString = gson.toJson(userSettingDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.USER_SETTINGS, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_SETTINGS, tableDataDTO);
     }
 
@@ -95,7 +98,7 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         showProgress(false, formView, progressBar);
-        Log.d("RESULT", "##REQ" + data.toString());
+        // Log.d("RESULT", "##REQ" + data.toString());
         updateSettings(settings);
         Toast.makeText(getApplicationContext(), "Settings saved succesfully", Toast.LENGTH_SHORT).show();
         //checkLogin(download.getData().get(0).getData());
