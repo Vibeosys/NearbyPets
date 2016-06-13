@@ -3,13 +3,19 @@ package com.nearbypets.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.DashboardListDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SettingsDTO;
@@ -30,6 +36,7 @@ public class HiddenAdActivity extends ProductListActivity implements
     //GPSTracker gpsTracker;
 
     private static int storedPageNO = 0;
+    private static String searchText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +87,10 @@ public class HiddenAdActivity extends ProductListActivity implements
             createAlertNetWorkDialog("Network Error", "Please check network connection");
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
-
-            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.GET_HIDDEN_AD);
+            DashboardListDbDTO productListDbDTO = new DashboardListDbDTO(currentLat, currentLong, 0, "ASC", pageNo, searchText);
+            Gson gson = new Gson();
+            String serializedJsonString = gson.toJson(productListDbDTO);
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.GET_HIDDEN_AD,serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_GET_HIDDEN_LIST, tableDataDTO);
             /*PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
             Gson gson = new Gson();
@@ -116,6 +125,7 @@ public class HiddenAdActivity extends ProductListActivity implements
 
     @Override
     public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = 0;
         fetchList(1);
@@ -171,4 +181,38 @@ public class HiddenAdActivity extends ProductListActivity implements
         updateSettings(settings);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.classified_ad_search, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.clasified_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
+                searchText = query;
+                onRefresh();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchText = newText;
+                return true;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchText = "";
+                //sendSearchData("");
+                // onRefresh();
+                //fetchList(1, mSortOption, sort, searchText);
+                onRefresh();
+                // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        return true;
+    }
 }

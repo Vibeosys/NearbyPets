@@ -43,7 +43,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     //GPSTracker gpsTracker;
 
     private int adDisplay = 0;
-    private String searchText;
+    private static String searchText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        fetchList(1, mSortOption, sort, searchText);
+                                        fetchList(1, mSortOption, sort);
                                     }
                                 }
         );
@@ -76,13 +76,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort, searchText);
+                fetchList(page, mSortOption, sort);
             }
         });
 
     }
 
-    private void fetchList(int pageNo, int sortOption, String sort, String searchText) {
+    private void fetchList(int pageNo, int sortOption, String sort) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
@@ -177,16 +177,17 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
 
     @Override
     public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = 0;
         adDisplay = 0;
-        fetchList(1, mSortOption, sort, searchText);
+        fetchList(1, mSortOption, sort);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort, searchText);
+                fetchList(page, mSortOption, sort);
             }
         });
     }
@@ -195,7 +196,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
         //createAlertDialog("Not yet implemented", "N/A");
-        String adId= productData.getAdId();
+        String adId = productData.getAdId();
         callToSaveAd(adId);
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
@@ -219,13 +220,13 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         sort = sortDTO.getSorting();
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
-        fetchList(1, mSortOption, sort, searchText);
+        fetchList(1, mSortOption, sort);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page, mSortOption, sort, searchText);
+                fetchList(page, mSortOption, sort);
             }
         });
     }
@@ -249,24 +250,22 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.classified_ad_search, menu);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.clasified_search));
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconified(false);
+        SearchView searchView = (SearchView) menu.findItem(R.id.clasified_search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
                 searchText = query;
-                sendSearchData(searchText);
-                fetchList(1, mSortOption, sort, searchText);
-                searchText="";
+                onRefresh();
+                // fetchList(1, mSortOption, sort, searchText);
+                //searchText = "";
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                searchText = newText;
+                return true;
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -285,8 +284,8 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
     }
 
     public void sendSearchData(String str) {
-        fetchList(1, mSortOption, sort, searchText);
-        onRefresh();
+        //fetchList(1, mSortOption, sort, searchText);
+
 
     }
 }

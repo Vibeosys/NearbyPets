@@ -1,17 +1,21 @@
 package com.nearbypets;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,6 +42,7 @@ import com.nearbypets.adapters.CategoryAdapter;
 import com.nearbypets.adapters.DashboardProductListAdapter;
 import com.nearbypets.adapters.SortAdapter;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
+import com.nearbypets.data.DashboardListDbDTO;
 import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
@@ -79,6 +84,7 @@ public class MainActivity extends BaseActivity
     private static ArrayList<Integer> storedPageNO = new ArrayList<>();
     private int adDisplay = 0;
     private Date dateToCompaire = null;
+    private static String searchText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,7 +233,7 @@ public class MainActivity extends BaseActivity
         } else if (!storedPageNO.contains(pageNo)) {
             storedPageNO.add(pageNo);
             //Toast.makeText(getApplicationContext(), gpsTracker.getLatitude() + " " + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
-            ProductListDbDTO productListDbDTO = new ProductListDbDTO(currentLat, currentLong, sortOption, sort, pageNo);
+            DashboardListDbDTO productListDbDTO = new DashboardListDbDTO(currentLat, currentLong, sortOption, sort, pageNo, searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.PRODUCT_LIST, serializedJsonString);
@@ -295,11 +301,40 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
         if (mSessionManager.getUserRoleId() == AppConstants.ROLL_ID_ADMIN)
-            getMenuInflater().inflate(R.menu.main_admin, menu);
+            inflater.inflate(R.menu.main_admin, menu);
         else
-            getMenuInflater().inflate(R.menu.main, menu);
+            inflater.inflate(R.menu.main, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
+                searchText = query;
+                onRefresh();
+                //searchText = "";
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchText = newText;
+                return true;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchText = "";
+                //sendSearchData("");
+                // onRefresh();
+                //fetchList(1, mSortOption, sort, searchText);
+                onRefresh();
+                // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
         // Inflate the menu; this adds items to the action bar if it is present.
         return true;
     }
@@ -373,6 +408,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onRefresh() {
 //logic to refersh list
+        swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = new ArrayList<>();
         dateToCompaire = null;

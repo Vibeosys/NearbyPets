@@ -37,7 +37,8 @@ public class SavedAdListActivity extends ProductListActivity
 
     //GPSTracker gpsTracker;
     private static int storedPageNO = 0;
-    private String searchText;
+    private static String searchText = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class SavedAdListActivity extends ProductListActivity
                                         swipeRefreshLayout.setRefreshing(true);
 
                                         //fetchList(1);
-                                        fetchList(1,"");
+                                        fetchList(1);
                                         //logic to refersh list
                                     }
                                 }
@@ -70,12 +71,12 @@ public class SavedAdListActivity extends ProductListActivity
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(page,"");
+                fetchList(page);
             }
         });
     }
 
-    private void fetchList(int pageNo,String searchText) {
+    private void fetchList(int pageNo) {
         //Toast.makeText(getApplicationContext(), "lat " + gpsTracker.getLatitude() + "lng" + gpsTracker.getLongitude(), Toast.LENGTH_SHORT).show();
         if (!NetworkUtils.isActiveNetworkAvailable(this)) {
             createAlertNetWorkDialog("Network Error", "Please check newtwork connection");
@@ -83,7 +84,7 @@ public class SavedAdListActivity extends ProductListActivity
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
             //PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(),searchText);
-            SavedAdListDbDTO  productListDbDTO = new SavedAdListDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(),searchText);
+            SavedAdListDbDTO productListDbDTO = new SavedAdListDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(), searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVED_AD, serializedJsonString);
@@ -148,15 +149,16 @@ public class SavedAdListActivity extends ProductListActivity
 
     @Override
     public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
         storedPageNO = 0;
         mProductAdapter.clear();
-        fetchList(1,"");
+        fetchList(1);
         mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(1, "");
+                fetchList(1);
             }
         });
         mProductAdapter.notifyDataSetChanged();
@@ -184,25 +186,20 @@ public class SavedAdListActivity extends ProductListActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.classified_ad_search, menu);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.clasified_search));
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconified(false);
+        SearchView searchView = (SearchView) menu.findItem(R.id.clasified_search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
                 searchText = query;
-                sendSearchData(searchText);
-                fetchList(1, searchText);
-                mProductAdapter.clear();
-                searchText="";
+                onRefresh();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                searchText = newText;
+                return true;
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -219,8 +216,9 @@ public class SavedAdListActivity extends ProductListActivity
         });
         return true;
     }
+
     public void sendSearchData(String str) {
-        fetchList(1,searchText);
+        fetchList(1);
         //onRefresh();
 
     }

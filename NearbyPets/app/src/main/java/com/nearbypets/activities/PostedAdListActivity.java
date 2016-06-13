@@ -1,9 +1,14 @@
 package com.nearbypets.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -30,6 +35,7 @@ public class PostedAdListActivity extends ProductListActivity implements
         ServerSyncManager.OnErrorResultReceived {
     //GPSTracker gpsTracker;
     private static int storedPageNO = 0;
+    private static String searchText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,7 @@ public class PostedAdListActivity extends ProductListActivity implements
             swipeRefreshLayout.setRefreshing(false);
         } else if (storedPageNO != pageNo) {
             storedPageNO = pageNo;
-            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId());
+            PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(), searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POSTED_AD, serializedJsonString);
@@ -139,6 +145,7 @@ public class PostedAdListActivity extends ProductListActivity implements
 
     @Override
     public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = 0;
         fetchList(1);
@@ -164,5 +171,40 @@ public class PostedAdListActivity extends ProductListActivity implements
         startActivity(intent);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.classified_ad_search, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.clasified_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast.makeText(getApplicationContext()," "+query,Toast.LENGTH_LONG).show();
+                searchText = query;
+                onRefresh();
+                // fetchList(1, mSortOption, sort, searchText);
+                //searchText = "";
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchText = newText;
+                return true;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchText = "";
+                //sendSearchData("");
+                // onRefresh();
+                //fetchList(1, mSortOption, sort, searchText);
+                onRefresh();
+                // Toast.makeText(getApplicationContext(),"Close button is clicked",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        return true;
+    }
 }
