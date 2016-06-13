@@ -231,20 +231,42 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
         int imageNumber = 0;
         String imagePath = data.getExtras().getString("imagePath");
         BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap convertedImg = BitmapFactory.decodeFile(imagePath, options);
-        int scaledHeight = 50;
-        int scaledWidth = 50;
+        Bitmap convertedImg=null;
+        try{
+            convertedImg = BitmapFactory.decodeFile(imagePath, options);
+            System.gc();
+        }catch (Exception e){
+            createAlertDialog("Post My Ad","Image cannot be uploaded");
+            Log.d("TAG","##"+e.toString());
+            System.gc();
+            return;
+        }
 
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(convertedImg, scaledHeight, scaledWidth, true);
+        int scaledHeight = 480;
+        int scaledWidth = 320;
+
+        Bitmap scaledBitmap =null;
+        try{
+            scaledBitmap = Bitmap.createScaledBitmap(convertedImg, scaledHeight, scaledWidth, true);
+            System.gc();
+        }catch (Exception e)
+        {
+            createAlertDialog("Post My Ad","Image cannot be uploaded");
+            Log.d("TAG","##"+e.toString());
+            System.gc();
+            return;
+        }
+
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         String currentDateandTime = sdf.format(new Date());
         String imageWithExtension = currentDateandTime + ".JPG";
 
-        String imageInBase64Format = getStringImage(convertedImg);
+        String imageInBase64Format = getStringImage(scaledBitmap);
         if (scaledBitmap != convertedImg)
             convertedImg.recycle();
         convertedImg = null;
+        System.gc();
 
         if (requestCode == PERMISSION_REQUEST_MEDIA_TYPE_IMAGE) {
             imageNumber = 1;
