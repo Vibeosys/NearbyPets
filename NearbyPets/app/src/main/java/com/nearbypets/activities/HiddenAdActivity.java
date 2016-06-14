@@ -16,6 +16,7 @@ import com.google.gson.JsonSyntaxException;
 import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
 import com.nearbypets.data.DashboardListDbDTO;
+import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SettingsDTO;
@@ -45,7 +46,6 @@ public class HiddenAdActivity extends ProductListActivity implements
         // setContentView(R.layout.activity_hidden_ad);
         setTitle("Hidden Ads");
 
-
         getCurrentLocation(mLocationManager);
         //gpsTracker = new GPSTracker(getApplicationContext());
         spnSortBy.setVisibility(View.GONE);
@@ -53,9 +53,10 @@ public class HiddenAdActivity extends ProductListActivity implements
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);
         storedPageNO = 0;
-        mProductAdapter.setActivityFlag(AppConstants.POSTED_AD_FLAG_ADAPTER);
+        mProductAdapter.setActivityFlag(AppConstants.HIDDEN_AD_FLAG_ADAPTER);
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
+        mProductAdapter.setCustomHideListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         mProductAdapter.clear();
         swipeRefreshLayout.post(new Runnable() {
@@ -139,6 +140,16 @@ public class HiddenAdActivity extends ProductListActivity implements
     }
 
     @Override
+    public void onHideClickListener(int position, ProductDataDTO productData) {
+
+        HiddenAdDbDTO hiddenAdDbDTO = new HiddenAdDbDTO(productData.getAdId());
+        Gson gson = new Gson();
+        String serializedJsonString = gson.toJson(hiddenAdDbDTO);
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.UN_HIDE_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_TOKEN_POST_HIDDEN_AD, tableDataDTO);
+    }
+
+    @Override
     public void onItemClickListener(int position, ProductDataDTO productData) {
         //Intent
         Log.i("TAG", "## Call To intent");
@@ -178,6 +189,7 @@ public class HiddenAdActivity extends ProductListActivity implements
                 break;
             case REQ_TOKEN_POST_HIDDEN_AD:
                 Log.i("TAG", "data" + data);
+                Toast.makeText(getApplicationContext(), "Ad is now visible to our clients", Toast.LENGTH_SHORT).show();
                 break;
         }
         updateSettings(settings);

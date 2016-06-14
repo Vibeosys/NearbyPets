@@ -122,7 +122,22 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/btnHideAd"
+            android:id="@+id/btnHideAd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="14dp"
+            android:background="@color/colorAccent"
+            android:paddingBottom="8dp"
+            android:paddingLeft="34dp"
+            android:paddingRight="34dp"
+            android:paddingTop="8dp"
+            android:text="Hide"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+            <TextView
+                android:id="@+id/btnUnHideAd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -133,7 +148,7 @@
                 android:paddingLeft="34dp"
                 android:paddingRight="34dp"
                 android:paddingTop="8dp"
-                android:text="Hide"
+                android:text="Un Hide"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </LinearLayout>

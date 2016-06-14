@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -54,6 +56,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         mCategoryId = getIntent().getIntExtra(AppConstants.CATEGORY_ID, 0);
         //gpsTracker = new GPSTracker(getApplicationContext());
         //spnSortBy.setVisibility(View.GONE);
+
         storedPageNO = 0;
         mServerSyncManager.setOnStringErrorReceived(this);
         mServerSyncManager.setOnStringResultReceived(this);

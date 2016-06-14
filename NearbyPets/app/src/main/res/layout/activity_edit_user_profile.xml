@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -24,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="My Profile"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/primaryText"
             android:textSize="52sp" />
@@ -50,98 +56,88 @@
                 android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <TextView
+            <EditText
                 android:id="@+id/firstNameTv"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/FirstNameTitle"
-                android:textSize="12sp"
-                android:text="Name"
-                android:textColor="#ABB2B9"
+                android:textSize="16sp"
+                android:layout_margin="4dp"
+                android:hint="User Name"
+                android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <View
-                android:id="@+id/SplitLine_hor1"
+            <EditText
+                android:id="@+id/lastNameTv"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/firstNameTv"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@android:color/darker_gray" />
-
-            <TextView
-                android:id="@+id/emailIdTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/SplitLine_hor1"
-                android:layout_toEndOf="@+id/FirstNameTitle"
-                android:paddingTop="7dp"
-                android:text=""
+                android:textSize="16sp"
+                android:layout_margin="4dp"
+                android:hint="User Name"
+                android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <TextView
-                android:id="@+id/emailIdHeading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/emailIdTitle"
-                android:textSize="12sp"
-                android:textColor="#ABB2B9"
-                android:text="Email Id"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <View
-                android:id="@+id/SplitLine_hor3"
+            <EditText
+                android:id="@+id/EmailIdTv"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/emailIdHeading"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@android:color/darker_gray" />
-
-            <TextView
-                android:id="@+id/phoneNumber"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignTop="@+id/SplitLine_hor3"
-                android:paddingTop="7dp"
-                android:text=" "
+                android:layout_below="@+id/lastNameTv"
+                android:textSize="16sp"
+                android:hint="Email Id"
+                android:layout_margin="4dp"
+                android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/phoneTitle"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/PassWdTv"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/phoneNumber"
-                android:textColor="#ABB2B9"
-                android:textSize="12sp"
-                android:text="Phone"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <View
-                android:id="@+id/SplitLine_hor4"
+                android:layout_below="@+id/EmailIdTv"
+                android:textSize="16sp"
+                android:hint="Password"
+                android:layout_margin="4dp"
+                android:textColor="@android:color/black"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/PhoneTv"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/phoneTitle"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@android:color/darker_gray" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/PassWdTv"
+                android:textSize="16sp"
+                android:hint="Phone Number"
+                android:layout_margin="4dp"
+                android:textColor="@android:color/black"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
-                android:id="@+id/editProfile"
-                android:layout_width="wrap_content"
+
+                android:layout_width="85dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_margin="5dp"
-                android:text="UPDATE"
-                android:visibility="gone"
-                android:layout_below="@+id/SplitLine_hor4"/>
+                android:layout_below="@+id/PhoneTv"
+                android:text="SAVE"
+                android:layout_margin="4dp"
+                android:id="@+id/btnSave"
+                style="?android:attr/buttonStyleSmall"/>
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="85dp"
+                android:layout_height="wrap_content"
+                android:text="CANCEL"
+                android:layout_margin="4dp"
+                android:layout_below="@+id/PhoneTv"
+                android:layout_toEndOf="@+id/btnSave" />
+
+
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
-
+</ScrollView>
 

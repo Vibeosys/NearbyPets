@@ -74,6 +74,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
     private Spinner spnCategory;
     private Button removeImage1, removeImage2, removeImage3;
     private ImagesDbDTO imagesDbDTO;
+    private int addresInt=2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,8 +239,10 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
 
         if (checkBtn.getText().equals("Display City Only")) {
             addSpinner.setText(cityToDisplay);
+            addresInt=1;
         } else {
             addSpinner.setText(completeAddress);
+            addresInt=2;
         }
     }
 
@@ -467,7 +470,7 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                 Double.parseDouble(petPrice.getText().toString()),
                 bird_Type,
                 userId,
-                images);
+                images,addresInt);
         Gson gson = new Gson();
         String serializedJsonString = gson.toJson(postMyAdDBDTO);
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.POST_MY_AD, serializedJsonString);

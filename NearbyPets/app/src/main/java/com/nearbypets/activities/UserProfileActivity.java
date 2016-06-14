@@ -1,10 +1,13 @@
 package com.nearbypets.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -28,6 +31,8 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
     // private RobotoMediumTextView  mTxtName,  mTxtEmail, mTxtMobNo;
     private View formView, progressBar;
     TextView mTxtName, mTxtEmail, mTxtMobNo;
+    private Button editProfile;
+    UserDbDTO userDbDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +49,21 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         mTxtName = (TextView) findViewById(R.id.FirstNameTitle);
         mTxtEmail = (TextView) findViewById(R.id.emailIdTitle);
         mTxtMobNo = (TextView) findViewById(R.id.phoneNumber);
+        editProfile = (Button)findViewById(R.id.editProfile);
         formView = findViewById(R.id.profileLinear);
         progressBar = findViewById(R.id.progressBar);
-
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getApplicationContext(),"Edit profile is clicked",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(),EditUserProfile.class);
+                intent.putExtra("FirstName",userDbDTO.getFname().toString());
+                intent.putExtra("LastName",userDbDTO.getLname().toString());
+                intent.putExtra("EmailId",mTxtEmail.getText().toString());
+                intent.putExtra("Phone",mTxtMobNo.getText().toString());
+                startActivity(intent);
+            }
+        });
         callToProfile();
     }
 
@@ -77,8 +94,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         switch (requestToken) {
             case REQ_TOKEN_PROFILE:
                 showProgress(false, formView, progressBar);
-                UserDbDTO userDbDTO = UserDbDTO.deserializeJson(data);
-
+                userDbDTO = UserDbDTO.deserializeJson(data);
                 mTxtName.setText(userDbDTO.getFname().toString() + " " + userDbDTO.getLname().toString());
                 mTxtEmail.setText(userDbDTO.getEmail());
                 mTxtMobNo.setText(userDbDTO.getPhone());

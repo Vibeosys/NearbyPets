@@ -74,12 +74,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/removeImage1"
                         android:layout_width="46dp"
                         android:layout_height="46dp"
+                        android:background="@drawable/remove"
                         android:layout_marginBottom="4dp"
                         android:layout_marginRight="4dp"
                         android:layout_marginTop="4dp" />
@@ -88,11 +90,12 @@
                         android:id="@+id/removeImage2"
                         android:layout_width="46dp"
                         android:layout_height="46dp"
-
+                        android:background="@drawable/remove"
                         android:layout_margin="4dp" />
 
                     <Button
                         android:id="@+id/removeImage3"
+                        android:background="@drawable/remove"
                         android:layout_width="46dp"
                         android:layout_height="46dp"
                         android:layout_margin="4dp" />

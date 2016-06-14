@@ -108,6 +108,7 @@ public class ProductListAdapter extends BaseAdapter {
                     holder.imgFavourite = (ImageView) convertView.findViewById(R.id.imgFavourite);
                     holder.txtDate = (RobotoMediumTextView) convertView.findViewById(R.id.txtDate);
                     holder.btnHide = (TextView) convertView.findViewById(R.id.btnHideAd);
+                    holder.btnUnHide = (TextView) convertView.findViewById(R.id.btnUnHideAd);
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.row_product_list_header, null);
@@ -190,11 +191,27 @@ public class ProductListAdapter extends BaseAdapter {
                     }
                 });
                 if (roleId == AppConstants.ROLL_ID_USER) {
+
                     holder.btnHide.setVisibility(View.GONE);
+                    holder.btnUnHide.setVisibility(View.GONE);
                 } else {
-                    holder.btnHide.setVisibility(View.VISIBLE);
+                    if (activityFlag == AppConstants.HIDDEN_AD_FLAG_ADAPTER) {
+                        holder.btnHide.setVisibility(View.GONE);
+                        holder.btnUnHide.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.btnHide.setVisibility(View.VISIBLE);
+                        holder.btnUnHide.setVisibility(View.GONE);
+                    }
+
                 }
                 holder.btnHide.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customHideListener != null)
+                            customHideListener.onHideClickListener(position, product);
+                    }
+                });
+                holder.btnUnHide.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (customHideListener != null)
@@ -222,7 +239,7 @@ public class ProductListAdapter extends BaseAdapter {
         ImageView imgFavourite;
         NetworkImageView imgProductImage;
         RobotoMediumTextView txtDate;
-        TextView btnHide;
+        TextView btnHide, btnUnHide;
     }
 
     public void setCustomButtonListner(CustomButtonListener listener) {

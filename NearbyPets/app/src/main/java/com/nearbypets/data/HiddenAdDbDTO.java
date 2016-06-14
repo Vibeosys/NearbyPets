@@ -7,6 +7,10 @@ public class HiddenAdDbDTO {
     private String adId;
     private int status;
 
+    public HiddenAdDbDTO(String adId) {
+        this.adId = adId;
+    }
+
     public HiddenAdDbDTO(String adId, int status) {
         this.adId = adId;
         this.status = status;

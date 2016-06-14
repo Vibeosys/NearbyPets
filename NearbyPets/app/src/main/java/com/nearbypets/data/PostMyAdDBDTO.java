@@ -17,6 +17,7 @@ public class PostMyAdDBDTO {
     private int typeId;
     private String userId;
     private ArrayList<ImagesDbDTO> images;
+    private int isAddress;
 
 
     public PostMyAdDBDTO() {
@@ -24,7 +25,7 @@ public class PostMyAdDBDTO {
 
     public PostMyAdDBDTO(int categoryId, String title, String description, String address,
                          String displayAddress, String latitude, String longitude, double price,
-                         int typeId, String userId, ArrayList<ImagesDbDTO> images) {
+                         int typeId, String userId, ArrayList<ImagesDbDTO> images,int isAddress) {
         this.categoryId = categoryId;
         this.title = title;
         this.description = description;
@@ -36,6 +37,7 @@ public class PostMyAdDBDTO {
         this.typeId = typeId;
         this.userId = userId;
         this.images = images;
+        this.isAddress=isAddress;
     }
 
     public int getCategoryId() {
@@ -126,5 +128,11 @@ public class PostMyAdDBDTO {
         this.images = images;
     }
 
+    public int getIsAddress() {
+        return isAddress;
+    }
 
+    public void setIsAddress(int isAddress) {
+        this.isAddress = isAddress;
+    }
 }

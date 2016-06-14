@@ -105,6 +105,8 @@
         <activity android:name=".activities.PreviewImage" />
         <activity
             android:name=".activities.UserSettingActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".activities.EditUserProfile"
             android:parentActivityName=".MainActivity"></activity>
     </application>
 
