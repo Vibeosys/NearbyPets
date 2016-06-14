@@ -14,5 +14,6 @@ public final class PropertyTypeConstants {
     public static final String USER_ROLE_ID = "user.roleId";
     public static final String USER_FB_ACCESS_TOKEN = "user.access.token";
     public static final String USER_PASSWORD = "user.pass";
+    public static final String USER_RADIUS_IN_KM = "user.radius";
 
 }

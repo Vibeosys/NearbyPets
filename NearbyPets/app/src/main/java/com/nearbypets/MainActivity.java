@@ -190,8 +190,9 @@ public class MainActivity extends BaseActivity
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public boolean onLoadMore(int page, int totalItemsCount) {
                 customLoadMoreDataFromApi(page);
+                return true;
             }
         });
 
@@ -353,6 +354,10 @@ public class MainActivity extends BaseActivity
         }
         if (id == R.id.new_ad) {
             startActivity(new Intent(getApplicationContext(), PostMyAdActivity.class));
+            return true;
+        }
+        if (id == R.id.view_categories) {
+            startActivity(new Intent(getApplicationContext(), CategoryListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

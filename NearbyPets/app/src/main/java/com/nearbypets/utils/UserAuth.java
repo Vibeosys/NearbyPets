@@ -55,13 +55,14 @@ public class UserAuth {
         theSessionManager.setUserRoleId(userInfo.getRoleid());
         theSessionManager.setUserPassword(userInfo.getPwd());
         theSessionManager.setUserAccessToken(userInfo.getToken());
+        theSessionManager.setRadiusInKm(userInfo.getRadiusInKm());
     }
 
     public static boolean CleanAuthenticationInfo() {
 
         SessionManager theSessionManager = SessionManager.Instance();
         theSessionManager.setUserId(null);
-        theSessionManager.setUserName(null,null);
+        theSessionManager.setUserName(null, null);
         theSessionManager.setUserEmailId(null);
         theSessionManager.setUserRoleId(0);
         theSessionManager.setUserAccessToken(null);

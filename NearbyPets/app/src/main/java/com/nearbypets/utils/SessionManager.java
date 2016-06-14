@@ -126,6 +126,18 @@ public class SessionManager {
             return Integer.parseInt(sRoleId);
     }
 
+    public void setRadiusInKm(int radiusInKm) {
+        setValuesInSharedPrefs(PropertyTypeConstants.USER_RADIUS_IN_KM, String.valueOf(radiusInKm));
+    }
+
+    public int getRadiusInKm() {
+        String sRoleId = mProjectSharedPref.getString(PropertyTypeConstants.USER_RADIUS_IN_KM, null);
+        if (sRoleId == null || TextUtils.isEmpty(sRoleId))
+            return 5000;
+        else
+            return Integer.parseInt(sRoleId);
+    }
+
     private static void setValuesInSharedPrefs(String sharedPrefKey, String sharedPrefValue) {
         SharedPreferences.Editor editor = mProjectSharedPref.edit();
         editor.putString(sharedPrefKey, sharedPrefValue);

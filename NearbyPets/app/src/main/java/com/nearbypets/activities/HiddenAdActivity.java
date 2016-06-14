@@ -23,6 +23,7 @@ import com.nearbypets.data.TableDataDTO;
 import com.nearbypets.data.downloaddto.ErrorDbDTO;
 import com.nearbypets.utils.AppConstants;
 import com.nearbypets.utils.ConstantOperations;
+import com.nearbypets.utils.EndlessScrollListener;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
 
@@ -68,14 +69,15 @@ public class HiddenAdActivity extends ProductListActivity implements
                                     }
                                 }
         );
-        /*mListViewProduct.setOnScrollListener(new EndlessScrollListener
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public boolean onLoadMore(int page, int totalItemsCount) {
                 fetchList(page);
+                return true;
             }
-        });*/
+        });
 
 
     }
@@ -90,7 +92,7 @@ public class HiddenAdActivity extends ProductListActivity implements
             DashboardListDbDTO productListDbDTO = new DashboardListDbDTO(currentLat, currentLong, 0, "ASC", pageNo, searchText);
             Gson gson = new Gson();
             String serializedJsonString = gson.toJson(productListDbDTO);
-            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.GET_HIDDEN_AD,serializedJsonString);
+            TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.GET_HIDDEN_AD, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_GET_HIDDEN_LIST, tableDataDTO);
             /*PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(gpsTracker.getLatitude(), gpsTracker.getLongitude(), 0, "ASC", pageNo, mSessionManager.getUserId());
             Gson gson = new Gson();

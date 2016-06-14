@@ -22,6 +22,7 @@ public class UserDbDTO extends BaseDTO {
     private int roleid;
     private String pwd;
     private String token;
+    private int radiusInKm;
 
     public UserDbDTO() {
     }
@@ -88,6 +89,14 @@ public class UserDbDTO extends BaseDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getRadiusInKm() {
+        return radiusInKm;
+    }
+
+    public void setRadiusInKm(int radiusInKm) {
+        this.radiusInKm = radiusInKm;
     }
 
     public static UserDbDTO deserializeJson(String serializedString) {

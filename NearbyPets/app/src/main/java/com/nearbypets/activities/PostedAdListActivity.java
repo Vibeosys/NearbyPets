@@ -68,8 +68,9 @@ public class PostedAdListActivity extends ProductListActivity implements
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public boolean onLoadMore(int page, int totalItemsCount) {
                 fetchList(page);
+                return true;
             }
         });
 

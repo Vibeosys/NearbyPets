@@ -70,8 +70,9 @@ public class SavedAdListActivity extends ProductListActivity
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public boolean onLoadMore(int page, int totalItemsCount) {
                 fetchList(page);
+                return true;
             }
         });
     }
@@ -153,14 +154,14 @@ public class SavedAdListActivity extends ProductListActivity
         storedPageNO = 0;
         mProductAdapter.clear();
         fetchList(1);
-        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 fetchList(1);
             }
-        });
+        });*/
         mProductAdapter.notifyDataSetChanged();
     }
 

@@ -31,6 +31,7 @@ public class UserSettingActivity extends BaseActivity implements ServerSyncManag
     private final int REQ_TOKEN_SETTINGS = 1;
     private View formView;
     private View progressBar;
+    int radius = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class UserSettingActivity extends BaseActivity implements ServerSyncManag
         setContentView(R.layout.activity_user_setting);
         setTitle(getResources().getString(R.string.activity_setting));
         txtRadius = (EditText) findViewById(R.id.txtRadius);
+        txtRadius.setText("" + mSessionManager.getRadiusInKm());
         btnSave = (Button) findViewById(R.id.btnSave);
         formView = findViewById(R.id.formSettings);
         progressBar = findViewById(R.id.progressBar);
@@ -77,11 +79,11 @@ public class UserSettingActivity extends BaseActivity implements ServerSyncManag
 
     private void saveSettings() {
         showProgress(true, formView, progressBar);
-        int radius = 10000;
+
         try {
             radius = Integer.parseInt(txtRadius.getText().toString());
         } catch (Exception e) {
-            radius = 10000;
+            radius = 5000;
         }
         UserSettingDbDTO userSettingDbDTO = new UserSettingDbDTO(mSessionManager.getUserId(), radius);
         Gson gson = new Gson();
@@ -99,6 +101,7 @@ public class UserSettingActivity extends BaseActivity implements ServerSyncManag
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         showProgress(false, formView, progressBar);
         // Log.d("RESULT", "##REQ" + data.toString());
+        mSessionManager.setRadiusInKm(radius);
         updateSettings(settings);
         Toast.makeText(getApplicationContext(), "Settings saved succesfully", Toast.LENGTH_SHORT).show();
         //checkLogin(download.getData().get(0).getData());

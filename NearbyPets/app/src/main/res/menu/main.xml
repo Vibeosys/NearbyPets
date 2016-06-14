@@ -8,6 +8,11 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always|withText" />
     <item
+        android:id="@+id/view_categories"
+        android:icon="@drawable/categories_icon"
+        android:title="View Categories"
+        app:showAsAction="always|withText" />
+    <item
         android:id="@+id/new_ad"
         android:icon="@drawable/ic_plus_red_back"
         android:title="@string/activity_post_ad"

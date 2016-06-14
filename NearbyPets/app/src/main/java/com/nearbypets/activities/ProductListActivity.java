@@ -87,8 +87,9 @@ public class ProductListActivity extends BaseActivity implements
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public boolean onLoadMore(int page, int totalItemsCount) {
                 //customLoadMoreDataFromApi(page);
+                return true;
             }
         });
     }

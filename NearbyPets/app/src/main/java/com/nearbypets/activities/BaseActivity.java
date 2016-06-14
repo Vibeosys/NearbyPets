@@ -67,7 +67,6 @@ public abstract class BaseActivity
 
         mSessionManager = SessionManager.getInstance(getApplicationContext());
         mServerSyncManager = new ServerSyncManager(getApplicationContext(), mSessionManager);
-        settingMap.put("AdSearchDistanceInKM", "10000");
         settingMap.put("ClassifiedAdPageSize", "10");
         settingMap.put("FacebookAdPageSize", "5");
 
