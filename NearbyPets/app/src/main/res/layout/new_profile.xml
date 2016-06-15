@@ -57,7 +57,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/FirstNameTitle"
                 android:textSize="12sp"
-                android:text="Name"
+                android:text="First Name"
                 android:textColor="#ABB2B9"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -71,7 +71,7 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
-                android:id="@+id/emailIdTitle"
+                android:id="@+id/LastNameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -82,33 +82,64 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/emailIdHeading"
+                android:id="@+id/lastNameHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/emailIdTitle"
+                android:layout_below="@+id/LastNameTitle"
                 android:textSize="12sp"
                 android:textColor="#ABB2B9"
-                android:text="Email Id"
+                android:text="Last Name"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <View
                 android:id="@+id/SplitLine_hor3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/emailIdHeading"
+                android:layout_below="@+id/lastNameHeading"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
                 android:background="@android:color/darker_gray" />
 
             <TextView
-                android:id="@+id/phoneNumber"
+                android:id="@+id/emailIdDeitText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@+id/SplitLine_hor3"
                 android:paddingTop="7dp"
                 android:text=" "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/emailIdTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/emailIdDeitText"
+                android:textColor="#ABB2B9"
+                android:textSize="12sp"
+                android:text="Email Id"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <View
+                android:id="@+id/SplitLine_hor4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/emailIdTitle"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/darker_gray" />
+
+
+            <TextView
+                android:id="@+id/phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/SplitLine_hor4"
+                android:paddingTop="7dp"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -122,8 +153,10 @@
                 android:text="Phone"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
+
+
             <View
-                android:id="@+id/SplitLine_hor4"
+                android:id="@+id/SplitLine_hor6"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/phoneTitle"
@@ -131,15 +164,24 @@
                 android:layout_marginTop="4dp"
                 android:background="@android:color/darker_gray" />
 
-            <Button
-                android:id="@+id/editProfile"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_margin="5dp"
-                android:text="UPDATE"
-                android:visibility="gone"
-                android:layout_below="@+id/SplitLine_hor4"/>
+                android:layout_below="@+id/SplitLine_hor6"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/editProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:text="EDIT"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/customborder"
+                    android:layout_below="@+id/SplitLine_hor6"/>
+            </LinearLayout>
+
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

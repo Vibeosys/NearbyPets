@@ -48,9 +48,9 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         ServerSyncManager.OnSuccessResultReceived, ServerSyncManager.OnErrorResultReceived, View.OnClickListener {
     //static final int NUM_ITEMS = 6;
     protected ImageFragmentPagerAdapter imageFragmentPagerAdapter;
-    protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice;
+    protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice, mTxtAddressType;
     protected RobotoRegularTextView mTxtProductDesc, mTxtSellerName, mTxtSellerPh, mTxtSellerEmail,
-            mTxtAdded, mTxtViews, mTxtDistance;
+            mTxtAdded, mTxtViews, mTxtDistance, mTxtAddress;
     RadioButton radioButton, radioButton1, radioButton2;
     ViewPager viewPager;
     protected static ArrayList<String> mImageArray = new ArrayList<>();
@@ -115,6 +115,8 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         mTxtAdded = (RobotoRegularTextView) findViewById(R.id.txtAdded);
         mTxtViews = (RobotoRegularTextView) findViewById(R.id.txtViews);
         mTxtDistance = (RobotoRegularTextView) findViewById(R.id.txtDistance);
+        mTxtAddressType = (RobotoMediumTextView) findViewById(R.id.txtAdressType);
+        mTxtAddress = (RobotoRegularTextView) findViewById(R.id.txtAddress);
         formView = findViewById(R.id.fromProductDesc);
         progressBar = findViewById(R.id.progressBar);
         btnAddToFav = (Button) findViewById(R.id.btnAddToFav);
@@ -348,6 +350,12 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         mTxtDistance.setText(String.format("%.2f", mDistance)
                 + " kilometers away from you.");
         mAddress = product.getAdAddress();
+        if (product.getIsAddress() == 1) {
+            mTxtAddressType.setText("City:");
+        } else {
+            mTxtAddressType.setText("Full Address:");
+        }
+        mTxtAddress.setText(product.getDisplayAddress());
         ArrayList<String> images = product.getImages();
         mImageArray.clear();
         for (int j = 0; j < images.size(); j++) {

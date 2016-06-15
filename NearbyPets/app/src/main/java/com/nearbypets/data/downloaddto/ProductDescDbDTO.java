@@ -32,6 +32,7 @@ public class ProductDescDbDTO extends BaseDTO {
     private double longitude;
     private ArrayList<String> images;
     private Date postedDt;
+    private int isAddress;
 
     public ProductDescDbDTO() {
     }
@@ -146,6 +147,14 @@ public class ProductDescDbDTO extends BaseDTO {
 
     public void setImages(ArrayList<String> images) {
         this.images = images;
+    }
+
+    public int getIsAddress() {
+        return isAddress;
+    }
+
+    public void setIsAddress(int isAddress) {
+        this.isAddress = isAddress;
     }
 
     public Date getPostedDt() {

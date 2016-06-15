@@ -30,7 +30,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
     private static final int REQ_TOKEN_PROFILE = 1;
     // private RobotoMediumTextView  mTxtName,  mTxtEmail, mTxtMobNo;
     private View formView, progressBar;
-    TextView mTxtName, mTxtEmail, mTxtMobNo;
+    TextView mTxtName,mTxtLastName ,mTxtEmail, mTxtMobNo;
     private Button editProfile;
     UserDbDTO userDbDTO;
 
@@ -47,7 +47,8 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
         mTxtEmail = (RobotoMediumTextView) findViewById(R.id.txtEmail);
         mTxtMobNo = (RobotoMediumTextView) findViewById(R.id.txtMobNo);*/
         mTxtName = (TextView) findViewById(R.id.FirstNameTitle);
-        mTxtEmail = (TextView) findViewById(R.id.emailIdTitle);
+        mTxtLastName = (TextView)findViewById(R.id.LastNameTitle);
+        mTxtEmail = (TextView) findViewById(R.id.emailIdDeitText);
         mTxtMobNo = (TextView) findViewById(R.id.phoneNumber);
         editProfile = (Button)findViewById(R.id.editProfile);
         formView = findViewById(R.id.profileLinear);
@@ -62,6 +63,7 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
                 intent.putExtra("EmailId",mTxtEmail.getText().toString());
                 intent.putExtra("Phone",mTxtMobNo.getText().toString());
                 startActivity(intent);
+                finish();
             }
         });
         callToProfile();
@@ -95,7 +97,8 @@ public class UserProfileActivity extends BaseActivity implements ServerSyncManag
             case REQ_TOKEN_PROFILE:
                 showProgress(false, formView, progressBar);
                 userDbDTO = UserDbDTO.deserializeJson(data);
-                mTxtName.setText(userDbDTO.getFname().toString() + " " + userDbDTO.getLname().toString());
+                mTxtName.setText(userDbDTO.getFname());
+                mTxtLastName.setText(userDbDTO.getLname());
                 mTxtEmail.setText(userDbDTO.getEmail());
                 mTxtMobNo.setText(userDbDTO.getPhone());
         }

@@ -76,7 +76,7 @@
                 android:layout_below="@+id/firstNameTv"
                 android:textSize="16sp"
                 android:layout_margin="4dp"
-                android:hint="User Name"
+                android:hint="Last Name"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -100,6 +100,7 @@
                 android:layout_below="@+id/EmailIdTv"
                 android:textSize="16sp"
                 android:hint="Password"
+                android:inputType="textPassword"
                 android:layout_margin="4dp"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -112,28 +113,39 @@
                 android:textSize="16sp"
                 android:hint="Phone Number"
                 android:layout_margin="4dp"
+                android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <Button
-
-                android:layout_width="85dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/PhoneTv"
-                android:text="SAVE"
-                android:layout_margin="4dp"
-                android:id="@+id/btnSave"
-                style="?android:attr/buttonStyleSmall"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_below="@+id/PhoneTv">
+                <Button
 
-            <Button
-                android:id="@+id/btnCancel"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="85dp"
-                android:layout_height="wrap_content"
-                android:text="CANCEL"
-                android:layout_margin="4dp"
-                android:layout_below="@+id/PhoneTv"
-                android:layout_toEndOf="@+id/btnSave" />
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/PhoneTv"
+                    android:text="SAVE"
+                    android:layout_margin="4dp"
+                    android:id="@+id/btnSave"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/customborder"
+                    style="?android:attr/buttonStyleSmall"/>
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="CANCEL"
+                    android:layout_margin="4dp"
+                    android:layout_below="@+id/PhoneTv"
+                    android:layout_toEndOf="@+id/btnSave" />
+            </LinearLayout>
+
 
 
         </RelativeLayout>
