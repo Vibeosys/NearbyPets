@@ -20,7 +20,7 @@
     <!-- Nav drawer -->
     <string name="nav_opt_my_details">My Profile</string>
     <string name="nav_opt_my_posted_ads">My Posted Ads</string>
-    <string name="nav_opt_my_saved_ads">My Saved Ads</string>
+    <string name="nav_opt_my_saved_ads">My Favorite Ads</string>
 
     <string name="nav_opt_view_categories">View Categories</string>
     <string name="nav_opt_post_new_ad">Post a new ad</string>

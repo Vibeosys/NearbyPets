@@ -114,6 +114,7 @@ public class HiddenAdActivity extends ProductListActivity implements
     }
 
     private void updateList(ArrayList<ProductDbDTO> data) {
+        mListViewProduct.setVisibility(View.VISIBLE);
         //mProductAdapter.clear();
         int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
@@ -128,6 +129,7 @@ public class HiddenAdActivity extends ProductListActivity implements
 
     @Override
     public void onRefresh() {
+        mListViewProduct.setVisibility(View.INVISIBLE);
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = 0;

@@ -1,14 +1,11 @@
 package com.nearbypets.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -151,7 +148,7 @@ public class ProductListAdapter extends BaseAdapter {
                     holder.imgFavourite.setVisibility(View.GONE);
                 else
                     holder.imgFavourite.setVisibility(View.VISIBLE);
-                if (product.isFavouriteFlag())
+                if (product.isFavouriteFlag() || activityFlag == AppConstants.FAVORITE_AD_FLAG_ADAPTER)
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_red_24dp);
                 else
                     holder.imgFavourite.setImageResource(R.drawable.ic_favorite_black_24dp);

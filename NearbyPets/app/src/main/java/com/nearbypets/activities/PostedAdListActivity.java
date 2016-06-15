@@ -1,10 +1,8 @@
 package com.nearbypets.activities;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
@@ -130,6 +128,7 @@ public class PostedAdListActivity extends ProductListActivity implements
 
 
     private void updateList(ArrayList<ProductDbDTO> data) {
+        mListViewProduct.setVisibility(View.VISIBLE);
         //mProductAdapter.clear();
         int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
@@ -146,6 +145,7 @@ public class PostedAdListActivity extends ProductListActivity implements
 
     @Override
     public void onRefresh() {
+        mListViewProduct.setVisibility(View.INVISIBLE);
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = 0;

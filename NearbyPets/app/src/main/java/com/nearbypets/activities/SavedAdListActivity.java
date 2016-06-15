@@ -1,21 +1,18 @@
 package com.nearbypets.activities;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.nearbypets.R;
 import com.nearbypets.converter.ProDbDtoTOProDTO;
-import com.nearbypets.data.PostedAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
 import com.nearbypets.data.SavedAdListDbDTO;
@@ -50,7 +47,7 @@ public class SavedAdListActivity extends ProductListActivity
         mServerSyncManager.setOnStringErrorReceived(this);
         storedPageNO = 0;
         mServerSyncManager.setOnStringResultReceived(this);
-        mProductAdapter.setActivityFlag(AppConstants.POSTED_AD_FLAG_ADAPTER);
+        mProductAdapter.setActivityFlag(AppConstants.FAVORITE_AD_FLAG_ADAPTER);
         mProductAdapter.setCustomButtonListner(this);
         mProductAdapter.setCustomItemListner(this);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -86,8 +83,7 @@ public class SavedAdListActivity extends ProductListActivity
             storedPageNO = pageNo;
             //PostedAdDbDTO productListDbDTO = new PostedAdDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(),searchText);
             SavedAdListDbDTO productListDbDTO = new SavedAdListDbDTO(currentLat, currentLong, 0, "ASC", pageNo, mSessionManager.getUserId(), searchText);
-            Gson gson = new Gson();
-            String serializedJsonString = gson.toJson(productListDbDTO);
+            String serializedJsonString = productListDbDTO.serializeString();
             TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVED_AD, serializedJsonString);
             mServerSyncManager.uploadDataToServer(REQ_TOKEN_LIST, tableDataDTO);
             mProductAdapter.notifyDataSetChanged();
@@ -130,10 +126,16 @@ public class SavedAdListActivity extends ProductListActivity
                 updateList(productDbDTOs);
                 swipeRefreshLayout.setRefreshing(false);
                 break;
+            case REQ_REMOVE_SAVED_AD:
+                Log.i("TAG", "data" + data);
+                onRefresh();
+                Toast.makeText(getApplicationContext(),"Ad removed from your favorites",Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
     private void updateList(ArrayList<ProductDbDTO> data) {
+        mListViewProduct.setVisibility(View.VISIBLE);
         //mProductAdapter.clear();
         int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
@@ -150,6 +152,7 @@ public class SavedAdListActivity extends ProductListActivity
 
     @Override
     public void onRefresh() {
+        mListViewProduct.setVisibility(View.INVISIBLE);
         swipeRefreshLayout.setRefreshing(true);
         storedPageNO = 0;
         mProductAdapter.clear();
@@ -169,6 +172,7 @@ public class SavedAdListActivity extends ProductListActivity
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
+        callToRemoveSavedAd(productData.getAdId());
         mProductAdapter.notifyDataSetChanged();
         Log.i("TAG", "## imageClick" + value);
     }
@@ -218,5 +222,5 @@ public class SavedAdListActivity extends ProductListActivity
         });
         return true;
     }
-    
+
 }

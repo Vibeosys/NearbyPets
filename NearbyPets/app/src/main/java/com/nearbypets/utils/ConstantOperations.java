@@ -15,6 +15,7 @@ public class ConstantOperations {
     public static final String CATEGORY_ADPOST = "GetCategory";
     public static final String SETTINGS = "SaveSettings";
     public static final String SAVE_AN_AD = "SaveAnAd";
+    public static final String REMOVE_SAVED_AD = "RemoveSavedAd";
     public static final String POST_MY_AD = "PostAd";
     public static final String SAVED_AD = "GetSavedAd";
     public static final String CLASSIFIED_AD = "ClassifiedAds";

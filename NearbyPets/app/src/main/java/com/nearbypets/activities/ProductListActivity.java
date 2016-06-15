@@ -45,6 +45,7 @@ public class ProductListActivity extends BaseActivity implements
     protected final int REQ_TOKEN_LIST = 1;
     protected final int REQ_TOKEN_HIDE_AD = 2;
     protected final int REQ_TOKEN_SAVE_AD = 3;
+    protected final int REQ_REMOVE_SAVED_AD = 4;
     protected final int REQ_TOKEN_GET_HIDDEN_LIST = 33;
     protected final int REQ_TOKEN_POST_HIDDEN_AD = 34;
 
@@ -102,6 +103,14 @@ public class ProductListActivity extends BaseActivity implements
         mServerSyncManager.uploadDataToServer(REQ_TOKEN_SAVE_AD, tableDataDTO);
     }
 
+    protected void callToRemoveSavedAd(String adId) {
+        showProgress(true, formView, progressBar);
+        SaveAnAdDbDTO saveAnAdDbDTO = new SaveAnAdDbDTO(adId, mSessionManager.getUserId());
+        String serializedJsonString = saveAnAdDbDTO.serializeString();
+        TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.REMOVE_SAVED_AD, serializedJsonString);
+        mServerSyncManager.uploadDataToServer(REQ_REMOVE_SAVED_AD, tableDataDTO);
+    }
+
     @Override
     public void onButtonClickListener(int id, int position, boolean value, ProductDataDTO productData) {
         productData.setFavouriteFlag(!value);
@@ -117,7 +126,7 @@ public class ProductListActivity extends BaseActivity implements
 
     @Override
     public void onRefresh() {
-
+        mListViewProduct.setVisibility(View.INVISIBLE);
     }
 
     @Override

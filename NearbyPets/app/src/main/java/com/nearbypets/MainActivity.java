@@ -1,13 +1,11 @@
 package com.nearbypets;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -47,7 +45,6 @@ import com.nearbypets.data.DashboardListDbDTO;
 import com.nearbypets.data.HiddenAdDbDTO;
 import com.nearbypets.data.ProductDataDTO;
 import com.nearbypets.data.ProductDbDTO;
-import com.nearbypets.data.ProductListDbDTO;
 import com.nearbypets.data.SettingsDTO;
 import com.nearbypets.data.SortDTO;
 import com.nearbypets.data.TableDataDTO;
@@ -266,6 +263,7 @@ public class MainActivity extends BaseActivity
     //update the product list adapter
     private void updateList(ArrayList<ProductDbDTO> data) {
         //mProductAdapter.clear();
+        mListViewProduct.setVisibility(View.VISIBLE);
         ProDbDtoTOProDTO converter = new ProDbDtoTOProDTO(data);
         int id = Integer.parseInt(settingMap.get("FacebookAdPageSize"));
         ArrayList<ProductDataDTO> productDataDTOs = converter.getProductDTOs();
@@ -433,6 +431,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onRefresh() {
 //logic to refersh list
+        mListViewProduct.setVisibility(View.INVISIBLE);
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         storedPageNO = new ArrayList<>();
