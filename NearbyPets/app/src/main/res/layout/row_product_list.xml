@@ -41,14 +41,18 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="3">
 
                         <com.nearbypets.views.RobotoMediumTextView
                             android:id="@+id/txtProductTitle"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"
+                            android:layout_weight="1"
                             android:padding="2dp"
+                            android:ellipsize="end"
+                            android:maxEms="5"
                             android:text="@string/str_product_title"
                             android:textColor="@color/primaryText"
                             android:textSize="16sp" />
@@ -60,6 +64,7 @@
                             android:gravity="right"
                             android:padding="2dp"
                             android:text="@string/str_product_price"
+                            android:layout_weight="2"
                             android:textColor="@color/accentText"
                             android:textSize="15sp" />
                     </LinearLayout>
