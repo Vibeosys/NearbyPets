@@ -79,7 +79,7 @@
             android:parentActivityName=".activities.ProductDescActivity" />
         <activity
             android:name=".activities.ClassifiedAdsActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.CategoryListActivity" />
         <activity
             android:name=".activities.ClassfiedProductDescActivity"
             android:parentActivityName=".activities.CategoryListActivity"
