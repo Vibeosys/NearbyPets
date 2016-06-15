@@ -42,7 +42,8 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.SplashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
