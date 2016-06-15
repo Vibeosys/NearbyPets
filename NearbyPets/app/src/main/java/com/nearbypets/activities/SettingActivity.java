@@ -95,9 +95,9 @@ public class SettingActivity extends BaseActivity implements ServerSyncManager.O
     @Override
     public void onResultReceived(@NonNull String data, @NonNull List<SettingsDTO> settings, int requestToken) {
         showProgress(false, formView, progressBar);
-        Log.d("RESULT", "##REQ" + data.toString());
+//        Log.d("RESULT", "##REQ" + data.toString());
         updateSettings(settings);
-        Toast.makeText(getApplicationContext(), "Settings saved succesfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Settings saved successfully", Toast.LENGTH_SHORT).show();
         //checkLogin(download.getData().get(0).getData());
     }
 }

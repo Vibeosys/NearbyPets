@@ -83,15 +83,15 @@
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="10dp"
-                    android:weightSum="3"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
                     <com.nearbypets.views.RobotoMediumTextView
                         android:id="@+id/txtProductTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="2dp"
                         android:layout_weight="1"
+                        android:padding="2dp"
                         android:text="@string/str_product_title"
                         android:textColor="@color/primaryText"
                         android:textSize="20sp" />
@@ -100,9 +100,9 @@
                         android:id="@+id/txtProductPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="2"
                         android:gravity="right"
                         android:padding="2dp"
-                        android:layout_weight="2"
                         android:text="@string/str_product_price"
                         android:textColor="@color/accentText"
                         android:textSize="16sp" />
@@ -181,7 +181,6 @@
                         android:id="@+id/txtSellerPh"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="callToDialer"
                         android:padding="2dp"
                         android:text="123 456 78"
                         android:textColor="@color/hyperLinkColor" />
@@ -210,6 +209,7 @@
                         android:text="info@example.com"
                         android:textColor="@color/secondaryText" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -234,6 +234,7 @@
                         android:text="Address"
                         android:textColor="@color/secondaryText" />
                 </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -325,10 +326,10 @@
                 </LinearLayout>
 
                 <com.nearbypets.views.RobotoItalicTextView
+                    android:id="@+id/txtShowOnMap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:onClick="callToMap"
                     android:padding="2dp"
                     android:text="Show On Map"
                     android:textColor="@color/hyperLinkColor" />

@@ -38,6 +38,7 @@ import com.nearbypets.utils.ConstantOperations;
 import com.nearbypets.utils.DateUtils;
 import com.nearbypets.utils.NetworkUtils;
 import com.nearbypets.utils.ServerSyncManager;
+import com.nearbypets.views.RobotoItalicTextView;
 import com.nearbypets.views.RobotoMediumTextView;
 import com.nearbypets.views.RobotoRegularTextView;
 
@@ -51,6 +52,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     protected RobotoMediumTextView mTxtProductTitle, mTxtProductPrice, mTxtAddressType;
     protected RobotoRegularTextView mTxtProductDesc, mTxtSellerName, mTxtSellerPh, mTxtSellerEmail,
             mTxtAdded, mTxtViews, mTxtDistance, mTxtAddress;
+    RobotoItalicTextView txtShowOnMap;
     RadioButton radioButton, radioButton1, radioButton2;
     ViewPager viewPager;
     protected static ArrayList<String> mImageArray = new ArrayList<>();
@@ -115,6 +117,7 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         mTxtAdded = (RobotoRegularTextView) findViewById(R.id.txtAdded);
         mTxtViews = (RobotoRegularTextView) findViewById(R.id.txtViews);
         mTxtDistance = (RobotoRegularTextView) findViewById(R.id.txtDistance);
+        txtShowOnMap = (RobotoItalicTextView) findViewById(R.id.txtShowOnMap);
         mTxtAddressType = (RobotoMediumTextView) findViewById(R.id.txtAdressType);
         mTxtAddress = (RobotoRegularTextView) findViewById(R.id.txtAddress);
         formView = findViewById(R.id.fromProductDesc);
@@ -129,6 +132,8 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         btnAddToFav.setOnClickListener(this);
         btnSoldOut.setOnClickListener(this);
         btnDisable.setOnClickListener(this);
+        mTxtSellerPh.setOnClickListener(this);
+        txtShowOnMap.setOnClickListener(this);
         RelativeLayout adViewContainer = (RelativeLayout) findViewById(R.id.adViewContainer);
         AdView adView = new AdView(getApplicationContext(), "1715459422041023_1722420624678236", AdSize.BANNER_320_50);
         adViewContainer.addView(adView);
@@ -186,20 +191,17 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         mServerSyncManager.uploadDataToServer(REQ_TOKAN_DESC, tableDataDTO);
     }
 
-    protected void callToMap(View v) {
-        try {
-            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mAddress);
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            startActivity(mapIntent);
-            finish();
-        } catch (Exception e) {
-            createAlertDialog("Call to map", "" + e.toString());
-        }
+    protected void callToMap() {
+
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mAddress);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+        finish();
 
     }
 
-    protected void callToDialer(View v) {
+    private void callToDialer() {
         getPermissionsForPhoneCall();
     }
 
@@ -207,18 +209,14 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
     protected void callToPhone() {
         String posted_by = mTxtSellerPh.getText().toString();
         if (TextUtils.isEmpty(posted_by) || posted_by == null) {
-            createAlertDialog("Call Error", "We are not connect to call");
+            createAlertDialog("Call Error", "We could not connect you to the call");
         } else {
-            try {
 
-                String uri = "tel:" + posted_by.trim();
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse(uri));
-                startActivity(intent);
-                finish();
-            } catch (Exception e) {
-                createAlertDialog("Call to phone", "" + e.toString());
-            }
+            String uri = "tel:" + posted_by.trim();
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse(uri));
+            startActivity(intent);
+            finish();
         }
 
     }
@@ -405,6 +403,12 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 break;
             case R.id.btnSoldOut:
                 callToAlertBox(R.id.btnSoldOut, "Confirm Sold Out", "Are you sure to sold out this ad?");
+                break;
+            case R.id.txtSellerPh:
+                callToDialer();
+                break;
+            case R.id.txtShowOnMap:
+                callToMap();
                 break;
         }
     }

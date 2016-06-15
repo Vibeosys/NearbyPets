@@ -103,7 +103,7 @@ public class UserSettingActivity extends BaseActivity implements ServerSyncManag
         // Log.d("RESULT", "##REQ" + data.toString());
         mSessionManager.setRadiusInKm(radius);
         updateSettings(settings);
-        Toast.makeText(getApplicationContext(), "Settings saved succesfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Settings saved successfully", Toast.LENGTH_SHORT).show();
         //checkLogin(download.getData().get(0).getData());
     }
 }
