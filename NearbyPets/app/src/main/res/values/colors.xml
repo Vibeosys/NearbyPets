@@ -11,4 +11,5 @@
     <color name="categoryRowTransparnt">#79d7d3d3</color>
     <color name="colorTextGreen">#03a021</color>
     <color name="hyperLinkColor">#448AFF</color>
+    <color name="black_overlay">#66000000</color>
 </resources>

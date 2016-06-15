@@ -181,6 +181,7 @@
                     android:layout_height="wrap_content"
                     android:text="CANCEL"
                     android:layout_margin="4dp"
+                    android:background="@drawable/custom_gray_border"
                     android:layout_below="@+id/PhoneTv"
                     android:layout_toEndOf="@+id/btnSave" />
             </LinearLayout>
