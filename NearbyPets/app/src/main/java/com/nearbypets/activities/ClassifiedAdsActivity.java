@@ -186,7 +186,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         storedPageNO = 0;
         adDisplay = 0;
         fetchList(1, mSortOption, sort);
-       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener
+       mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
@@ -194,7 +194,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 fetchList(page, mSortOption, sort);
                 return true;
             }
-        });*/
+        });
     }
 
     @Override
@@ -226,7 +226,7 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         swipeRefreshLayout.setRefreshing(true);
         mProductAdapter.clear();
         fetchList(1, mSortOption, sort);
-        /*mListViewProduct.setOnScrollListener(new EndlessScrollListener
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
@@ -234,12 +234,20 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
                 fetchList(page, mSortOption, sort);
                 return true;
             }
-        });*/
+        });
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                fetchList(page, mSortOption, sort);
+                return true;
+            }
+        });
     }
 
     @Override

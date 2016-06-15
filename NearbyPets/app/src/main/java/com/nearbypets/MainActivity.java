@@ -208,12 +208,28 @@ public class MainActivity extends BaseActivity
                 storedPageNO = new ArrayList<>();
                 adDisplay = 0;
                 fetchList(1, mSortOption, sort);
+                mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                        (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
+                    @Override
+                    public boolean onLoadMore(int page, int totalItemsCount) {
+                        customLoadMoreDataFromApi(page);
+                        return true;
+                    }
+                });
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                        (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
+                    @Override
+                    public boolean onLoadMore(int page, int totalItemsCount) {
+                        customLoadMoreDataFromApi(page);
+                        return true;
+                    }
+                });
             }
         });
     }
@@ -391,13 +407,14 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_log_out) {
             try {
+                UserAuth.CleanAuthenticationInfo();
                 FacebookSdk.sdkInitialize(this.getApplicationContext());
                 LoginManager.getInstance().logOut();
+                callLogin();
             } catch (Exception e) {
 
             }
-            UserAuth.CleanAuthenticationInfo();
-            callLogin();
+
 
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(getApplicationContext(), SettingActivity.class));
@@ -422,7 +439,15 @@ public class MainActivity extends BaseActivity
         dateToCompaire = null;
         adDisplay = 0;
         fetchList(1, mSortOption, sort);
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+                return true;
+            }
+        });
     }
 
 

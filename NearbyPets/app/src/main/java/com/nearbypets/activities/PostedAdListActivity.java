@@ -150,6 +150,15 @@ public class PostedAdListActivity extends ProductListActivity implements
         mProductAdapter.clear();
         storedPageNO = 0;
         fetchList(1);
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
+                (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
+
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                fetchList(page);
+                return true;
+            }
+        });
     }
 
     @Override

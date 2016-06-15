@@ -1,11 +1,14 @@
 package com.nearbypets.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -200,17 +203,22 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
 
     @Override
     protected void callToPhone() {
+        String posted_by = mTxtSellerPh.getText().toString();
+        if (TextUtils.isEmpty(posted_by) || posted_by == null) {
+            createAlertDialog("Call Error", "We are not connect to call");
+        } else {
+            try {
 
-        try {
-            String posted_by = mTxtSellerPh.getText().toString();
-            String uri = "tel:" + posted_by.trim();
-            Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse(uri));
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            createAlertDialog("Call to phone", "" + e.toString());
+                String uri = "tel:" + posted_by.trim();
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse(uri));
+                startActivity(intent);
+                finish();
+            } catch (Exception e) {
+                createAlertDialog("Call to phone", "" + e.toString());
+            }
         }
+
     }
 
     @Override
@@ -384,12 +392,39 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
                 callToSaveAd();
                 break;
             case R.id.btnDisable:
-                callToDisableAd();
+                callToAlertBox(R.id.btnDisable, "Confirm Disable", "Are you sure to disable this ad?");
+
                 break;
             case R.id.btnSoldOut:
-                callToSoldOutAd();
+                callToAlertBox(R.id.btnSoldOut, "Confirm Sold Out", "Are you sure to sold out this ad?");
                 break;
         }
+    }
+
+    private void callToAlertBox(final int btn, String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // whatever...
+                        switch (btn) {
+                            case R.id.btnDisable:
+                                callToDisableAd();
+                                break;
+                            case R.id.btnSoldOut:
+                                callToSoldOutAd();
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).create().show();
     }
 
     private void callToSoldOutAd() {
@@ -418,6 +453,5 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         TableDataDTO tableDataDTO = new TableDataDTO(ConstantOperations.SAVE_AN_AD, serializedJsonString);
         mServerSyncManager.uploadDataToServer(REQ_TOKAN_SAVE_AD, tableDataDTO);
     }
-
 
 }

@@ -79,7 +79,7 @@
             android:parentActivityName=".activities.ProductDescActivity" />
         <activity
             android:name=".activities.ClassifiedAdsActivity"
-            android:parentActivityName=".activities.CategoryListActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.ClassfiedProductDescActivity"
             android:parentActivityName=".activities.CategoryListActivity"
@@ -106,7 +106,8 @@
         <activity
             android:name=".activities.UserSettingActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".activities.EditUserProfile"
+        <activity
+            android:name=".activities.EditUserProfile"
             android:parentActivityName=".MainActivity"></activity>
     </application>
 

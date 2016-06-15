@@ -154,14 +154,15 @@ public class SavedAdListActivity extends ProductListActivity
         storedPageNO = 0;
         mProductAdapter.clear();
         fetchList(1);
-       /* mListViewProduct.setOnScrollListener(new EndlessScrollListener
+        mListViewProduct.setOnScrollListener(new EndlessScrollListener
                 (Integer.parseInt(settingMap.get("ClassifiedAdPageSize"))) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                fetchList(1);
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                fetchList(page);
+                return true;
             }
-        });*/
+        });
         mProductAdapter.notifyDataSetChanged();
     }
 
@@ -217,10 +218,5 @@ public class SavedAdListActivity extends ProductListActivity
         });
         return true;
     }
-
-    public void sendSearchData(String str) {
-        fetchList(1);
-        //onRefresh();
-
-    }
+    
 }
