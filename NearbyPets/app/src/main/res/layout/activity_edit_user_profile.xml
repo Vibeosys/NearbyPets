@@ -53,8 +53,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="44dp"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_marginStart="4dp"
+                android:paddingStart="5dp"
+                android:text="First Name"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <EditText
                 android:id="@+id/firstNameTv"
@@ -68,48 +70,85 @@
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
+            <TextView
+                android:id="@+id/LastNameTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:layout_margin="4dp"
+                android:paddingStart="5dp"
+                android:layout_below="@+id/firstNameTv"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
             <EditText
                 android:id="@+id/lastNameTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/firstNameTv"
+                android:layout_below="@+id/LastNameTitle"
                 android:textSize="16sp"
                 android:layout_margin="4dp"
                 android:hint="Last Name"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
+            <TextView
+                android:id="@+id/EmailIDTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email Id"
+                android:layout_margin="4dp"
+                android:paddingStart="5dp"
+                android:layout_below="@+id/lastNameTv"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <EditText
                 android:id="@+id/EmailIdTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/lastNameTv"
+                android:layout_below="@+id/EmailIDTitle"
                 android:textSize="16sp"
                 android:hint="Email Id"
                 android:layout_margin="4dp"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/PasswordTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:layout_margin="4dp"
+                android:paddingStart="5dp"
+                android:layout_below="@+id/EmailIdTv"/>
             <EditText
                 android:id="@+id/PassWdTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/EmailIdTv"
+                android:layout_below="@+id/PasswordTitle"
                 android:textSize="16sp"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:layout_margin="4dp"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/phoneNoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:layout_margin="4dp"
+                android:paddingStart="5dp"
+                android:layout_below="@+id/PassWdTv"/>
             <EditText
                 android:id="@+id/PhoneTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/PassWdTv"
+                android:layout_below="@+id/phoneNoTitle"
                 android:textSize="16sp"
                 android:hint="Phone Number"
                 android:layout_margin="4dp"
