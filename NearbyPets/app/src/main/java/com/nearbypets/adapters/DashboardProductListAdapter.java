@@ -92,7 +92,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -143,6 +143,7 @@ public class DashboardProductListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         try {
+
             final ProductDataDTO product = mProductList.get(position);
             switch (rowType) {
                 case TYPE_ITEM:
@@ -239,7 +240,10 @@ public class DashboardProductListAdapter extends BaseAdapter {
             }
             return convertView;
         } catch (ArrayIndexOutOfBoundsException e) {
-            return null;
+            return convertView;
+        }catch (Exception e)
+        {
+            return convertView;
         }
 
 
