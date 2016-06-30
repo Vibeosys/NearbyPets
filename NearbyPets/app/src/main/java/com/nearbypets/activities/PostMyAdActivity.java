@@ -441,12 +441,12 @@ public class PostMyAdActivity extends BaseActivity implements View.OnClickListen
                     petPrice.requestFocus();
                     petPrice.setError("please enter pet price");
                     //cancelFlag = true;
-                } else if (petPriceStr.length() > 4) {
+                } /*else if (petPriceStr.length() > 4) {
                     //focusView = petPrice;
                     petPrice.requestFocus();
                     petPrice.setError("pet prices should have 4 digit ");
                     //cancelFlag = true;
-                } else {
+                }*/ else {
                     if (spnCategory.getSelectedItemPosition() == 0) {
                         createAlertDialog("Post My Ad", "Please Select Category");
                         return;

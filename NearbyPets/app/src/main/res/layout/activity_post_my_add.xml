@@ -113,7 +113,8 @@
                     android:id="@+id/pet_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp" />
+                    android:layout_marginTop="3dp"
+                    android:singleLine="true" />
 
                 <com.nearbypets.views.RobotoMediumTextView
                     android:layout_width="match_parent"
@@ -216,7 +217,7 @@
                                 android:layout_marginLeft="3dp"
                                 android:layout_marginTop="3dp"
                                 android:hint="Price"
-                                android:inputType="numberDecimal|numberSigned" />
+                                android:inputType="numberDecimal" />
                         </LinearLayout>
                     </LinearLayout>
 
