@@ -84,4 +84,5 @@
     <string name="GPSAlertDialogMessage">Start gps tracker for get your location</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_user_setting">UserSettingActivity</string>
+    <string name="str_no_add_in_radius">No more ads in your radius</string>
 </resources>

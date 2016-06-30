@@ -116,7 +116,8 @@ public class ClassifiedAdsActivity extends ProductListActivity implements
         switch (requestToken) {
             case REQ_TOKEN_LIST:
                 if (errorDbDTO.getErrorCode() != 0) {
-                    Snackbar.make(getCurrentFocus(), "No more ads found", Snackbar.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                    Snackbar.make(productView, getResources().getString(R.string.str_no_add_in_radius), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
             case REQ_TOKEN_HIDE_AD:

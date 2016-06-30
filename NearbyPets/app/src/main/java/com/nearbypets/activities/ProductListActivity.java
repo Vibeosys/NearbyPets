@@ -40,7 +40,7 @@ public class ProductListActivity extends BaseActivity implements
     protected static int mSortOption = 0;
     protected static String sort = "DESC";
     protected View formView;
-    protected View progressBar;
+    protected View progressBar,productView;
 
     protected final int REQ_TOKEN_LIST = 1;
     protected final int REQ_TOKEN_HIDE_AD = 2;
@@ -57,6 +57,7 @@ public class ProductListActivity extends BaseActivity implements
         mListViewProduct = (ListView) findViewById(R.id.productList);
         spnSortBy = (Spinner) findViewById(R.id.spnSortBy);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        productView = findViewById(R.id.productView);
         mSortAdapter = new SortAdapter(getApplicationContext());
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         mSortAdapter.addItem(new SortDTO("Sort By", 0, "DESC"));
