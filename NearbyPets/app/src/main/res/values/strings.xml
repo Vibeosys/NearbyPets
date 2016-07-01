@@ -48,12 +48,12 @@
     <!--Login Activity -->
     <string name="str_nearby">NEARBY</string>
     <string name="str_pets">PETS</string>
-    <string name="str_find_pets">FIND PETS,NEAR YOU!</string>
-    <string name="str_user_name_hint">User Name</string>
-    <string name="str_user_password">Password</string>
+    <string name="str_find_pets"> FIND PETS, NEAR YOU!</string>
+    <string name="str_user_name_hint">EMAIL</string>
+    <string name="str_user_password">PASSWORD</string>
     <string name="str_user_forgot_password">Forgot password?</string>
     <string name="str_login_btn">Login</string>
-    <string name="str_nearby_pets">New to nearby pets?</string>
+    <string name="str_nearby_pets">New to Nearby Pets?</string>
     <string name="str_create_acc">Create Account</string>
     <!--Register Activity -->
     <string name="str_first_name_hint">FIRST NAME</string>
