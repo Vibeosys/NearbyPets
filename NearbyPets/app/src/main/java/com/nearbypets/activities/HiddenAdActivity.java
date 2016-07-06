@@ -175,6 +175,7 @@ public class HiddenAdActivity extends ProductListActivity implements
     public void onDataErrorReceived(ErrorDbDTO errorDbDTO, int requestToken) {
         //createAlertDialog("Login error", "" + errorDbDTO.getMessage());
         Log.i("TAG", "##" + errorDbDTO.getMessage());
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 
