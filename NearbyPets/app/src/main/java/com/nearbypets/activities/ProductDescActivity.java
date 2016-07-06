@@ -137,16 +137,14 @@ public class ProductDescActivity extends BaseActivity implements SwipeFragment.C
         RelativeLayout adViewContainer = (RelativeLayout) findViewById(R.id.adViewContainer);
         AdView adView = new AdView(getApplicationContext(), "1715459422041023_1722420624678236", AdSize.BANNER_320_50);
         adViewContainer.addView(adView);
-        AdSettings.addTestDevice("HASHED ID");
         adView.loadAd();
 
         RelativeLayout adViewContainer1 = (RelativeLayout) findViewById(R.id.adViewContainer1);
         AdView adView1 = new AdView(getApplicationContext(), "1715459422041023_1722420858011546", AdSize.BANNER_320_50);
         adViewContainer1.addView(adView1);
-        AdSettings.addTestDevice("HASHED ID");
         adView1.loadAd();
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

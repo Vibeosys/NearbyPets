@@ -233,7 +233,6 @@ public class DashboardProductListAdapter extends BaseAdapter {
 
                     AdView adView = new AdView(mContext, "1715459422041023_1715460668707565", AdSize.BANNER_320_50);
                     holder.adViewContainer.addView(adView);
-                    AdSettings.addTestDevice("HASHED ID");
                     adView.loadAd();
                     break;
 
